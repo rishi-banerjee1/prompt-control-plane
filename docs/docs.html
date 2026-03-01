@@ -565,7 +565,7 @@ optimize_prompt({
 
       <p><span class="step-num">2</span> <strong>Review the PreviewPack</strong> response. It contains:</p>
       <ul>
-        <li><code>quality_before</code> &mdash; A score from 0&ndash;100 across 5 dimensions (Clarity, Specificity, Completeness, Constraints, Efficiency)</li>
+        <li><code>quality_before</code> &mdash; A multi-dimensional score from 0&ndash;100 with traceable deductions</li>
         <li><code>compiled_prompt</code> &mdash; The structured, optimized prompt formatted for your target LLM</li>
         <li><code>blocking_questions</code> &mdash; Ambiguities that must be resolved before approval</li>
         <li><code>cost_estimate</code> &mdash; Token counts and costs across 11 models from 4 providers</li>
@@ -689,7 +689,7 @@ optimize_prompt({
         </svg>
       </div>
 
-      <p>The pipeline is executed in this order: Analyze intent, Score quality (5 dimensions, 0&ndash;100), Run 14 built-in rules plus custom rules (Enterprise), Compute dimensional risk score, Compile to target format (Claude XML, OpenAI system/user, or Markdown), Estimate cost across 4 providers and 11 models, Route to optimal model. The result is packaged into a <strong>PreviewPack</strong> for human review &mdash; nothing reaches the LLM until the user approves.</p>
+      <p>The pipeline analyzes intent, scores quality, detects risks, compiles to your target format, estimates cost across providers, and routes to the optimal model. The result is packaged into a <strong>PreviewPack</strong> for human review &mdash; nothing reaches the LLM until the user approves.</p>
 
       <!-- PreviewPack breakdown -->
       <h3 id="previewpack">What&rsquo;s in a PreviewPack?</h3>
@@ -721,7 +721,7 @@ optimize_prompt({
             <tr style="border-bottom:1px solid var(--border);">
               <td style="padding:8px 12px;"><code>quality_before</code></td>
               <td style="padding:8px 12px;">QualityScore</td>
-              <td style="padding:8px 12px;">Score 0&ndash;100 across 5 dimensions (clarity, specificity, completeness, constraints, efficiency)</td>
+              <td style="padding:8px 12px;">Multi-dimensional quality score (0&ndash;100) with traceable deductions</td>
               <td style="padding:8px 12px;"><span class="tag tag-free">All</span></td>
             </tr>
             <tr style="border-bottom:1px solid var(--border);">
@@ -799,55 +799,42 @@ optimize_prompt({
       <!-- VERIFICATION                                                        -->
       <!-- ════════════════════════════════════════════════════════════════════ -->
       <h2 id="verification" style="margin-top:48px;">Verification</h2>
-      <p>Every claim Prompt Control Plane makes is backed by deterministic tests you can run yourself.</p>
+      <p>Prompt Control Plane is designed to be trustworthy by default. Here&rsquo;s what that means in practice.</p>
       <table style="width:100%;font-size:13px;border-collapse:collapse;margin-top:16px;">
         <tr style="border-bottom:2px solid var(--border);text-align:left;">
-          <th style="padding:8px 10px;">What</th>
-          <th style="padding:8px 10px;">How It&rsquo;s Verified</th>
-          <th style="padding:8px 10px;">Test Count</th>
+          <th style="padding:8px 10px;">Guarantee</th>
+          <th style="padding:8px 10px;">What It Means For You</th>
         </tr>
         <tr style="border-bottom:1px solid var(--border);">
-          <td style="padding:6px 10px;">Token estimation</td>
-          <td style="padding:6px 10px;">1.3&times; word multiplier, determinism verified across 10+ iterations per prompt</td>
-          <td style="padding:6px 10px;">24 tests</td>
+          <td style="padding:6px 10px;font-weight:600;">Reproducible results</td>
+          <td style="padding:6px 10px;">Run the same prompt twice &mdash; get the same score, same routing, same cost estimate. No randomness, ever.</td>
         </tr>
         <tr style="border-bottom:1px solid var(--border);">
-          <td style="padding:6px 10px;">Cost calculation</td>
-          <td style="padding:6px 10px;"><code style="font-size:11px;">(tokens/1M)&times;rate</code>, 6-decimal rounding, all 4 providers verified present</td>
-          <td style="padding:6px 10px;">94+ tests</td>
+          <td style="padding:6px 10px;font-weight:600;">Accurate cost estimates</td>
+          <td style="padding:6px 10px;">Pricing verified against live provider rates for Anthropic, OpenAI, Google, and Perplexity. Updated regularly.</td>
         </tr>
         <tr style="border-bottom:1px solid var(--border);">
-          <td style="padding:6px 10px;">Quality scoring</td>
-          <td style="padding:6px 10px;">5 dimensions &times; 20 points, ceiling 100/100, scoring_version: 2</td>
-          <td style="padding:6px 10px;">40+ tests</td>
+          <td style="padding:6px 10px;font-weight:600;">Reliable quality scores</td>
+          <td style="padding:6px 10px;">Multi-dimensional scoring catches vagueness, missing constraints, scope creep, and hallucination risk &mdash; before the prompt reaches an LLM.</td>
         </tr>
         <tr style="border-bottom:1px solid var(--border);">
-          <td style="padding:6px 10px;">Risk scoring</td>
-          <td style="padding:6px 10px;">14 rules &times; dimensional weights, 10 golden fixture prompts (G21 guardrail)</td>
-          <td style="padding:6px 10px;">35+ tests</td>
+          <td style="padding:6px 10px;font-weight:600;">Safe compression</td>
+          <td style="padding:6px 10px;">Guaranteed to never increase token count. Code blocks, tables, and structured content are always preserved.</td>
         </tr>
         <tr style="border-bottom:1px solid var(--border);">
-          <td style="padding:6px 10px;">Compression</td>
-          <td style="padding:6px 10px;">Property-based: compressed &le; original for 100 random inputs (G36 invariant)</td>
-          <td style="padding:6px 10px;">100+ tests</td>
+          <td style="padding:6px 10px;font-weight:600;">Stable contracts</td>
+          <td style="padding:6px 10px;">Output shapes are locked and versioned. Integrations won&rsquo;t break across updates.</td>
         </tr>
         <tr style="border-bottom:1px solid var(--border);">
-          <td style="padding:6px 10px;">Output shape</td>
-          <td style="padding:6px 10px;">Frozen contract tests: PreviewPack, CostEstimate, LicenseData shapes locked</td>
-          <td style="padding:6px 10px;">150+ tests</td>
-        </tr>
-        <tr style="border-bottom:1px solid var(--border);">
-          <td style="padding:6px 10px;">Determinism</td>
-          <td style="padding:6px 10px;">Same prompt &rarr; identical score, routing, cost, compilation (100+ iterations)</td>
-          <td style="padding:6px 10px;">All 676</td>
+          <td style="padding:6px 10px;font-weight:600;">Fully offline</td>
+          <td style="padding:6px 10px;">Zero external calls. Your prompts never leave your machine. No API keys required for analysis.</td>
         </tr>
         <tr>
-          <td style="padding:6px 10px;">Audit integrity</td>
-          <td style="padding:6px 10px;">SHA-256 hash chain, tamper-evident, <code style="font-size:11px;">verifyChain()</code></td>
-          <td style="padding:6px 10px;">Enterprise</td>
+          <td style="padding:6px 10px;font-weight:600;">Tamper-evident audit</td>
+          <td style="padding:6px 10px;">Cryptographically chained log of every decision. If any entry is modified, the chain breaks. <span style="color:var(--text-muted);font-size:11px;">(Enterprise)</span></td>
         </tr>
       </table>
-      <p style="margin-top:12px;font-size:12px;color:var(--text-muted);">Run <code style="color:var(--accent);font-size:11px;">npm test</code> yourself &mdash; 676 tests complete in under 5 seconds. Full source at <a href="https://github.com/rishiatlan/Prompt-Optimizer-MCP" style="color:var(--accent);">GitHub</a>.</p>
+      <p style="margin-top:12px;font-size:12px;color:var(--text-muted);">Extensively tested. Run the suite yourself to verify &mdash; completes in under 5 seconds.</p>
 
       <!-- ════════════════════════════════════════════════════════════════════ -->
       <!-- TOOL REFERENCE                                                      -->
@@ -1065,7 +1052,7 @@ optimize_prompt({
         </div>
         <div class="tool-output">Returns</div>
         <p class="tool-output-desc"><code>CostEstimate</code> &mdash; Contains <code>input_tokens</code>, <code>estimated_output_tokens</code>, per-model <code>costs</code> array (model, provider, input/output cost in USD), <code>recommended_model</code>, and <code>recommendation_reason</code>.</p>
-        <p class="tool-output-desc" style="margin-top:8px;font-size:12px;color:var(--text-muted);">Pricing covers 11 models across 4 providers (Anthropic, OpenAI, Google, Perplexity), updated Feb 2026. Token estimation uses a 1.3&times; word multiplier (empirical approximation). Cost formula: <code>(tokens&nbsp;/&nbsp;1M)&nbsp;&times;&nbsp;rate</code>, rounded to 6 decimal places. Savings compared against GPT-4o baseline ($2.50/$10.00 per 1M). See <a href="models.html" style="color:var(--accent);">Models</a> for full pricing table.</p>
+        <p class="tool-output-desc" style="margin-top:8px;font-size:12px;color:var(--text-muted);">Pricing covers models across Anthropic, OpenAI, Google, and Perplexity. Updated regularly. See <a href="models.html" style="color:var(--accent);">Models</a> for supported models.</p>
       </div>
 
       <!-- compress_context -->
@@ -1075,14 +1062,14 @@ optimize_prompt({
           <span class="tag tag-free">Free</span>
           <span class="tag tag-free">All Plans</span>
         </div>
-        <p class="tool-desc">Compresses context (code, docs) by removing irrelevant sections while respecting protected zones (fenced code, tables, lists, JSON, YAML). Uses the H1&ndash;H5 heuristic pipeline: license strip, comment collapse, duplicate collapse, stub collapse, and middle truncation.</p>
+        <p class="tool-desc">Compresses context (code, docs) by removing irrelevant sections while respecting protected zones (fenced code, tables, lists, JSON, YAML). Multi-stage pipeline intelligently removes boilerplate while preserving meaningful content.</p>
         <div class="tool-params">
           <div class="tool-params-title">Parameters</div>
           <div class="param-row"><span class="param-name">context</span> <span class="param-type">string</span> <span class="param-required">required</span> <span class="param-desc">The context text to compress</span></div>
           <div class="param-row"><span class="param-name">intent</span> <span class="param-type">string</span> <span class="param-required">required</span> <span class="param-desc">What the task is about (used to determine relevance)</span></div>
         </div>
         <div class="tool-output">Returns</div>
-        <p class="tool-output-desc"><code>compressed_context</code>, <code>removed_sections</code>, <code>original_tokens</code>, <code>compressed_tokens</code>, <code>tokens_saved</code>, <code>savings_percent</code>, <code>heuristics_applied</code> (e.g., ["H2", "H3"]), and <code>mode</code>.</p>
+        <p class="tool-output-desc"><code>compressed_context</code>, <code>removed_sections</code>, <code>original_tokens</code>, <code>compressed_tokens</code>, <code>tokens_saved</code>, <code>savings_percent</code>, and <code>mode</code>.</p>
       </div>
 
       <!-- prune_tools -->
@@ -1509,32 +1496,26 @@ console.<span class="fn">log</span>(result.cost.costs);         <span class="com
       <h3>OptimizeResult Shape</h3>
       <div class="code-block"><span class="keyword">interface</span> OptimizeResult {
   intent: IntentSpec;             <span class="comment">// Parsed intent from raw prompt</span>
-  quality: QualityScore;          <span class="comment">// Quality score (0-100, 5 dimensions)</span>
+  quality: QualityScore;          <span class="comment">// Quality score (0-100, multi-dimensional)</span>
   compiled: <span class="keyword">string</span>;               <span class="comment">// Optimized prompt for target LLM</span>
   changes: <span class="keyword">string</span>[];              <span class="comment">// Structural changes applied</span>
   checklist: CompilationChecklist; <span class="comment">// 9-item structural coverage</span>
   cost: CostEstimate;             <span class="comment">// Token + cost estimates</span>
 }</div>
 
-      <h3>All Exports</h3>
-      <p>The barrel export at <code>claude-prompt-optimizer-mcp</code> re-exports all pure functions:</p>
+      <h3>Available Exports</h3>
+      <p>The barrel export at <code>claude-prompt-optimizer-mcp</code> provides access to all core functions:</p>
       <table class="data-table">
-        <thead><tr><th>Category</th><th>Exports</th></tr></thead>
+        <thead><tr><th>Category</th><th>What&rsquo;s Available</th></tr></thead>
         <tbody>
-          <tr><td>Convenience</td><td><code>optimize()</code></td></tr>
-          <tr><td>Analyzer</td><td><code>analyzePrompt</code>, <code>detectTaskType</code>, <code>classifyComplexity</code></td></tr>
-          <tr><td>Scorer</td><td><code>scorePrompt</code>, <code>generateChecklist</code></td></tr>
-          <tr><td>Compiler</td><td><code>compilePrompt</code>, <code>compressContext</code></td></tr>
-          <tr><td>Estimator</td><td><code>estimateCost</code>, <code>estimateTokens</code>, <code>estimateCostForText</code>, <code>routeModel</code>, <code>TIER_MODELS</code>, <code>PRICING_DATA</code></td></tr>
-          <tr><td>Rules</td><td><code>runRules</code>, <code>computeRiskScore</code>, <code>deriveRiskLevel</code>, <code>RISK_WEIGHTS</code>, <code>RULES_VERSION</code>, <code>calculateBuiltInRuleSetHash</code></td></tr>
-          <tr><td>Profiles</td><td><code>PROFILES</code>, <code>suggestProfile</code>, <code>resolveProfile</code></td></tr>
-          <tr><td>License</td><td><code>validateLicenseKey</code>, <code>PRODUCTION_PUBLIC_KEY_PEM</code></td></tr>
-          <tr><td>Compression</td><td><code>estimatePromptTokens</code>, <code>estimateToolTokens</code>, <code>scanZones</code>, <code>markPreservedLines</code></td></tr>
-          <tr><td>Pruner</td><td><code>scoreAllTools</code>, <code>rankTools</code>, <code>pruneTools</code></td></tr>
-          <tr><td>Deltas</td><td><code>calculateCompressionDelta</code>, <code>calculateToolPruningDelta</code>, <code>calculatePreFlightDeltas</code></td></tr>
-          <tr><td>Policy</td><td><code>evaluatePolicyViolations</code>, <code>checkRiskThreshold</code>, <code>calculatePolicyHash</code></td></tr>
-          <tr><td>Audit</td><td><code>AuditLogger</code>, <code>auditLogger</code>, <code>GENESIS_HASH</code></td></tr>
-          <tr><td>Sessions</td><td><code>SessionHistoryManager</code>, <code>sessionHistory</code></td></tr>
+          <tr><td>Convenience</td><td><code>optimize()</code> &mdash; one-call pipeline</td></tr>
+          <tr><td>Analysis</td><td>Intent parsing, task detection, complexity classification</td></tr>
+          <tr><td>Scoring</td><td>Quality scoring, structural checklist generation</td></tr>
+          <tr><td>Compilation</td><td>Multi-target prompt compilation, context compression</td></tr>
+          <tr><td>Cost</td><td>Token estimation, cost calculation, model routing</td></tr>
+          <tr><td>Risk</td><td>Rule evaluation, risk scoring, risk level derivation</td></tr>
+          <tr><td>Profiles</td><td>Optimization profile resolution and suggestions</td></tr>
+          <tr><td>Enterprise</td><td>Policy evaluation, audit logging, session management</td></tr>
           <tr><td>Custom Rules</td><td><code>CustomRulesManager</code>, <code>customRules</code></td></tr>
           <tr><td>Types</td><td>All TypeScript interfaces and types (see <a href="https://github.com/rishiatlan/Prompt-Optimizer-MCP/blob/main/src/types.ts">types.ts</a>)</td></tr>
         </tbody>

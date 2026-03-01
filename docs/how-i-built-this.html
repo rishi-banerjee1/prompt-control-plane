@@ -685,7 +685,7 @@
 
       <ol>
         <li><strong>Analyze</strong> &mdash; What does the user actually want? Is this a coding task, a writing task, research, planning? What are the implicit assumptions? Are there blocking questions?</li>
-        <li><strong>Score</strong> &mdash; Rate the prompt 0&ndash;100 across 5 dimensions: Clarity, Specificity, Completeness, Constraints, Efficiency</li>
+        <li><strong>Score</strong> &mdash; Rate the prompt 0&ndash;100 across multiple quality dimensions, each with weighted penalties for specific weaknesses</li>
         <li><strong>Compile</strong> &mdash; Restructure it with a role definition, success criteria, safety constraints, workflow steps, and uncertainty policies</li>
         <li><strong>Checklist</strong> &mdash; 9-point structural coverage check (does it have a goal? constraints? inputs? outputs?)</li>
         <li><strong>Cost Estimate</strong> &mdash; Exact token counts and dollar costs across 8 models from 3 providers</li>
@@ -760,7 +760,7 @@
         <div class="problem-number">2</div>
         <h4>Scoring Without Being Arbitrary</h4>
         <p>It would be easy to slap a score on a prompt and call it a day. But people would immediately ask &ldquo;why did I get a 48?&rdquo; and you&rsquo;d better have a real answer.</p>
-        <p>Each score breaks down into <strong>5 dimensions &times; 20 points</strong>. Every point deducted has a specific reason. &ldquo;Vague objective&rdquo; costs you clarity points. &ldquo;No constraints specified&rdquo; costs you constraint points. The math is transparent and reproducible.</p>
+        <p>Each score breaks down into multiple dimensions with clear penalties. Every point deducted has a specific, traceable reason &mdash; vagueness, missing constraints, scope issues. The math is transparent and reproducible.</p>
       </div>
 
       <div class="problem-card">
@@ -1162,13 +1162,13 @@
       <!-- v4.0.0 Update -->
       <section id="v4-update">
         <h2>Update: v4.0.0 &mdash; Prompt Control Plane</h2>
-        <p>Since the initial build, the product has evolved from a 11-tool prompt linter into a full <strong>prompt control plane</strong> with 19 MCP tools, 676 tests, and enterprise-grade governance:</p>
+        <p>Since the initial build, the product has evolved from a simple prompt linter into a full <strong>prompt control plane</strong> with 19 MCP tools and enterprise-grade governance:</p>
         <ul style="line-height:2;">
-          <li><strong>v3.0:</strong> Decision engine &mdash; reasoning complexity classifier, 5 optimization profiles, deterministic model routing with <code>decision_path</code> audit trail, dimensional risk scoring, Perplexity support</li>
-          <li><strong>v3.1:</strong> Smart compression (H1&ndash;H5 heuristics), tool pruning engine, zone scanner, preserve patterns, 4 new ambiguity rules (14 total)</li>
-          <li><strong>v3.2:</strong> Enterprise tier, multi-page docs site with dark/light mode, CLI linter (<code>prompt-lint</code>), GitHub Action (<code>Prompt Lint</code>)</li>
-          <li><strong>v3.3:</strong> Enterprise operations &mdash; policy enforcement (advisory + enforce), tamper-evident audit trail (JSONL, hash-chained), config lock with passphrase, session lifecycle management, session retention policies</li>
-          <li><strong>v4.0:</strong> Rebranded to <strong>Prompt Control Plane</strong>. Enterprise tier gates enforced. Custom rules engine (up to 25 rules). Reproducible exports with rule-set hashes. Professional documentation site with architecture flowchart, pricing page, and enterprise trust section.</li>
+          <li><strong>v3.0:</strong> Decision engine &mdash; complexity classification, optimization profiles, deterministic model routing with full audit trail, risk scoring</li>
+          <li><strong>v3.1:</strong> Smart compression pipeline, tool pruning engine, structured content protection, expanded ambiguity detection</li>
+          <li><strong>v3.2:</strong> Enterprise tier, multi-page docs site, CLI linter (<code>prompt-lint</code>), GitHub Action</li>
+          <li><strong>v3.3:</strong> Enterprise operations &mdash; policy enforcement, tamper-evident audit trail, config lock, session lifecycle management</li>
+          <li><strong>v4.0:</strong> Rebranded to <strong>Prompt Control Plane</strong>. Enterprise tier gates enforced. Custom rules engine. Reproducible exports. Professional documentation site.</li>
         </ul>
         <p>The core principle never changed: <strong>zero LLM calls inside</strong>. Everything is still deterministic, offline, and reproducible. The product just grew from &ldquo;lint your prompts&rdquo; to &ldquo;govern your entire prompt pipeline.&rdquo;</p>
       </section>

@@ -1,0 +1,21 @@
+# Strip source maps — prevents reverse-engineering to TypeScript
+**/*.js.map
+
+# Strip test files — not needed by consumers, reveals internal patterns
+dist/test/
+
+# Strip type definitions for tests
+dist/test/**/*.d.ts
+
+# Development files
+src/
+test/
+scripts/
+docs/
+.claude/
+.github/
+tsconfig.json
+CHANGELOG.md
+LEARNINGS.md
+.mcp.json
+server.json
