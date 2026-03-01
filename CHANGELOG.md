@@ -1,5 +1,14 @@
 # Changelog
 
+## [4.0.3] - 2026-03-02
+
+### Changed — Contact & Privacy
+- **Contact page**: Broadened from Enterprise-only to general contact form with Subject dropdown (Enterprise, Security, Privacy, Legal, General, Other)
+- **Email removal**: Replaced all exposed email addresses in privacy, terms, and security pages with contact form links
+- **Footer**: Added "Contact" link to Legal column across all 14 pages
+- **README**: Fixed GitHub Action references and PR link alignment
+- **server.json**: Version aligned to match npm package
+
 ## [4.0.2] - 2026-03-01
 
 ### Changed — Cloudflare Pages Migration

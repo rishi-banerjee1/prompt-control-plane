@@ -3,8 +3,8 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Enterprise — Prompt Control Plane</title>
-  <meta name="description" content="Get unlimited prompt optimizations, 120 req/min, dedicated support, and custom integrations with Prompt Control Plane Enterprise.">
+  <title>Contact — Prompt Control Plane</title>
+  <meta name="description" content="Get in touch with the Prompt Control Plane team. Enterprise inquiries, security reports, privacy questions, or general feedback.">
   <link rel="canonical" href="https://prompt-control-plane.pages.dev/contact.html">
   <link rel="stylesheet" href="shared.css">
   <style>
@@ -182,25 +182,9 @@
 
       <!-- Hero -->
       <div class="text-center mb-32">
-        <div class="badge badge-accent">Enterprise</div>
-        <h1 class="section-title">Built for teams that ship with AI</h1>
-        <p class="section-subtitle mb-0">Unlimited optimizations, highest throughput, dedicated support, and custom integrations for your engineering org.</p>
-      </div>
-
-      <!-- Value Props -->
-      <div class="value-props">
-        <div class="prop">
-          <div class="prop-value">Unlimited</div>
-          <div class="prop-label">Optimizations / month</div>
-        </div>
-        <div class="prop">
-          <div class="prop-value">120/min</div>
-          <div class="prop-label">Rate limit</div>
-        </div>
-        <div class="prop">
-          <div class="prop-value">Dedicated</div>
-          <div class="prop-label">Support &amp; SLA</div>
-        </div>
+        <div class="badge badge-accent">Contact</div>
+        <h1 class="section-title">Get in touch</h1>
+        <p class="section-subtitle mb-0">Enterprise inquiries, security reports, privacy questions, or general feedback &mdash; we typically respond within one business day.</p>
       </div>
 
       <!-- Form -->
@@ -208,21 +192,34 @@
         <h2>Talk to us</h2>
         <form id="contactForm" action="https://formspree.io/f/xdalvzen" method="POST">
 
+          <div class="form-group">
+            <label for="subject">Subject *</label>
+            <select id="subject" name="subject" required>
+              <option value="">Select a topic...</option>
+              <option value="Enterprise">Enterprise inquiry</option>
+              <option value="Security">Security vulnerability report</option>
+              <option value="Privacy">Privacy question</option>
+              <option value="Legal">Legal question</option>
+              <option value="General">General feedback</option>
+              <option value="Other">Other</option>
+            </select>
+          </div>
+
           <div class="form-row">
             <div class="form-group">
               <label for="name">Name *</label>
               <input type="text" id="name" name="name" required placeholder="Jane Smith">
             </div>
             <div class="form-group">
-              <label for="email">Work email *</label>
+              <label for="email">Email *</label>
               <input type="email" id="email" name="email" required placeholder="jane@company.com">
             </div>
           </div>
 
           <div class="form-row">
             <div class="form-group">
-              <label for="company">Company *</label>
-              <input type="text" id="company" name="company" required placeholder="Acme Inc.">
+              <label for="company">Company</label>
+              <input type="text" id="company" name="company" placeholder="Acme Inc.">
             </div>
             <div class="form-group">
               <label for="team_size">Team size</label>
@@ -237,31 +234,8 @@
           </div>
 
           <div class="form-group">
-            <label for="use_case">How will your team use Prompt Control Plane? *</label>
-            <textarea id="use_case" name="use_case" required placeholder="E.g., standardize prompt quality across 20 engineers, reduce token spend by routing to cheaper models, enforce prompt contracts in CI..."></textarea>
-          </div>
-
-          <div class="form-row">
-            <div class="form-group">
-              <label for="integration">Integration</label>
-              <select id="integration" name="integration">
-                <option value="">Select...</option>
-                <option value="MCP Server">MCP Server (Claude, Cursor, etc.)</option>
-                <option value="Programmatic API">Programmatic API (Node.js library)</option>
-                <option value="CLI / CI">CLI / CI pipeline (prompt-lint)</option>
-                <option value="All">All of the above</option>
-                <option value="Other">Other / Not sure yet</option>
-              </select>
-            </div>
-            <div class="form-group">
-              <label for="timeline">Timeline</label>
-              <select id="timeline" name="timeline">
-                <option value="">Select...</option>
-                <option value="Immediately">Immediately</option>
-                <option value="This quarter">This quarter</option>
-                <option value="Evaluating">Just evaluating</option>
-              </select>
-            </div>
+            <label for="use_case">Message *</label>
+            <textarea id="use_case" name="use_case" required placeholder="Tell us how we can help..."></textarea>
           </div>
 
           <!-- Honeypot (spam prevention) -->
@@ -303,6 +277,7 @@
           <a href="privacy.html">Privacy</a>
           <a href="terms.html">Terms</a>
           <a href="security.html">Security</a>
+          <a href="contact.html">Contact</a>
         </div>
       </div>
       <p class="footer-copy">&copy; 2025-2026 Rishi Banerjee. Elastic License 2.0 (ELv2).</p>
