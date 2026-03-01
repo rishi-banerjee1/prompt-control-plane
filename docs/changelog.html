@@ -1,0 +1,544 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Changelog &mdash; Prompt Control Plane | Release History</title>
+  <meta name="description" content="Full release history for Prompt Control Plane. Every version, every change, from v1.0.0 to the latest release. Deterministic prompt governance for LLM applications.">
+  <meta name="keywords" content="prompt control plane changelog, prompt optimizer releases, prompt linter updates, MCP server versions, prompt governance updates">
+  <link rel="canonical" href="https://rishiatlan.github.io/Prompt-Optimizer-MCP/changelog.html">
+
+  <!-- Open Graph -->
+  <meta property="og:title" content="Changelog &mdash; Prompt Control Plane">
+  <meta property="og:description" content="Full release history for Prompt Control Plane. Every version, every change, full transparency.">
+  <meta property="og:type" content="website">
+  <meta property="og:url" content="https://rishiatlan.github.io/Prompt-Optimizer-MCP/changelog.html">
+
+  <!-- Twitter Card -->
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="Changelog &mdash; Prompt Control Plane">
+  <meta name="twitter:description" content="Full release history for Prompt Control Plane. Every version, every change, full transparency.">
+
+  <!-- Schema.org structured data -->
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "WebPage",
+    "name": "Changelog &mdash; Prompt Control Plane",
+    "description": "Full release history for Prompt Control Plane. Every version, every change.",
+    "url": "https://rishiatlan.github.io/Prompt-Optimizer-MCP/changelog.html",
+    "isPartOf": {
+      "@type": "WebSite",
+      "name": "Prompt Control Plane",
+      "url": "https://rishiatlan.github.io/Prompt-Optimizer-MCP/"
+    }
+  }
+  </script>
+
+  <link rel="stylesheet" href="shared.css">
+  <script src="shared.js"></script>
+
+  <style>
+    /* ─── Page-specific: Hero ─────────────────────────────────────────────── */
+    .changelog-hero {
+      padding: 80px 0 64px;
+      text-align: center;
+    }
+    .changelog-hero h1 {
+      font-size: 36px;
+      font-weight: 800;
+      letter-spacing: -0.03em;
+      line-height: 1.2;
+      margin-bottom: 16px;
+    }
+    .changelog-hero .subtitle {
+      font-size: 16px;
+      color: var(--text-muted);
+      max-width: 560px;
+      margin: 0 auto;
+      line-height: 1.6;
+    }
+
+    @media (max-width: 700px) {
+      .changelog-hero { padding: 56px 0 40px; }
+      .changelog-hero h1 { font-size: 28px; }
+    }
+
+    /* ─── Page-specific: Timeline ─────────────────────────────────────────── */
+    .timeline {
+      position: relative;
+      padding-left: 32px;
+    }
+    .timeline::before {
+      content: '';
+      position: absolute;
+      left: 7px;
+      top: 8px;
+      bottom: 8px;
+      width: 2px;
+      background: var(--border);
+      border-radius: 1px;
+    }
+
+    .release {
+      position: relative;
+      margin-bottom: 40px;
+    }
+    .release:last-child {
+      margin-bottom: 0;
+    }
+
+    .release::before {
+      content: '';
+      position: absolute;
+      left: -32px;
+      top: 10px;
+      width: 16px;
+      height: 16px;
+      border-radius: 50%;
+      background: var(--surface);
+      border: 3px solid var(--accent);
+      z-index: 1;
+    }
+    .release.release-major::before {
+      background: var(--accent);
+      border-color: var(--accent);
+      box-shadow: 0 0 0 4px var(--accent-glow);
+    }
+    .release.release-patch::before {
+      border-color: var(--text-muted);
+    }
+
+    .release-card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 24px 28px;
+      transition: border-color 0.15s;
+    }
+    .release-card:hover {
+      border-color: var(--accent);
+    }
+
+    .release-header {
+      display: flex;
+      align-items: baseline;
+      gap: 12px;
+      flex-wrap: wrap;
+      margin-bottom: 4px;
+    }
+    .release-version {
+      font-size: 20px;
+      font-weight: 700;
+      letter-spacing: -0.02em;
+    }
+    .release-version a {
+      color: var(--text);
+      text-decoration: none;
+    }
+    .release-version a:hover {
+      color: var(--accent);
+    }
+    .release-date {
+      font-size: 13px;
+      color: var(--text-muted);
+    }
+    .release-title {
+      font-size: 15px;
+      font-weight: 600;
+      color: var(--accent);
+      margin-bottom: 16px;
+    }
+
+    .release-changes {
+      list-style: none;
+      padding: 0;
+    }
+    .release-changes li {
+      position: relative;
+      padding: 5px 0 5px 20px;
+      font-size: 14px;
+      color: var(--text-muted);
+      line-height: 1.6;
+    }
+    .release-changes li::before {
+      content: '';
+      position: absolute;
+      left: 4px;
+      top: 13px;
+      width: 6px;
+      height: 6px;
+      border-radius: 50%;
+      background: var(--border);
+    }
+
+    .release-tag {
+      display: inline-block;
+      padding: 2px 8px;
+      border-radius: 4px;
+      font-size: 10px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      margin-left: 8px;
+      vertical-align: middle;
+    }
+    .release-tag-breaking {
+      background: rgba(248, 113, 113, 0.12);
+      color: var(--red);
+    }
+    .release-tag-new {
+      background: var(--tag-free-bg);
+      color: var(--green);
+    }
+    .release-tag-security {
+      background: rgba(251, 146, 60, 0.12);
+      color: var(--orange);
+    }
+
+    /* ─── Page-specific: Footer grid (matches 404.html pattern) ───────────── */
+    .footer-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 32px;
+      text-align: left;
+      margin-bottom: 32px;
+    }
+    .footer-col h4 {
+      font-size: 13px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      color: var(--text);
+      margin-bottom: 12px;
+    }
+    .footer-col a {
+      display: block;
+      font-size: 13px;
+      color: var(--text-muted);
+      padding: 3px 0;
+    }
+    .footer-col a:hover {
+      color: var(--text);
+    }
+    .footer-copy {
+      text-align: center;
+      font-size: 13px;
+      color: var(--text-muted);
+      padding-top: 24px;
+      border-top: 1px solid var(--border);
+    }
+
+    @media (max-width: 500px) {
+      .footer-grid { grid-template-columns: 1fr; gap: 24px; }
+    }
+
+    /* ─── Page-specific: CTA ──────────────────────────────────────────────── */
+    .cta-section {
+      padding: 64px 0;
+      text-align: center;
+    }
+    .cta-section h2 {
+      font-size: 28px;
+      font-weight: 700;
+      letter-spacing: -0.02em;
+      margin-bottom: 12px;
+    }
+    .cta-section p {
+      font-size: 15px;
+      color: var(--text-muted);
+      margin-bottom: 24px;
+    }
+  </style>
+</head>
+<body>
+
+  <!-- ════════════════════════════════════════════════════════════════════════
+       Nav
+       ════════════════════════════════════════════════════════════════════════ -->
+  <nav>
+    <div class="container">
+      <a href="./" class="logo">Prompt Control <span>Plane</span></a>
+      <button class="nav-toggle" aria-label="Menu">
+        <svg viewBox="0 0 24 24"><path d="M3 12h18M3 6h18M3 18h18" stroke-linecap="round"/></svg>
+      </button>
+      <div class="nav-links">
+        <a href="features.html">Features</a>
+        <a href="models.html">Models</a>
+        <a href="docs.html">Docs</a>
+        <a href="plans.html">Pricing</a>
+        <a href="blog.html">Blog</a>
+        <a href="changelog.html" class="active">Changelog</a>
+        <button class="theme-toggle" aria-label="Toggle theme">
+          <svg class="icon-sun" viewBox="0 0 24 24"><circle cx="12" cy="12" r="5"/><path d="M12 1v2M12 21v2M4.22 4.22l1.42 1.42M18.36 18.36l1.42 1.42M1 12h2M21 12h2M4.22 19.78l1.42-1.42M18.36 5.64l1.42-1.42"/></svg>
+          <svg class="icon-moon" viewBox="0 0 24 24"><path d="M21 12.79A9 9 0 1111.21 3 7 7 0 0021 12.79z"/></svg>
+        </button>
+      </div>
+    </div>
+  </nav>
+
+  <!-- ════════════════════════════════════════════════════════════════════════
+       Hero
+       ════════════════════════════════════════════════════════════════════════ -->
+  <section class="changelog-hero">
+    <div class="container">
+      <span class="badge badge-accent">Changelog</span>
+      <h1>Changelog</h1>
+      <p class="subtitle">Every release, every change. Full transparency.</p>
+    </div>
+  </section>
+
+  <!-- ════════════════════════════════════════════════════════════════════════
+       Timeline
+       ════════════════════════════════════════════════════════════════════════ -->
+  <section class="section">
+    <div class="container">
+      <div class="timeline">
+
+        <!-- ── v4.0.1 ─────────────────────────────────────────────────────── -->
+        <div class="release release-patch">
+          <div class="release-card">
+            <div class="release-header">
+              <span class="release-version"><a href="https://github.com/rishiatlan/Prompt-Optimizer-MCP/releases/tag/v4.0.1">v4.0.1</a></span>
+              <span class="release-tag release-tag-security">Security</span>
+              <span class="release-date">March 1, 2026</span>
+            </div>
+            <div class="release-title">Security Hardening</div>
+            <ul class="release-changes">
+              <li>Replaced MIT license with Elastic License 2.0 (ELv2) for stronger IP protection</li>
+              <li>Stripped source maps from the npm tarball, reducing package size from 256KB to 110KB</li>
+              <li>Scrubbed internal implementation details from public documentation</li>
+            </ul>
+          </div>
+        </div>
+
+        <!-- ── v4.0.0 ─────────────────────────────────────────────────────── -->
+        <div class="release release-major">
+          <div class="release-card">
+            <div class="release-header">
+              <span class="release-version"><a href="https://github.com/rishiatlan/Prompt-Optimizer-MCP/releases/tag/v4.0.0">v4.0.0</a></span>
+              <span class="release-tag release-tag-breaking">Breaking</span>
+              <span class="release-date">March 1, 2026</span>
+            </div>
+            <div class="release-title">Prompt Control Plane</div>
+            <ul class="release-changes">
+              <li>Full rebrand from &ldquo;Prompt Optimizer MCP&rdquo; to &ldquo;Prompt Control Plane&rdquo;</li>
+              <li>Enterprise tier gates for policy enforcement, audit logging, and config lock features</li>
+              <li>New documentation and pricing comparison pages</li>
+              <li>License prefix change: <code>po_pro_</code> &rarr; <code>pcp_</code></li>
+              <li>Storage path migration: <code>~/.prompt-optimizer/</code> &rarr; <code>~/.prompt-control-plane/</code></li>
+            </ul>
+          </div>
+        </div>
+
+        <!-- ── v3.3.0 ─────────────────────────────────────────────────────── -->
+        <div class="release release-major">
+          <div class="release-card">
+            <div class="release-header">
+              <span class="release-version"><a href="https://github.com/rishiatlan/Prompt-Optimizer-MCP/releases/tag/v3.3.0">v3.3.0</a></span>
+              <span class="release-tag release-tag-new">New</span>
+              <span class="release-date">March 1, 2026</span>
+            </div>
+            <div class="release-title">Enterprise Operations</div>
+            <ul class="release-changes">
+              <li>Policy enforcement mode with advisory and enforce configurations</li>
+              <li>Tamper-evident audit logging with cryptographic hash chains</li>
+              <li>Config lock mode with passphrase protection for governance control</li>
+              <li>Two new tools: <code>delete_session</code> and <code>purge_sessions</code> for session lifecycle management</li>
+              <li>Comprehensive test coverage for enterprise workflows</li>
+            </ul>
+          </div>
+        </div>
+
+        <!-- ── v3.2.1 ─────────────────────────────────────────────────────── -->
+        <div class="release release-patch">
+          <div class="release-card">
+            <div class="release-header">
+              <span class="release-version"><a href="https://github.com/rishiatlan/Prompt-Optimizer-MCP/releases/tag/v3.2.1">v3.2.1</a></span>
+              <span class="release-tag release-tag-new">New</span>
+              <span class="release-date">March 1, 2026</span>
+            </div>
+            <div class="release-title">Session History &amp; Custom Rules</div>
+            <ul class="release-changes">
+              <li>Reproducible session exports with auto-calculated integrity hashes</li>
+              <li>Custom rules support from local configuration directory</li>
+              <li>Rules versioning constant for drift detection across environments</li>
+            </ul>
+          </div>
+        </div>
+
+        <!-- ── v3.2.0 ─────────────────────────────────────────────────────── -->
+        <div class="release release-major">
+          <div class="release-card">
+            <div class="release-header">
+              <span class="release-version"><a href="https://github.com/rishiatlan/Prompt-Optimizer-MCP/releases/tag/v3.2.0">v3.2.0</a></span>
+              <span class="release-tag release-tag-new">New</span>
+              <span class="release-date">March 1, 2026</span>
+            </div>
+            <div class="release-title">Enterprise Unlock</div>
+            <ul class="release-changes">
+              <li>Enterprise tier with 120 requests per minute and unlimited usage</li>
+              <li>Multi-page documentation site with dedicated pages for features, models, contact, and more</li>
+              <li>Shared design system with dark and light theme support</li>
+            </ul>
+          </div>
+        </div>
+
+        <!-- ── v3.1.0 ─────────────────────────────────────────────────────── -->
+        <div class="release release-major">
+          <div class="release-card">
+            <div class="release-header">
+              <span class="release-version"><a href="https://github.com/rishiatlan/Prompt-Optimizer-MCP/releases/tag/v3.1.0">v3.1.0</a></span>
+              <span class="release-tag release-tag-new">New</span>
+              <span class="release-date">March 1, 2026</span>
+            </div>
+            <div class="release-title">Smart Compression &amp; Tool Pruning</div>
+            <ul class="release-changes">
+              <li>Multi-stage context compression pipeline that strips irrelevant content and reports token savings</li>
+              <li>Zone scanner that protects structured content (code blocks, tables, lists) from modification</li>
+              <li>Tool pruning engine with relevance scoring to reduce context window usage</li>
+              <li>Four new ambiguity detection rules covering hallucination risk, underspecified agents, conflicting constraints, and model-scope mismatch</li>
+              <li>Pre-flight deltas showing estimated token savings before committing to optimization</li>
+            </ul>
+          </div>
+        </div>
+
+        <!-- ── v3.0.0 ─────────────────────────────────────────────────────── -->
+        <div class="release release-major">
+          <div class="release-card">
+            <div class="release-header">
+              <span class="release-version"><a href="https://github.com/rishiatlan/Prompt-Optimizer-MCP/releases/tag/v3.0.0">v3.0.0</a></span>
+              <span class="release-tag release-tag-breaking">Breaking</span>
+              <span class="release-date">February 28, 2026</span>
+            </div>
+            <div class="release-title">Decision Engine</div>
+            <ul class="release-changes">
+              <li>Reasoning complexity classifier with six complexity types for intelligent model selection</li>
+              <li>Five optimization profiles: cost minimizer, balanced, quality first, creative, and enterprise safe</li>
+              <li>Deterministic model routing with full decision path audit trail</li>
+              <li>Dimensional risk scoring across four axes, scored 0&ndash;100</li>
+              <li>Perplexity provider support for research-oriented prompts</li>
+              <li>Three new tools: <code>classify_task</code>, <code>route_model</code>, and <code>pre_flight</code></li>
+            </ul>
+          </div>
+        </div>
+
+        <!-- ── v2.3.0 ─────────────────────────────────────────────────────── -->
+        <div class="release">
+          <div class="release-card">
+            <div class="release-header">
+              <span class="release-version"><a href="https://github.com/rishiatlan/Prompt-Optimizer-MCP/releases/tag/v2.3.0">v2.3.0</a></span>
+              <span class="release-tag release-tag-new">New</span>
+              <span class="release-date">February 28, 2026</span>
+            </div>
+            <div class="release-title">CLI Linter &amp; GitHub Action</div>
+            <ul class="release-changes">
+              <li><code>prompt-lint</code> CLI binary for running prompt quality checks in CI/CD pipelines</li>
+              <li>GitHub Action for seamless workflow integration with configurable thresholds</li>
+              <li>Comprehensive CLI test suite</li>
+            </ul>
+          </div>
+        </div>
+
+        <!-- ── v2.2.0 ─────────────────────────────────────────────────────── -->
+        <div class="release">
+          <div class="release-card">
+            <div class="release-header">
+              <span class="release-version"><a href="https://github.com/rishiatlan/Prompt-Optimizer-MCP/releases/tag/v2.2.0">v2.2.0</a></span>
+              <span class="release-tag release-tag-new">New</span>
+              <span class="release-date">February 27, 2026</span>
+            </div>
+            <div class="release-title">Programmatic API &amp; Landing Page</div>
+            <ul class="release-changes">
+              <li>Programmatic <code>import { optimize }</code> API for using the engine as a library</li>
+              <li>Curl-based installer for quick setup</li>
+              <li>GitHub Pages product site for documentation and marketing</li>
+            </ul>
+          </div>
+        </div>
+
+        <!-- ── v2.1.0 ─────────────────────────────────────────────────────── -->
+        <div class="release">
+          <div class="release-card">
+            <div class="release-header">
+              <span class="release-version"><a href="https://github.com/rishiatlan/Prompt-Optimizer-MCP/releases/tag/v2.1.0">v2.1.0</a></span>
+              <span class="release-tag release-tag-new">New</span>
+              <span class="release-date">February 27, 2026</span>
+            </div>
+            <div class="release-title">Monetization</div>
+            <ul class="release-changes">
+              <li>Three-tier pricing: Free, Pro, and Power with usage-based metering</li>
+              <li>Ed25519 offline license activation &mdash; no accounts, no network calls</li>
+              <li>Multi-LLM output targets: Claude XML, OpenAI system/user, and generic Markdown</li>
+              <li>Six new tools bringing the total to 11</li>
+            </ul>
+          </div>
+        </div>
+
+        <!-- ── v1.0.0 ─────────────────────────────────────────────────────── -->
+        <div class="release release-major">
+          <div class="release-card">
+            <div class="release-header">
+              <span class="release-version"><a href="https://github.com/rishiatlan/Prompt-Optimizer-MCP/releases/tag/v1.0.0">v1.0.0</a></span>
+              <span class="release-tag release-tag-new">New</span>
+              <span class="release-date">February 26, 2026</span>
+            </div>
+            <div class="release-title">Initial Release</div>
+            <ul class="release-changes">
+              <li>Five core MCP tools for prompt analysis, scoring, compilation, refinement, and approval</li>
+              <li>Quality scoring on a 0&ndash;100 scale across five dimensions</li>
+              <li>Structured prompt compilation targeting Claude&rsquo;s XML format</li>
+              <li>Session management for iterative prompt refinement</li>
+              <li>Zero LLM calls &mdash; fully deterministic, runs entirely offline</li>
+            </ul>
+          </div>
+        </div>
+
+      </div><!-- /.timeline -->
+    </div>
+  </section>
+
+  <!-- ════════════════════════════════════════════════════════════════════════
+       CTA
+       ════════════════════════════════════════════════════════════════════════ -->
+  <section class="cta-section section-alt">
+    <div class="container">
+      <h2>Want to see what&rsquo;s next?</h2>
+      <p>Follow the project on GitHub for the latest updates and upcoming features.</p>
+      <a href="https://github.com/rishiatlan/Prompt-Optimizer-MCP" class="btn btn-primary">View on GitHub &rarr;</a>
+    </div>
+  </section>
+
+  <!-- ════════════════════════════════════════════════════════════════════════
+       Footer
+       ════════════════════════════════════════════════════════════════════════ -->
+  <footer>
+    <div class="container">
+      <div class="footer-grid">
+        <div class="footer-col">
+          <h4>Product</h4>
+          <a href="./">Home</a>
+          <a href="features.html">Features</a>
+          <a href="docs.html">Docs</a>
+          <a href="plans.html">Plans</a>
+        </div>
+        <div class="footer-col">
+          <h4>Resources</h4>
+          <a href="blog.html">Blog</a>
+          <a href="changelog.html">Changelog</a>
+          <a href="https://github.com/rishiatlan/Prompt-Optimizer-MCP">GitHub</a>
+          <a href="https://www.npmjs.com/package/claude-prompt-optimizer-mcp">npm</a>
+        </div>
+        <div class="footer-col">
+          <h4>Legal</h4>
+          <a href="privacy.html">Privacy</a>
+          <a href="terms.html">Terms</a>
+          <a href="security.html">Security</a>
+        </div>
+      </div>
+      <p class="footer-copy">&copy; 2025-2026 Rishi Banerjee. Elastic License 2.0 (ELv2).</p>
+    </div>
+  </footer>
+
+</body>
+</html>

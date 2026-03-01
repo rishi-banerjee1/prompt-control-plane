@@ -1,0 +1,4 @@
+# Cloudflare Pages Redirects
+# Catch old GitHub Pages paths that may be bookmarked or linked
+/Prompt-Optimizer-MCP/*  /:splat  301
+/Prompt-Control-Plane/*  /:splat  301

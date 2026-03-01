@@ -1,0 +1,402 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Security — Prompt Control Plane | Built for Teams That Take Security Seriously</title>
+  <meta name="description" content="Security architecture of Prompt Control Plane. Zero external calls, local-only storage, Ed25519 license keys, tamper-evident audit trail, minimal dependencies. Built for enterprise security review.">
+  <meta name="robots" content="index, follow">
+  <link rel="canonical" href="https://rishiatlan.github.io/Prompt-Optimizer-MCP/security.html">
+
+  <!-- Open Graph -->
+  <meta property="og:title" content="Security — Prompt Control Plane">
+  <meta property="og:description" content="Zero external calls during operation. Local-only storage. Ed25519 license keys. Tamper-evident audit trail. Built for enterprise security review.">
+  <meta property="og:type" content="website">
+  <meta property="og:url" content="https://rishiatlan.github.io/Prompt-Optimizer-MCP/security.html">
+
+  <!-- Twitter Card -->
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="Security — Prompt Control Plane">
+  <meta name="twitter:description" content="Zero external calls during operation. Local-only storage. Ed25519 license keys. Tamper-evident audit trail.">
+
+  <link rel="stylesheet" href="shared.css">
+  <script src="shared.js"></script>
+
+  <style>
+    /* ─── Page-specific: Hero ─────────────────────────────────────────────── */
+    .security-hero {
+      padding: 80px 0 48px;
+      text-align: center;
+    }
+    .security-hero h1 {
+      font-size: 36px;
+      font-weight: 800;
+      letter-spacing: -0.03em;
+      line-height: 1.2;
+      margin-bottom: 12px;
+    }
+    .security-hero .subtitle {
+      font-size: 16px;
+      color: var(--text-muted);
+      max-width: 480px;
+      margin: 0 auto;
+      line-height: 1.6;
+    }
+
+    @media (max-width: 700px) {
+      .security-hero { padding: 56px 0 32px; }
+      .security-hero h1 { font-size: 28px; }
+    }
+
+    /* ─── Page-specific: Content cards ────────────────────────────────────── */
+    .sec-card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 28px;
+      margin-bottom: 20px;
+    }
+    .sec-card h2 {
+      font-size: 18px;
+      font-weight: 700;
+      margin-bottom: 16px;
+      letter-spacing: -0.01em;
+    }
+    .sec-card p {
+      font-size: 14px;
+      color: var(--text-muted);
+      line-height: 1.7;
+      margin-bottom: 12px;
+    }
+    .sec-card p:last-child {
+      margin-bottom: 0;
+    }
+    .sec-card code {
+      font-size: 13px;
+      color: var(--green);
+      background: var(--code-bg);
+      padding: 2px 6px;
+      border-radius: 4px;
+    }
+    .sec-card a {
+      color: var(--accent);
+    }
+    .sec-card a:hover {
+      color: var(--accent-hover);
+    }
+
+    /* ─── Page-specific: Property grid ────────────────────────────────────── */
+    .prop-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 12px;
+      margin-top: 16px;
+    }
+    .prop-item {
+      background: var(--code-bg);
+      border-radius: 8px;
+      padding: 14px 16px;
+    }
+    .prop-item .label {
+      font-size: 11px;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      color: var(--text-muted);
+      margin-bottom: 4px;
+    }
+    .prop-item .value {
+      font-size: 14px;
+      color: var(--green);
+      font-weight: 500;
+    }
+
+    @media (max-width: 500px) {
+      .prop-grid { grid-template-columns: 1fr; }
+    }
+
+    /* ─── Page-specific: Summary banner ───────────────────────────────────── */
+    .summary-banner {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-left: 3px solid var(--accent);
+      border-radius: 12px;
+      padding: 28px;
+      margin-bottom: 20px;
+    }
+    .summary-banner h2 {
+      font-size: 18px;
+      font-weight: 700;
+      margin-bottom: 16px;
+    }
+    .summary-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 16px;
+    }
+    .summary-item {
+      text-align: center;
+    }
+    .summary-item .num {
+      font-size: 24px;
+      font-weight: 800;
+      color: var(--accent);
+      margin-bottom: 4px;
+    }
+    .summary-item .desc {
+      font-size: 13px;
+      color: var(--text-muted);
+    }
+
+    @media (max-width: 500px) {
+      .summary-grid { grid-template-columns: 1fr; gap: 12px; }
+    }
+
+    /* ─── Page-specific: Disclosure box ───────────────────────────────────── */
+    .disclosure-box {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-left: 3px solid var(--green);
+      border-radius: 12px;
+      padding: 28px;
+      margin-bottom: 20px;
+    }
+    .disclosure-box h2 {
+      font-size: 18px;
+      font-weight: 700;
+      margin-bottom: 12px;
+    }
+    .disclosure-box p {
+      font-size: 14px;
+      color: var(--text-muted);
+      line-height: 1.7;
+      margin-bottom: 12px;
+    }
+    .disclosure-box p:last-child {
+      margin-bottom: 0;
+    }
+    .disclosure-box a {
+      color: var(--accent);
+    }
+    .disclosure-box a:hover {
+      color: var(--accent-hover);
+    }
+
+    /* ─── Page-specific: Footer grid ──────────────────────────────────────── */
+    .footer-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 32px;
+      text-align: left;
+      margin-bottom: 24px;
+    }
+    .footer-col h4 {
+      font-size: 13px;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      color: var(--text);
+      margin-bottom: 12px;
+    }
+    .footer-col a {
+      display: block;
+      font-size: 13px;
+      color: var(--text-muted);
+      margin-bottom: 6px;
+    }
+    .footer-col a:hover { color: var(--text); }
+    .footer-copy {
+      font-size: 12px;
+      color: var(--text-muted);
+      border-top: 1px solid var(--border);
+      padding-top: 16px;
+      text-align: center;
+    }
+    @media (max-width: 500px) {
+      .footer-grid { grid-template-columns: 1fr; gap: 24px; }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Nav -->
+  <nav>
+    <div class="container">
+      <a href="./" class="logo">Prompt Control <span>Plane</span></a>
+      <button class="nav-toggle" aria-label="Menu">
+        <svg viewBox="0 0 24 24"><path d="M3 12h18M3 6h18M3 18h18" stroke-linecap="round"/></svg>
+      </button>
+      <div class="nav-links">
+        <a href="features.html">Features</a>
+        <a href="models.html">Models</a>
+        <a href="docs.html">Docs</a>
+        <a href="plans.html">Pricing</a>
+        <a href="blog.html">Blog</a>
+        <button class="theme-toggle" aria-label="Toggle theme">
+          <svg class="icon-sun" viewBox="0 0 24 24"><circle cx="12" cy="12" r="5"/><path d="M12 1v2M12 21v2M4.22 4.22l1.42 1.42M18.36 18.36l1.42 1.42M1 12h2M21 12h2M4.22 19.78l1.42-1.42M18.36 5.64l1.42-1.42"/></svg>
+          <svg class="icon-moon" viewBox="0 0 24 24"><path d="M21 12.79A9 9 0 1111.21 3 7 7 0 0021 12.79z"/></svg>
+        </button>
+      </div>
+    </div>
+  </nav>
+
+  <!-- Hero -->
+  <section class="security-hero">
+    <div class="container">
+      <span class="badge badge-accent">Security</span>
+      <h1>Security</h1>
+      <p class="subtitle">Built for teams that take security seriously</p>
+    </div>
+  </section>
+
+  <!-- Summary Banner -->
+  <section class="section" style="padding-top: 0;">
+    <div class="container">
+
+      <div class="summary-banner">
+        <h2>At a Glance</h2>
+        <div class="summary-grid">
+          <div class="summary-item">
+            <div class="num">0</div>
+            <div class="desc">External calls during operation</div>
+          </div>
+          <div class="summary-item">
+            <div class="num">0</div>
+            <div class="desc">Prompt content in audit logs</div>
+          </div>
+          <div class="summary-item">
+            <div class="num">1</div>
+            <div class="desc">Runtime dependency</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Architecture -->
+      <div class="sec-card">
+        <h2>Architecture</h2>
+        <p>Prompt Control Plane makes zero external network calls during operation. After installation via npm, the software runs entirely on your local machine. There are no analytics endpoints, no telemetry beacons, no license server calls, and no update checks.</p>
+        <p>All processing is deterministic and reproducible. The same input always produces the same output &mdash; same score, same routing decision, same cost estimate, same compiled prompt. There is no randomness, no sampling, and no external state that could affect results.</p>
+        <p>No data leaves your machine. Prompts, configurations, session history, and audit trails are all stored locally and never transmitted to any server or third party.</p>
+
+        <div class="prop-grid">
+          <div class="prop-item">
+            <div class="label">Network calls</div>
+            <div class="value">Zero during operation</div>
+          </div>
+          <div class="prop-item">
+            <div class="label">Determinism</div>
+            <div class="value">Same input = same output</div>
+          </div>
+          <div class="prop-item">
+            <div class="label">LLM calls</div>
+            <div class="value">Zero inside the product</div>
+          </div>
+          <div class="prop-item">
+            <div class="label">Data egress</div>
+            <div class="value">Nothing leaves your machine</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Data Handling -->
+      <div class="sec-card">
+        <h2>Data Handling</h2>
+        <p>All application data is stored locally at <code>~/.prompt-control-plane/</code>. This directory contains session data, configuration, usage statistics, license information, and the optional audit trail. None of this data is ever transmitted anywhere.</p>
+        <p>The audit trail is designed with privacy as a first principle. It records only operation metadata &mdash; event type, timestamp, outcome, and a limited set of non-sensitive details. It never stores the raw prompt text, the compiled output, or any intermediate analysis content. This is enforced at the code level, not by policy.</p>
+        <p>The audit trail uses SHA-256 hash chaining for tamper evidence. Each log entry includes an integrity hash computed from the previous entry's hash and the current entry's content. If any line is deleted, modified, or reordered, all subsequent hashes break, making unauthorized changes immediately detectable.</p>
+
+        <div class="prop-grid">
+          <div class="prop-item">
+            <div class="label">Storage location</div>
+            <div class="value">~/.prompt-control-plane/</div>
+          </div>
+          <div class="prop-item">
+            <div class="label">Prompt content in logs</div>
+            <div class="value">Never stored</div>
+          </div>
+          <div class="prop-item">
+            <div class="label">Audit integrity</div>
+            <div class="value">SHA-256 hash chain</div>
+          </div>
+          <div class="prop-item">
+            <div class="label">Data transmission</div>
+            <div class="value">Never transmitted</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- License Keys -->
+      <div class="sec-card">
+        <h2>License Keys</h2>
+        <p>License keys use Ed25519 asymmetric signatures for cryptographic verification. The private signing key is held exclusively by the licensor and is never included in the software distribution, source code, or any published artifact.</p>
+        <p>License validation is performed entirely offline. There is no license server, no activation endpoint, and no network call. The public key embedded in the software verifies the signature locally. This means license validation works in air-gapped environments with no internet access.</p>
+        <p>License keys contain no personally identifiable information. The payload includes only four fields: the tier (Free, Pro, Power, or Enterprise), the issuance date, the expiration date, and a unique license identifier. No name, no email, no organization, no payment details.</p>
+
+        <div class="prop-grid">
+          <div class="prop-item">
+            <div class="label">Algorithm</div>
+            <div class="value">Ed25519 asymmetric signatures</div>
+          </div>
+          <div class="prop-item">
+            <div class="label">Validation</div>
+            <div class="value">Offline only, no server call</div>
+          </div>
+          <div class="prop-item">
+            <div class="label">Private key</div>
+            <div class="value">Never leaves the licensor</div>
+          </div>
+          <div class="prop-item">
+            <div class="label">PII in keys</div>
+            <div class="value">None (tier, dates, ID only)</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Supply Chain -->
+      <div class="sec-card">
+        <h2>Supply Chain</h2>
+        <p>Prompt Control Plane has a minimal dependency footprint. The only runtime dependency is the MCP SDK (<code>@modelcontextprotocol/sdk</code>) for the server transport layer. All business logic &mdash; scoring, compilation, routing, compression, policy enforcement, and audit logging &mdash; is implemented with zero external dependencies.</p>
+        <p>Source maps are stripped from the published npm tarball to prevent exposure of internal implementation details. All business logic is compiled from TypeScript to standard JavaScript. There is no use of <code>eval()</code>, no dynamic imports, and no runtime code generation.</p>
+        <p>The npm package ships only compiled output (<code>dist/</code>), entry point scripts (<code>bin/</code>), the README, and the LICENSE file. Test files, source TypeScript, configuration files, and development tooling are excluded from the published package.</p>
+      </div>
+
+      <!-- Responsible Disclosure -->
+      <div class="disclosure-box">
+        <h2>Responsible Disclosure</h2>
+        <p>If you discover a security vulnerability in Prompt Control Plane, please report it to <a href="mailto:rishi.banerjee@atlan.com">rishi.banerjee@atlan.com</a>.</p>
+        <p>We take all security reports seriously and will acknowledge receipt within 48 hours. We will work with you to understand the issue, confirm the vulnerability, and coordinate a fix before any public disclosure.</p>
+      </div>
+
+    </div>
+  </section>
+
+  <!-- Footer -->
+  <footer>
+    <div class="container">
+      <div class="footer-grid">
+        <div class="footer-col">
+          <h4>Product</h4>
+          <a href="./">Home</a>
+          <a href="features.html">Features</a>
+          <a href="docs.html">Docs</a>
+          <a href="plans.html">Plans</a>
+        </div>
+        <div class="footer-col">
+          <h4>Resources</h4>
+          <a href="blog.html">Blog</a>
+          <a href="changelog.html">Changelog</a>
+          <a href="https://github.com/rishiatlan/Prompt-Optimizer-MCP">GitHub</a>
+          <a href="https://www.npmjs.com/package/claude-prompt-optimizer-mcp">npm</a>
+        </div>
+        <div class="footer-col">
+          <h4>Legal</h4>
+          <a href="privacy.html">Privacy</a>
+          <a href="terms.html">Terms</a>
+          <a href="security.html">Security</a>
+        </div>
+      </div>
+      <p class="footer-copy">&copy; 2025-2026 Rishi Banerjee. Elastic License 2.0 (ELv2).</p>
+    </div>
+  </footer>
+
+</body>
+</html>
