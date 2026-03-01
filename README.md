@@ -327,7 +327,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-      - uses: rishiatlan/Prompt-Control-Plane@v2
+      - uses: rishiatlan/Prompt-Optimizer-MCP@v4
         with:
           files: 'prompts/**/*.txt'
           threshold: 70
@@ -338,7 +338,7 @@ jobs:
 **SHA-pinned example (for enterprise users):**
 
 ```yaml
-      - uses: rishiatlan/Prompt-Control-Plane@abc123def  # SHA-pinned
+      - uses: rishiatlan/Prompt-Optimizer-MCP@abc123def  # SHA-pinned
         with:
           version: '2.3.2'  # Required when pinning by SHA
           files: 'prompts/**/*.txt'
@@ -1122,7 +1122,7 @@ Reason:         Balanced task — Sonnet offers the best
 
 ## Contributors
 
-- [@aish-varya](https://github.com/aish-varya) — audience/tone/platform detection, goal enrichment, `generic_vague_ask` rule, CLI flags ([PR #1](https://github.com/rishiatlan/Prompt-Control-Plane/pull/1))
+- [@aish-varya](https://github.com/aish-varya) — audience/tone/platform detection, goal enrichment, `generic_vague_ask` rule, CLI flags ([PR #1](https://github.com/rishiatlan/Prompt-Optimizer-MCP/pull/1))
 
 ## Credits
 
