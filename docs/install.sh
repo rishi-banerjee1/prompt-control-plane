@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 # Prompt Control Plane — Quick Installer
-# Usage: curl -fsSL https://rishiatlan.github.io/Prompt-Optimizer-MCP/install.sh | bash
+# Usage: curl -fsSL https://prompt-control-plane.pages.dev/install.sh | bash
 
 set -euo pipefail
 

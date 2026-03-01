@@ -53,7 +53,7 @@ describe('tier_feature_unavailable error shape', () => {
       error: 'tier_feature_unavailable',
       message: 'policy_mode requires Enterprise tier.',
       current_tier: 'free' as Tier,
-      enterprise_purchase_url: 'https://rishiatlan.github.io/Prompt-Control-Plane/contact',
+      enterprise_purchase_url: 'https://prompt-control-plane.pages.dev/contact',
     };
 
     assert.equal(error.error, 'tier_feature_unavailable');
@@ -190,7 +190,7 @@ describe('PLAN_LIMITS enterprise tier exists', () => {
 describe('ENTERPRISE_PURCHASE_URL', () => {
   it('points to Prompt Control Plane contact page', async () => {
     const { ENTERPRISE_PURCHASE_URL } = await import('../src/tools.js');
-    assert.ok(ENTERPRISE_PURCHASE_URL.includes('Prompt-Control-Plane'), 'URL includes new name');
+    assert.ok(ENTERPRISE_PURCHASE_URL.includes('prompt-control-plane'), 'URL includes new name');
     assert.ok(ENTERPRISE_PURCHASE_URL.startsWith('https://'), 'URL uses HTTPS');
     assert.ok(ENTERPRISE_PURCHASE_URL.includes('contact'), 'URL points to contact page');
   });

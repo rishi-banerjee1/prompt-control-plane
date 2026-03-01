@@ -202,7 +202,7 @@
 ### Added
 - **Programmatic API**: `import { createOptimizer } from 'claude-prompt-optimizer-mcp'` for direct integration.
 - **Dual entry points**: MCP server (stdio) + programmatic API from single package.
-- **Curl installer**: `curl -fsSL https://rishiatlan.github.io/Prompt-Optimizer-MCP/install.sh | bash`
+- **Curl installer**: `curl -fsSL https://prompt-control-plane.pages.dev/install.sh | bash`
 - **E2E tests**: End-to-end tests covering the full optimize → refine → approve flow.
 - **Landing page**: GitHub Pages product site with interactive demo and pricing.
 

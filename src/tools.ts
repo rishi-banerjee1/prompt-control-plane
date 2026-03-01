@@ -75,7 +75,7 @@ function sanitizeLimits(limits: typeof PLAN_LIMITS.free): SerializedTierLimits {
 
 export const PRO_PURCHASE_URL = 'https://rzp.io/rzp/FXZk3gcZ';
 export const POWER_PURCHASE_URL = 'https://rzp.io/rzp/u0TSscp';
-export const ENTERPRISE_PURCHASE_URL = 'https://rishiatlan.github.io/Prompt-Control-Plane/contact';
+export const ENTERPRISE_PURCHASE_URL = 'https://prompt-control-plane.pages.dev/contact';
 
 // ─── Strictness Threshold Map (canonical source: policy.ts) ─────────────────
 // Re-imported from policy.ts for backward compatibility. Used in check_prompt.
