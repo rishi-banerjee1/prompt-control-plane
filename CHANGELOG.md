@@ -1,5 +1,21 @@
 # Changelog
 
+## [4.0.2] - 2026-03-01
+
+### Changed — Cloudflare Pages Migration
+- **Hosting**: Migrated from GitHub Pages to Cloudflare Pages (`prompt-control-plane.pages.dev`)
+- **All URLs**: 20 files updated — canonical, OG, JSON-LD, curl install, ENTERPRISE_PURCHASE_URL
+- **Blog links**: Removed from public navigation and footer (blog pages still accessible by direct URL)
+- **Security headers**: `_headers` file with X-Frame-Options, X-Content-Type-Options, Referrer-Policy, Permissions-Policy
+- **Custom 404**: Branded 404.html page matching site design
+- **Redirects**: `_redirects` for old GitHub Pages paths
+
+### Added — Business Website
+- **6 new pages**: changelog, privacy policy, terms of service, security posture, blog index, 404
+- **Trust signals**: Shields.io badges (npm version, downloads, GitHub release, ELv2 license) on homepage
+- **3-column footer**: Product | Resources | Legal — standardized across all 14 pages
+- **Legal pages**: Zero-data-collection privacy policy, ELv2 terms, CTO-facing security posture
+
 ## [4.0.0] - 2026-03-01
 
 ### Changed — Rebrand
