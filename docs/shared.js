@@ -23,6 +23,15 @@
   // Apply immediately (before paint)
   applyTheme(getPreferred());
 
+  // ─── Cloudflare Web Analytics ──────────────────────────────────────────
+  (function () {
+    var s = document.createElement('script');
+    s.defer = true;
+    s.src = 'https://static.cloudflareinsights.com/beacon.min.js';
+    s.dataset.cfBeacon = '{"token": "f9d92d58b210474b8a90cffe22d8b270"}';
+    document.head.appendChild(s);
+  })();
+
   document.addEventListener('DOMContentLoaded', function () {
     // Re-apply in case of race
     applyTheme(getPreferred());
