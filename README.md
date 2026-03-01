@@ -5,7 +5,7 @@ The control plane for AI prompts. Score, enforce policy, lock config, and audit 
 [![npm version](https://img.shields.io/npm/v/claude-prompt-optimizer-mcp)](https://www.npmjs.com/package/claude-prompt-optimizer-mcp)
 ![Node.js](https://img.shields.io/badge/Node.js-18%2B-339933?logo=node.js&logoColor=white)
 ![TypeScript](https://img.shields.io/badge/TypeScript-Strict-3178C6?logo=typescript&logoColor=white)
-![License](https://img.shields.io/badge/License-MIT-blue)
+![License](https://img.shields.io/badge/License-ELv2-blue)
 ![No Dependencies](https://img.shields.io/badge/Runtime_Deps-2-brightgreen)
 [![npm downloads](https://img.shields.io/npm/dm/claude-prompt-optimizer-mcp)](https://www.npmjs.com/package/claude-prompt-optimizer-mcp)
 
@@ -598,15 +598,7 @@ Every decision is recorded in `decision_path` for full auditability. All tool ou
 <details>
 <summary><strong>Quality Scoring System</strong></summary>
 
-Prompts are scored on 5 dimensions, each worth 0-20 points (total 0-100):
-
-| Dimension | What it measures | How it scores |
-|-----------|-----------------|---------------|
-| **Clarity** (0–20) | Is the goal unambiguous? | -5 per vague term detected |
-| **Specificity** (0–20) | Are targets identified? | Code: +5 per file/function. Prose: +5 for audience, +4 for tone, +3 for platform |
-| **Completeness** (0–20) | Are success criteria defined? | +10 if definition-of-done has 2+ items |
-| **Constraints** (0–20) | Are boundaries set? | +10 if scope + forbidden actions defined. +2 for preservation instructions. |
-| **Efficiency** (0–20) | Is context minimal and relevant? | -2 per 1000 tokens of bloat. +2 bonus for concise prompts. |
+Prompts are scored 0–100 across multiple weighted dimensions. Each deduction is traceable — you'll see exactly why your score dropped and what to fix.
 
 Scoring adapts to task type: code tasks reward file paths and code references; writing/communication tasks reward audience, tone, platform, and length constraints.
 
@@ -615,26 +607,20 @@ The before/after delta shows exactly what improved: "Your prompt went from 48 to
 </details>
 
 <details>
-<summary><strong>14 Ambiguity Detection Rules</strong></summary>
+<summary><strong>Ambiguity Detection Rules</strong></summary>
 
-All rules are deterministic (regex + keyword matching). No LLM calls. Rules are **task-type aware** — code-only rules skip for writing/research tasks, prose-only rules skip for code tasks.
+Multiple deterministic rules (regex + keyword matching) catch common prompt weaknesses. No LLM calls. Rules are **task-type aware** — code-only rules skip for writing/research tasks, prose-only rules skip for code tasks.
 
-| Rule | Applies To | Severity | Trigger |
-|------|-----------|----------|---------|
-| `vague_objective` | Code | BLOCKING | Vague terms ("make it better", "improve", "fix") without a specific target |
-| `missing_target` | Code | BLOCKING | Code task with no file paths, function names, or module references |
-| `scope_explosion` | Code | BLOCKING | "All", "everything", "entire" without clear boundaries |
-| `high_risk_domain` | Code | NON-BLOCKING | Auth, payment, database, production, delete keywords detected |
-| `no_constraints_high_risk` | Code | BLOCKING | High-risk task with zero constraints mentioned |
-| `format_ambiguity` | All | NON-BLOCKING | Mentions JSON/YAML but provides no schema |
-| `multi_task_overload` | All | NON-BLOCKING | 3+ distinct tasks detected in one prompt |
-| `generic_vague_ask` | All | BLOCKING | Extremely vague prompt with no actionable specifics ("make it better", "just fix it") |
-| `missing_audience` | Prose | NON-BLOCKING | No target audience specified for writing/communication task |
-| `no_clear_ask` | Prose | NON-BLOCKING | No clear communication goal detected |
-| `hallucination_risk` | All | NON-BLOCKING | Open-ended generation without grounding sources or factual constraints |
-| `agent_underspec` | All | BLOCKING | Agent/orchestration task with no tool list, permission boundary, or stopping criteria |
-| `conflicting_constraints` | All | BLOCKING | Contradictory instructions detected (e.g., "be brief" + "be comprehensive") |
-| `token_budget_mismatch` | All | NON-BLOCKING | Requested output likely exceeds model context or reasonable token budget |
+**What gets detected:**
+- Vague objectives without specific targets
+- Missing file paths or function references in code tasks
+- Scope explosion ("do everything") without clear boundaries
+- High-risk domains (auth, payment, database) without constraints
+- Missing audience for writing/communication tasks
+- Hallucination risk (ungrounded generation without sources)
+- Agent tasks without safety constraints or stopping criteria
+- Contradictory instructions
+- Token budget mismatches
 
 Hard caps: max 3 blocking questions per cycle, max 5 assumptions shown.
 
@@ -1087,16 +1073,16 @@ Reason:         Balanced task — Sonnet offers the best
 | `Cannot find module` error (source install) | Run `npm run build` first. The `dist/` directory must exist. |
 | Session expired | Sessions have a 30-minute TTL. Call `optimize_prompt` again to start a new session. |
 | False positive on blocking questions | The regex rules are tunable in `src/rules.ts`. Adjust patterns for your workflow. |
-| "Scope explosion" triggers incorrectly | The rule detects "all", "everything", "entire" without nearby scoping nouns. Add more exemption words in `SCOPE_EXPLOSION` patterns. |
-| Cost estimates seem off | Token estimation uses `text.length / 4` approximation. For precise counts, use Anthropic's tokenizer directly. |
+| "Scope explosion" triggers incorrectly | The rule detects broad scope language without nearby qualifiers. Context-dependent — may need prompt refinement. |
+| Cost estimates seem off | Token estimation uses an empirical approximation. For precise counts, use Anthropic's tokenizer directly. |
 | No model recommendation | Default is Sonnet. Opus is recommended only for high-risk or large-scope tasks. |
 | Check installed version | Run `npx claude-prompt-optimizer-mcp --version` or `claude-prompt-optimizer-mcp -v` (if globally installed). |
 
 ## Roadmap
 
 - [x] Core prompt optimizer with 5 MCP tools (v1.0)
-- [x] 14 deterministic ambiguity detection rules (task-type aware)
-- [x] Quality scoring (0-100, scoring_version: 2) with before/after delta
+- [x] Deterministic ambiguity detection rules (task-type aware)
+- [x] Quality scoring (0-100) with before/after delta
 - [x] Cost estimation with per-model breakdown (Anthropic, OpenAI, Google)
 - [x] Context compression
 - [x] Session-based state with sign-off gate
@@ -1120,16 +1106,15 @@ Reason:         Balanced task — Sonnet offers the best
 - [x] Razorpay checkout integration — tier-specific purchase URLs
 - [x] v3.0 Decision Engine: complexity classifier, 5 optimization profiles, model routing with decision_path, risk scoring (0–100), Perplexity routing
 - [x] 3 new tools: `classify_task`, `route_model`, `pre_flight` (14 total in v3.0)
-- [x] v3.1 Smart Compression: H1–H5 heuristics pipeline with zone protection, standard/aggressive modes
+- [x] v3.1 Smart Compression: multi-stage pipeline with zone protection, standard/aggressive modes
 - [x] v3.1 Tool Pruning: task-aware relevance scoring, mention protection, always-relevant tools
-- [x] v3.1 4 new ambiguity rules: hallucination_risk, agent_underspec, conflicting_constraints, token_budget_mismatch (14 total)
-- [x] v3.1 Pre-flight deltas: compression_delta conditionally surfaced when context provided
+- [x] v3.1 Expanded ambiguity detection: hallucination risk, agent underspec, conflicting constraints, token budget mismatch
+- [x] v3.1 Pre-flight deltas: compression savings surfaced when context provided
 - [x] v3.2.0 Enterprise Unlock: 4-tier system with Enterprise (unlimited, 120/min, dedicated support), contact form, updated gating
 - [x] v3.2.1 Custom Rules: user-defined regex rules in `~/.prompt-control-plane/custom-rules/`, risk dimension integration, CLI validation
 - [x] v3.2.1 Reproducible Exports: auto-calculated `rule_set_hash`, `rule_set_version`, `risk_score` in session exports — no placeholders
-- [x] 15 MCP tools, 14 rules, 595 tests across 28 test suites
-- [x] v3.3.0 Enterprise Operations: policy enforcement, config lock mode, tamper-evident audit trail (SHA-256 hash chain), session lifecycle management
-- [x] 19 MCP tools, 14 rules, 660 tests across 32 test suites
+- [x] v3.3.0 Enterprise Operations: policy enforcement, config lock mode, tamper-evident audit trail, session lifecycle management
+- [x] 19 MCP tools, comprehensive test suite
 - [ ] Optional Haiku pass for nuanced ambiguity detection
 - [ ] Prompt template library (common patterns)
 - [ ] Integration with Claude Code hooks for auto-trigger on complex tasks
@@ -1145,4 +1130,4 @@ Built on the [Model Context Protocol](https://modelcontextprotocol.io) by **[Ant
 
 ## License
 
-MIT
+[Elastic License 2.0 (ELv2)](https://www.elastic.co/licensing/elastic-license) — use, modify, and redistribute freely. You may not offer it as a competing hosted service or remove the license key system.
