@@ -4,16 +4,16 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>How I Built Prompt Control Plane — From Idea to Product in 49 Hours</title>
-  <meta name="description" content="The full story of building an MCP server that optimizes AI prompts — from zero to published on npm and 6+ directories in under 2 weeks, with only 10 hours of active coding.">
+  <meta name="description" content="The full story of building a governance engine for AI prompts — from zero to published on npm and 6+ directories in under 2 weeks, with only 10 hours of active coding.">
   <meta property="og:title" content="How I Built Prompt Control Plane">
-  <meta property="og:description" content="49 hours wall clock, 10 hours active coding, 21 commits. The full story of building a prompt optimization MCP server and turning it into a freemium product.">
+  <meta property="og:description" content="49 hours wall clock, 10 hours active coding, 21 commits. The full story of building a prompt governance engine and turning it into an enterprise product.">
   <meta property="og:type" content="article">
   <meta property="og:url" content="https://prompt-control-plane.pages.dev/how-i-built-this.html">
   <meta property="article:author" content="Rishi Banerjee">
   <meta property="article:published_time" content="2026-02-28">
   <meta name="twitter:card" content="summary_large_image">
   <meta name="twitter:title" content="How I Built Prompt Control Plane">
-  <meta name="twitter:description" content="49 hours wall clock, 10 hours active coding, 21 commits. From idea to freemium product with $0 infrastructure.">
+  <meta name="twitter:description" content="49 hours wall clock, 10 hours active coding, 21 commits. From idea to governance product with $0 infrastructure.">
 
   <!-- Schema.org Article structured data -->
   <script type="application/ld+json">
@@ -27,7 +27,7 @@
       "url": "https://github.com/rishiatlan"
     },
     "datePublished": "2026-02-28",
-    "description": "The full story of building an MCP server that optimizes AI prompts — from zero to published on npm and 6+ directories in under 2 weeks, with only 10 hours of active coding.",
+    "description": "The full story of building a governance engine for AI prompts — from zero to published on npm and 6+ directories in under 2 weeks, with only 10 hours of active coding.",
     "mainEntityOfPage": "https://prompt-control-plane.pages.dev/how-i-built-this.html",
     "publisher": {
       "@type": "Person",
@@ -568,7 +568,7 @@
         <span>14 min read</span>
       </div>
       <div class="hero-tldr">
-        <strong>TL;DR:</strong> I noticed AI tools were wasting time and money because people write vague prompts. I built a prompt linter &mdash; think ESLint, but for AI instructions &mdash; that scores, analyzes, and standardizes prompts before they hit any LLM. No AI needed inside. Shipped it in under 2 weeks, listed it on 6+ directories, and monetized it at ₹499/mo and ₹899/mo using a freemium model. Total infrastructure cost: $0.
+        <strong>TL;DR:</strong> I noticed AI tools were wasting time and money because people write vague prompts. I built a prompt governance engine &mdash; deterministic scoring, policy enforcement, and structured compilation &mdash; that governs every prompt before it reaches any LLM. No AI needed inside. Shipped it in under 2 weeks, listed it on 6+ directories, and monetized it with a four-tier model from free to enterprise. Total infrastructure cost: $0.
       </div>
     </div>
   </header>
@@ -704,7 +704,7 @@
       <!-- Section 5: Building It -->
       <h2 id="building">Building It &mdash; With AI as My Co-Pilot</h2>
 
-      <p>Here&rsquo;s the irony: I built a prompt optimization tool <em>using</em> the AI it&rsquo;s designed to help.</p>
+      <p>Here&rsquo;s the irony: I built a prompt governance engine <em>using</em> the AI it&rsquo;s designed to help.</p>
 
       <p>The entire project was built with <strong>Claude Code</strong> &mdash; Anthropic&rsquo;s AI coding agent. I wrote the architecture, designed the interfaces, and specified what each module should do. Claude wrote the implementation, tests, and documentation.</p>
 
