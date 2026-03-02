@@ -665,7 +665,7 @@
         <li><strong>Zero AI calls inside.</strong> The optimizer itself makes no API calls. All intelligence comes from rules, patterns, and scoring algorithms. This means it&rsquo;s instant, free to operate, and never produces hallucinated advice.</li>
         <li><strong>Works for any LLM.</strong> The same prompt compiles to different formats: Claude gets XML tags (<code>&lt;role&gt;</code>, <code>&lt;goal&gt;</code>, <code>&lt;constraints&gt;</code>), OpenAI gets system/user splits, and generic targets get Markdown headers. One prompt, three outputs.</li>
         <li><strong>Nothing ships without user approval.</strong> The MCP never silently finalizes a prompt. If your input is ambiguous, it asks blocking questions first. You review the compiled result, see the quality score and cost estimate, and explicitly approve before anything executes. <code>approve_prompt</code> hard-fails if unanswered questions remain &mdash; the gate is enforced in code, not convention.</li>
-        <li><strong>Freemium from day one.</strong> Free users get 10 lifetime optimizations &mdash; enough to see the value. Pro at ₹499/mo gets 100/month. Power at ₹899/mo gets unlimited.</li>
+        <li><strong>Four tiers from day one.</strong> Free users get 10 lifetime optimizations &mdash; enough to see the value. Pro and Power unlock higher volume. Enterprise adds policy enforcement, audit trails, and config governance.</li>
       </ol>
 
       <h3>The Pipeline</h3>
@@ -794,9 +794,10 @@
           <tr><th>Tier</th><th>Price</th><th>What You Get</th></tr>
         </thead>
         <tbody>
-          <tr><td><strong>Free</strong></td><td>₹0</td><td>10 lifetime optimizations</td></tr>
+          <tr><td><strong>Free</strong></td><td>₹0</td><td>10 lifetime optimizations, all 19 tools</td></tr>
           <tr><td><strong>Pro</strong></td><td>₹499/mo</td><td>100/month, 30 requests/min</td></tr>
           <tr><td><strong>Power</strong></td><td>₹899/mo</td><td>Unlimited, 60 requests/min, always-on mode</td></tr>
+          <tr><td><strong>Enterprise</strong></td><td>Custom</td><td>Policy enforcement, audit trail, config lock, custom rules, 120 requests/min</td></tr>
         </tbody>
       </table>
 
