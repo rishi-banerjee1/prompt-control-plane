@@ -3,6 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="robots" content="noindex, nofollow">
   <title>How I Built Prompt Control Plane — From Idea to Product in 49 Hours</title>
   <meta name="description" content="The full story of building a governance engine for AI prompts — from zero to published on npm and 6+ directories in under 2 weeks, with only 10 hours of active coding.">
   <link rel="canonical" href="https://prompt-control-plane.pages.dev/how-i-built-this.html">
@@ -39,7 +40,110 @@
 
   <link rel="stylesheet" href="shared.css">
   <style>
-    /* -- Article layout ----------------------------- */
+    /* -- Docs-style layout with sidebar TOC ---------- */
+    .article-layout {
+      display: grid;
+      grid-template-columns: 220px 1fr;
+      gap: 48px;
+      max-width: 1000px;
+      margin: 0 auto;
+      padding: 0 24px;
+      align-items: start;
+    }
+
+    /* -- Sidebar TOC --------------------------------- */
+    .article-sidebar {
+      position: sticky;
+      top: 80px;
+      max-height: calc(100vh - 100px);
+      overflow-y: auto;
+      padding: 16px 0;
+    }
+    .article-sidebar .toc-title {
+      font-size: 11px;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      color: var(--text-muted);
+      margin-bottom: 12px;
+      font-weight: 700;
+    }
+    .article-sidebar ul {
+      list-style: none;
+      padding: 0;
+      margin: 0;
+    }
+    .article-sidebar li {
+      margin-bottom: 2px;
+    }
+    .article-sidebar a {
+      display: block;
+      padding: 5px 12px;
+      font-size: 13px;
+      color: var(--text-muted);
+      border-radius: 6px;
+      transition: all 0.15s;
+      border-left: 2px solid transparent;
+    }
+    .article-sidebar a:hover {
+      color: var(--text);
+      background: var(--accent-glow);
+    }
+    .article-sidebar a.active {
+      color: var(--accent);
+      border-left-color: var(--accent);
+      background: var(--accent-glow);
+      font-weight: 600;
+    }
+
+    /* Mobile TOC toggle */
+    .toc-mobile-toggle {
+      display: none;
+      width: 100%;
+      padding: 12px 16px;
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      color: var(--text);
+      font-size: 14px;
+      font-weight: 600;
+      cursor: pointer;
+      margin-bottom: 24px;
+      text-align: left;
+    }
+    .toc-mobile-toggle::after {
+      content: '\25BC';
+      float: right;
+      font-size: 10px;
+      color: var(--text-muted);
+    }
+    .toc-mobile-toggle.open::after {
+      content: '\25B2';
+    }
+
+    @media (max-width: 860px) {
+      .article-layout {
+        grid-template-columns: 1fr;
+        gap: 0;
+      }
+      .article-sidebar {
+        position: static;
+        max-height: none;
+        display: none;
+        margin-bottom: 32px;
+        background: var(--surface);
+        border: 1px solid var(--border);
+        border-radius: 8px;
+        padding: 16px;
+      }
+      .article-sidebar.open {
+        display: block;
+      }
+      .toc-mobile-toggle {
+        display: block;
+      }
+    }
+
+    /* -- Article container (for hero, still centered) -- */
     .article-container {
       max-width: 720px;
       margin: 0 auto;
@@ -87,47 +191,13 @@
     }
     .hero-tldr strong { color: var(--text); font-weight: 600; }
 
-    /* -- Table of contents -------------------------- */
-    .toc {
-      background: var(--surface);
-      border: 1px solid var(--border);
-      border-radius: 12px;
-      padding: 28px 32px;
-      margin: 48px 0;
+    /* (inline TOC removed; using sidebar TOC instead) */
+
+    /* -- Article main wrapper ----------------------- */
+    .article-main {
+      min-width: 0; /* prevent grid blowout */
+      max-width: 720px;
     }
-    .toc-title {
-      font-size: 13px;
-      text-transform: uppercase;
-      letter-spacing: 0.08em;
-      color: var(--text-muted);
-      margin-bottom: 16px;
-      font-weight: 600;
-    }
-    .toc ol {
-      list-style: none;
-      counter-reset: toc-counter;
-    }
-    .toc li {
-      counter-increment: toc-counter;
-      margin-bottom: 8px;
-    }
-    .toc li a {
-      font-size: 15px;
-      color: var(--text-muted);
-      display: flex;
-      align-items: baseline;
-      gap: 10px;
-      transition: color 0.15s;
-    }
-    .toc li a::before {
-      content: counter(toc-counter, decimal-leading-zero);
-      font-family: 'SF Mono', 'Fira Code', 'Cascadia Code', monospace;
-      font-size: 12px;
-      color: var(--accent);
-      opacity: 0.6;
-      flex-shrink: 0;
-    }
-    .toc li a:hover { color: var(--text); }
 
     /* -- Article body ------------------------------- */
     .article-body {
@@ -522,7 +592,6 @@
     @media (max-width: 640px) {
       .article-hero { padding: 48px 0 32px; }
       .article-hero h1 { font-size: 26px; }
-      .toc { padding: 20px 24px; }
       .article-body h2 { font-size: 22px; }
       .article-body p { font-size: 16px; }
       .problem-card { padding: 20px; }
@@ -544,7 +613,6 @@
         <svg viewBox="0 0 24 24"><path d="M3 12h18M3 6h18M3 18h18" stroke-linecap="round"/></svg>
       </button>
       <div class="nav-links">
-        <a href="./">Home</a>
         <a href="features.html">Features</a>
         <a href="models.html">Models</a>
         <a href="docs.html">Docs</a>
@@ -566,7 +634,7 @@
         <span class="separator"></span>
         <span>February 28, 2026</span>
         <span class="separator"></span>
-        <span>14 min read</span>
+        <span>18 min read</span>
       </div>
       <div class="hero-tldr">
         <strong>TL;DR:</strong> I noticed AI tools were wasting time and money because people write vague prompts. I built a prompt governance engine &mdash; deterministic scoring, policy enforcement, and structured compilation &mdash; that governs every prompt before it reaches any LLM. No AI needed inside. Shipped it in under 2 weeks, listed it on 6+ directories, and monetized it with a four-tier model from free to enterprise. Total infrastructure cost: $0.
@@ -574,30 +642,34 @@
     </div>
   </header>
 
-  <div class="article-container">
+  <div class="article-layout">
 
-    <!-- Table of Contents -->
-    <div class="toc">
-      <div class="toc-title">Table of Contents</div>
-      <ol>
-        <li><a href="#the-problem">The Problem I Kept Running Into</a></li>
-        <li><a href="#aha-moment">The "Aha" Moment</a></li>
-        <li><a href="#what-is-mcp">What Is an MCP, and Why Should You Care?</a></li>
+    <!-- Sidebar TOC -->
+    <aside class="article-sidebar" id="article-toc">
+      <div class="toc-title">On This Page</div>
+      <ul>
+        <li><a href="#the-problem">The Problem</a></li>
+        <li><a href="#aha-moment">The &ldquo;Aha&rdquo; Moment</a></li>
+        <li><a href="#what-is-mcp">What Is an MCP?</a></li>
         <li><a href="#designing">Designing the Product</a></li>
-        <li><a href="#building">Building It &mdash; With AI as My Co-Pilot</a></li>
-        <li><a href="#hardest-problems">The Hardest Problems to Solve</a></li>
-        <li><a href="#monetization">Monetization &mdash; Making It a Real Product</a></li>
-        <li><a href="#distribution">Distribution &mdash; Getting It in Front of People</a></li>
-        <li><a href="#hiccups">Hiccups, Headaches, and Hard Lessons</a></li>
-        <li><a href="#whats-next">What's Next</a></li>
-        <li><a href="#timeline">The Actual Timeline &mdash; 49 Hours, 21 Commits</a></li>
+        <li><a href="#building">Building It</a></li>
+        <li><a href="#hardest-problems">Hardest Problems</a></li>
+        <li><a href="#monetization">Monetization</a></li>
+        <li><a href="#distribution">Distribution</a></li>
+        <li><a href="#hiccups">Hiccups &amp; Lessons</a></li>
+        <li><a href="#whats-next">What&rsquo;s Next</a></li>
+        <li><a href="#timeline">Timeline</a></li>
         <li><a href="#by-the-numbers">By the Numbers</a></li>
-        <li><a href="#v4-update">Update: v4.0.0 &mdash; Prompt Control Plane</a></li>
+        <li><a href="#v4-update">Evolution to v4</a></li>
         <li><a href="#acknowledgments">Acknowledgments</a></li>
-      </ol>
-    </div>
+      </ul>
+    </aside>
 
     <!-- Article Body -->
+    <div class="article-main">
+
+    <!-- Mobile TOC Toggle -->
+    <button class="toc-mobile-toggle" id="toc-toggle">On This Page</button>
     <article class="article-body">
 
       <!-- Section 1: The Problem -->
@@ -636,21 +708,20 @@
 
       <p><strong>MCP (Model Context Protocol)</strong> is a standard that lets you give AI assistants new abilities. Normally, Claude can only chat with you. With MCP, you can give it &ldquo;tools&rdquo; &mdash; specific capabilities that it can call during a conversation.</p>
 
-      <p>My MCP gives Claude 11 new tools:</p>
+      <p>My MCP gives Claude 19 tools, grouped into four categories:</p>
 
       <ul>
-        <li><strong>Optimize</strong> &mdash; the main one. Analyzes your prompt, scores it, and rewrites it</li>
-        <li><strong>Estimate cost</strong> &mdash; tells you exactly how many tokens (and dollars) your prompt will burn</li>
-        <li><strong>Compress context</strong> &mdash; strips out irrelevant code/text you&rsquo;re about to send</li>
-        <li><strong>Check</strong> &mdash; quick pass/fail on whether your prompt is good enough</li>
-        <li>And 7 more for configuration, stats, licensing, etc.</li>
+        <li><strong>Governance:</strong> Optimize prompts, enforce policies, score risk, classify task complexity, route to optimal models</li>
+        <li><strong>Operations:</strong> Compress context, prune irrelevant tools, run full pre-flight analysis before any work begins</li>
+        <li><strong>Enterprise:</strong> Configure policy modes, lock config with passphrases, manage sessions, export tamper-evident audit trails</li>
+        <li><strong>Utility:</strong> Estimate costs across 4 providers, check prompt quality, manage licenses, view usage stats</li>
       </ul>
 
-      <p>When you install my MCP, Claude can automatically use these tools. You type a vague prompt, Claude calls the optimizer, and you get back a structured, professional-grade prompt &mdash; before any work begins.</p>
+      <p>When you install the MCP, Claude can automatically use these tools. You type a vague prompt, Claude calls the governance engine, and you get back a structured, policy-compliant prompt before any work begins.</p>
 
       <div class="tldr">
         <div class="tldr-label">TL;DR</div>
-        An MCP is a plugin system for AI. Mine adds prompt quality control. Install it once, and Claude automatically upgrades your prompts.
+        An MCP is a plugin system for AI. Mine adds prompt governance. Install it once, and Claude enforces quality and policy on every prompt.
       </div>
 
       <hr>
@@ -915,9 +986,10 @@
       <h2 id="whats-next">What&rsquo;s Next</h2>
 
       <ul>
-        <li><strong>Phase B:</strong> Move storage from local files to the cloud (Cloudflare Workers + Supabase). Same tool interfaces, just swap the storage layer. Already architected with an abstract interface for this exact purpose.</li>
-        <li><strong>More integrations:</strong> Cline, Cursor, Windsurf &mdash; anywhere MCP is supported.</li>
-        <li><strong>Competitive moat:</strong> The deterministic rules engine gets better with every edge case I discover. The scoring dimensions, compiler templates, and ambiguity detectors are the product&rsquo;s compound knowledge.</li>
+        <li><strong>Phase B (cloud storage):</strong> Move from local files to Cloudflare Workers + Supabase. The async <code>StorageInterface</code> was designed for this from day one. Same tool contracts, same test suite, only the storage implementation swaps.</li>
+        <li><strong>Team features:</strong> Shared policy configurations, team-wide audit dashboards, and centralized rule management for organizations running multiple AI agents.</li>
+        <li><strong>Broader MCP ecosystem:</strong> Already works with Claude Desktop, Claude Code, Cursor, Windsurf, and any MCP-compatible client. Tracking new clients as the ecosystem grows.</li>
+        <li><strong>Compound knowledge:</strong> Every edge case discovered becomes a new detection rule. 14 rules today, growing. The scoring dimensions, compiler templates, and ambiguity detectors are the product&rsquo;s real moat.</li>
       </ul>
 
       <hr>
@@ -1111,8 +1183,8 @@
           <div class="metric-label">Lines of TypeScript</div>
         </div>
         <div class="metric-card">
-          <div class="metric-value"><span class="green">600+</span></div>
-          <div class="metric-label">Automated tests</div>
+          <div class="metric-value"><span class="green">676+</span></div>
+          <div class="metric-label">Automated tests (32 test files)</div>
         </div>
         <div class="metric-card">
           <div class="metric-value">2</div>
@@ -1162,16 +1234,29 @@
 
       <!-- v4.0.0 Update -->
       <section id="v4-update">
-        <h2>Update: v4.0.0 &mdash; Prompt Control Plane</h2>
-        <p>Since the initial build, the product has evolved from a simple prompt linter into a full <strong>prompt control plane</strong> with 19 MCP tools and enterprise-grade governance:</p>
-        <ul style="line-height:2;">
-          <li><strong>v3.0:</strong> Decision engine &mdash; complexity classification, optimization profiles, deterministic model routing with full audit trail, risk scoring</li>
-          <li><strong>v3.1:</strong> Smart compression pipeline, tool pruning engine, structured content protection, expanded ambiguity detection</li>
-          <li><strong>v3.2:</strong> Enterprise tier, multi-page docs site, CLI linter (<code>prompt-lint</code>), GitHub Action</li>
-          <li><strong>v3.3:</strong> Enterprise operations &mdash; policy enforcement, tamper-evident audit trail, config lock, session lifecycle management</li>
-          <li><strong>v4.0:</strong> Rebranded to <strong>Prompt Control Plane</strong>. Enterprise tier gates enforced. Custom rules engine. Reproducible exports. Professional documentation site.</li>
-        </ul>
-        <p>The core principle never changed: <strong>zero LLM calls inside</strong>. Everything is still deterministic, offline, and reproducible. The product just grew from &ldquo;lint your prompts&rdquo; to &ldquo;govern your entire prompt pipeline.&rdquo;</p>
+        <h2>Update: v4.0.0 and the Evolution to Governance</h2>
+
+        <p>Since the initial 49-hour build, the product went through five major releases. Each one expanded the surface area without adding a single LLM call. Here is the full arc:</p>
+
+        <h3>v3.0: The Decision Engine</h3>
+        <p>Added a pre-LLM decision layer. Before a prompt even gets optimized, the engine now classifies its reasoning complexity (6 types), suggests an optimization profile (5 presets), and routes it to the optimal model across 4 providers and 11 models. Every routing decision produces a full <code>decision_path</code> audit trail showing exactly why a model was chosen. Risk scoring with dimensional weights (hallucination, ambiguity, scope, constraint) drives the routing logic. All still deterministic.</p>
+
+        <h3>v3.1: Smart Compression + Tool Pruning</h3>
+        <p>Built a 5-stage heuristic compression pipeline (H1 through H5) that strips license headers, collapses consecutive comments, deduplicates identical lines, stubs empty function bodies, and truncates middle sections when aggressive mode is on. A zone scanner protects structured content (code blocks, tables, lists, JSON, YAML) from being mangled. Added a tool pruning engine that scores MCP tools by relevance to the current task and marks low-value tools for removal, saving context tokens. Four new ambiguity detection rules brought the total to 14.</p>
+
+        <h3>v3.2: Enterprise Tier + Distribution</h3>
+        <p>Introduced the Enterprise tier with 120 requests/min and <code>always_on</code> mode. Split the monolithic landing page into a multi-page docs site with dark/light theme. Shipped the <code>prompt-lint</code> CLI binary so teams can lint prompts in CI without MCP. Published the <code>prompt-lint</code> GitHub Action so any repo can add prompt governance to pull request checks. Moved hosting from GitHub Pages to Cloudflare Pages for faster global edge delivery.</p>
+
+        <h3>v3.3: Enterprise Operations</h3>
+        <p>The release that made it a real governance product. Policy enforcement with advisory and enforce modes, where enforce actually blocks deployment on violations. A tamper-evident audit trail using SHA-256 hash chaining (if any entry is modified, all subsequent hashes break). Config lock with passphrase protection so governance settings cannot be changed without authorization. Session lifecycle management with delete, purge, retention policies, and dry-run safety. Custom rules engine where teams define their own detection patterns with regex, severity levels, and risk dimensions.</p>
+
+        <h3>v4.0: Prompt Control Plane</h3>
+        <p>Renamed the product. Updated every surface: npm, GitHub, docs site, directories. The rebrand reflected what the product had become. Not a linter. Not an optimizer. A control plane for how organizations manage AI prompts. Enterprise tier gates enforced in code. Reproducible session exports with auto-calculated rule-set hashes. Professional documentation site at <a href="https://prompt-control-plane.pages.dev">prompt-control-plane.pages.dev</a>.</p>
+
+        <div class="tldr">
+          <div class="tldr-label">TL;DR</div>
+          Five releases grew the product from a 4-tool linter to a 19-tool governance platform. The core principle never changed: zero LLM calls inside. Everything is deterministic, offline, and reproducible. The product grew from "lint your prompts" to "govern your entire prompt pipeline."
+        </div>
       </section>
 
       <hr>
@@ -1197,7 +1282,8 @@
       </div>
     </div>
 
-  </div>
+    </div><!-- /.article-main -->
+  </div><!-- /.article-layout -->
 
   <!-- Footer -->
   <footer>
@@ -1245,6 +1331,45 @@
         }, 2000);
       });
     }
+
+    // Mobile TOC toggle
+    (function() {
+      var toggle = document.getElementById('toc-toggle');
+      var toc = document.getElementById('article-toc');
+      if (toggle && toc) {
+        toggle.addEventListener('click', function() {
+          toc.classList.toggle('open');
+          toggle.classList.toggle('open');
+        });
+      }
+    })();
+
+    // Scroll-spy: highlight active TOC link
+    (function() {
+      var links = document.querySelectorAll('.article-sidebar a');
+      var sections = [];
+      links.forEach(function(link) {
+        var id = link.getAttribute('href').replace('#', '');
+        var el = document.getElementById(id);
+        if (el) sections.push({ id: id, el: el, link: link });
+      });
+
+      function onScroll() {
+        var scrollPos = window.scrollY + 120;
+        var active = null;
+        for (var i = sections.length - 1; i >= 0; i--) {
+          if (sections[i].el.offsetTop <= scrollPos) {
+            active = sections[i];
+            break;
+          }
+        }
+        links.forEach(function(l) { l.classList.remove('active'); });
+        if (active) active.link.classList.add('active');
+      }
+
+      window.addEventListener('scroll', onScroll, { passive: true });
+      onScroll();
+    })();
   </script>
 
 </body>
