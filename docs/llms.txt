@@ -17,13 +17,13 @@ Prompt Control Plane is a governance engine that enforces structure on every pro
 - Four tiers: Free, Pro, Power, Enterprise
 
 ## Pages
-- Homepage: https://prompt-control-plane.pages.dev/
-- Features: https://prompt-control-plane.pages.dev/features.html
-- Pricing: https://prompt-control-plane.pages.dev/plans.html
-- Documentation: https://prompt-control-plane.pages.dev/docs.html
-- Supported Models: https://prompt-control-plane.pages.dev/models.html
-- How We're Different: https://prompt-control-plane.pages.dev/different.html
-- Changelog: https://prompt-control-plane.pages.dev/changelog.html
+- Homepage: https://getpcp.pages.dev/
+- Features: https://getpcp.pages.dev/features.html
+- Pricing: https://getpcp.pages.dev/plans.html
+- Documentation: https://getpcp.pages.dev/docs.html
+- Supported Models: https://getpcp.pages.dev/models.html
+- How We're Different: https://getpcp.pages.dev/different.html
+- Changelog: https://getpcp.pages.dev/changelog.html
 
 ## Install
 npm: claude-prompt-optimizer-mcp

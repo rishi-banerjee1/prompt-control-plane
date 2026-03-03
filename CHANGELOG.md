@@ -68,7 +68,7 @@
 ## [4.0.2] - 2026-03-01
 
 ### Changed — Cloudflare Pages Migration
-- **Hosting**: Migrated from GitHub Pages to Cloudflare Pages (`prompt-control-plane.pages.dev`)
+- **Hosting**: Migrated from GitHub Pages to Cloudflare Pages (`getpcp.pages.dev`)
 - **All URLs**: 20 files updated — canonical, OG, JSON-LD, curl install, ENTERPRISE_PURCHASE_URL
 - **Blog links**: Removed from public navigation and footer (blog pages still accessible by direct URL)
 - **Security headers**: `_headers` file with X-Frame-Options, X-Content-Type-Options, Referrer-Policy, Permissions-Policy
@@ -255,7 +255,7 @@
 ### Added
 - **Programmatic API**: `import { createOptimizer } from 'claude-prompt-optimizer-mcp'` for direct integration.
 - **Dual entry points**: MCP server (stdio) + programmatic API from single package.
-- **Curl installer**: `curl -fsSL https://prompt-control-plane.pages.dev/install.sh | bash`
+- **Curl installer**: `curl -fsSL https://getpcp.pages.dev/install.sh | bash`
 - **E2E tests**: End-to-end tests covering the full optimize → refine → approve flow.
 - **Landing page**: GitHub Pages product site with interactive demo and pricing.
 

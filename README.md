@@ -213,7 +213,7 @@ Changes Made:
 | **MCP Config** (recommended) | Add to `.mcp.json` or `~/.claude/settings.json` — see below |
 | **npx** | `npx -y claude-prompt-optimizer-mcp` |
 | **npm global** | `npm install -g claude-prompt-optimizer-mcp` |
-| **curl** | `curl -fsSL https://prompt-control-plane.pages.dev/install.sh \| bash` |
+| **curl** | `curl -fsSL https://getpcp.pages.dev/install.sh \| bash` |
 
 ### MCP Config (Claude Code / Claude Desktop)
 
@@ -266,7 +266,7 @@ Then use in your MCP config:
 <summary><strong>Curl installer (installs globally + prints MCP config)</strong></summary>
 
 ```bash
-curl -fsSL https://prompt-control-plane.pages.dev/install.sh | bash
+curl -fsSL https://getpcp.pages.dev/install.sh | bash
 ```
 
 Checks Node.js ≥ 18, installs the package globally, and prints the MCP config JSON for your platform.
@@ -488,19 +488,19 @@ console.log(withCtx.cost);   // Higher token count (context included)
 
 **Free tier** gives you 10 optimizations to experience the full pipeline. No credit card required.
 
-**Enterprise** includes unlimited usage, custom integrations, and dedicated support. [Contact sales](https://prompt-control-plane.pages.dev/contact.html) for pricing and details.
+**Enterprise** includes unlimited usage, custom integrations, and dedicated support. [Contact sales](https://getpcp.pages.dev/contact.html) for pricing and details.
 
 ### Activate a License
 
 1. **Free**: No action needed — you get 10 optimizations immediately.
-2. **Pro/Power**: Purchase at the [Prompt Control Plane store](https://prompt-control-plane.pages.dev/) and you receive a license key starting with `pcp_...`
+2. **Pro/Power**: Purchase at the [Prompt Control Plane store](https://getpcp.pages.dev/) and you receive a license key starting with `pcp_...`
 3. Tell Claude: "Use set_license with key: pcp_YOUR_KEY_HERE"
 4. Done — your tier upgrades instantly. Verify with `license_status`.
-5. **Enterprise**: [Contact sales](https://prompt-control-plane.pages.dev/contact.html) for custom license key generation.
+5. **Enterprise**: [Contact sales](https://getpcp.pages.dev/contact.html) for custom license key generation.
 
 ## Enterprise Features
 
-Enterprise features are gated by an Enterprise license key. All features below are managed through the **[Enterprise Console](https://prompt-control-plane.pages.dev/admin.html)** — a web-based admin interface with one-click toggles.
+Enterprise features are gated by an Enterprise license key. All features below are managed through the **[Enterprise Console](https://getpcp.pages.dev/admin.html)** — a web-based admin interface with one-click toggles.
 
 ### Enterprise Console
 
