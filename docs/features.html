@@ -9,20 +9,20 @@
   <link rel="apple-touch-icon" sizes="180x180" href="apple-touch-icon.png">
   <link rel="manifest" href="site.webmanifest">
   <title>Features — Prompt Control Plane | Deterministic Prompt Governance</title>
-  <meta name="description" content="19 tools for deterministic prompt governance — quality scoring, policy enforcement, structured compilation, context compression, multi-provider routing, and audit trails. Zero LLM calls, fully offline.">
+  <meta name="description" content="20 tools for deterministic prompt governance — quality scoring, policy enforcement, structured compilation, context compression, multi-provider routing, and audit trails. Zero LLM calls, fully offline.">
   <meta name="keywords" content="prompt governance features, prompt policy enforcement, MCP tools, prompt quality scoring, ambiguity detection, context compression, LLM cost estimation, prompt compilation, AI governance tools">
   <link rel="canonical" href="https://prompt-control-plane.pages.dev/features.html">
 
   <!-- Open Graph -->
   <meta property="og:title" content="Features — Prompt Control Plane">
-  <meta property="og:description" content="19 deterministic tools for prompt quality — scoring, ambiguity detection, compilation, compression, cost estimation. Zero LLM calls, runs locally.">
+  <meta property="og:description" content="20 deterministic tools for prompt quality — scoring, ambiguity detection, compilation, compression, cost estimation. Zero LLM calls, runs locally.">
   <meta property="og:type" content="website">
   <meta property="og:url" content="https://prompt-control-plane.pages.dev/features.html">
 
   <!-- Twitter Card -->
   <meta name="twitter:card" content="summary_large_image">
   <meta name="twitter:title" content="Features — Prompt Control Plane">
-  <meta name="twitter:description" content="19 deterministic tools for prompt quality — scoring, ambiguity detection, compilation, compression, cost estimation. Zero LLM calls, runs locally.">
+  <meta name="twitter:description" content="20 deterministic tools for prompt quality — scoring, ambiguity detection, compilation, compression, cost estimation. Zero LLM calls, runs locally.">
 
   <!-- Schema.org structured data -->
   <script type="application/ld+json">
@@ -30,7 +30,7 @@
     "@context": "https://schema.org",
     "@type": "WebPage",
     "name": "Features — Prompt Control Plane",
-    "description": "All 19 tools in the Prompt Control Plane — deterministic prompt scoring, ambiguity detection, compilation, compression, cost estimation, and more.",
+    "description": "All 20 tools in the Prompt Control Plane — deterministic prompt scoring, ambiguity detection, compilation, compression, cost estimation, and more.",
     "url": "https://prompt-control-plane.pages.dev/features.html",
     "isPartOf": {
       "@type": "WebSite",
@@ -204,7 +204,7 @@
           <div><strong>Risk Detection:</strong> Catches scope explosion, missing constraints, hallucination risk, and underspecified prompts before they reach an LLM.</div>
           <div><strong>Safe Compression:</strong> Guaranteed to never increase token count. Structured content (code, tables, lists) is always protected.</div>
           <div><strong>Multi-Provider:</strong> Routes to the right model at the right price, with a full decision trail explaining why.</div>
-          <div><strong>Auditable:</strong> Every decision is logged with tamper-evident integrity. Enterprise teams get cryptographic proof of compliance.</div>
+          <div><strong>Auditable:</strong> Every decision is logged with hash-chained integrity. Enterprise teams get cryptographic proof of compliance.</div>
         </div>
         <p style="margin-top:12px;font-size:12px;color:var(--text-muted);margin-bottom:0;">Fully offline. Zero LLM calls. Extensively tested. Run the suite yourself to verify.</p>
       </div>
@@ -262,7 +262,7 @@
           <!-- Analysis -->
           <rect x="310" y="334" width="280" height="44" rx="8" fill="var(--surface)" stroke="var(--accent)" stroke-width="1.5"/>
           <text x="450" y="351" text-anchor="middle" fill="var(--text-muted)" font-size="10">STEP 2</text>
-          <text x="450" y="366" text-anchor="middle" fill="var(--accent)" font-size="12" font-weight="600">Analysis Phase &rarr; IntentSpec</text>
+          <text x="450" y="366" text-anchor="middle" fill="var(--accent)" font-size="12" font-weight="600">Analysis Phase &rarr; Intent</text>
           <line x1="450" y1="378" x2="450" y2="408" stroke="var(--accent)" stroke-width="1.5" marker-end="url(#arr)"/>
           <!-- Three parallel -->
           <line x1="450" y1="408" x2="200" y2="408" stroke="var(--accent)" stroke-width="1" stroke-dasharray="3,2"/>
@@ -299,7 +299,7 @@
   <section class="section section-alt">
     <div class="container-wide">
       <h2 class="section-title text-center">Complete Capability Reference</h2>
-      <p class="section-subtitle text-center">19 capabilities across every tier &mdash; 16 always free, 3 metered. Enterprise governance unlocks with the Enterprise plan.</p>
+      <p class="section-subtitle text-center">20 capabilities across every tier &mdash; 17 always free, 3 metered. Enterprise governance unlocks with the Enterprise plan.</p>
 
       <table class="data-table">
         <thead>
@@ -312,7 +312,7 @@
         </thead>
         <tbody>
           <tr class="group-header">
-            <td colspan="4">Optimization</td>
+            <td colspan="4">Core Capabilities</td>
           </tr>
           <tr>
             <td>1</td>
@@ -444,6 +444,16 @@
             <td><span class="tag tag-free">Free</span></td>
             <td>See your current tier, license expiry date, and where to upgrade if needed</td>
           </tr>
+
+          <tr class="group-header">
+            <td colspan="4">Enterprise Governance</td>
+          </tr>
+          <tr>
+            <td>20</td>
+            <td>Save Custom Rules</td>
+            <td><span class="tag tag-free">Free</span> <span class="tag tag-enterprise">Enterprise</span></td>
+            <td>Deploy custom governance rules built in the Enterprise Console directly to your Prompt Control Plane</td>
+          </tr>
         </tbody>
       </table>
     </div>
@@ -554,6 +564,11 @@
 
       <div class="grid-2" style="margin-top:32px;">
         <div class="card" style="border-top:3px solid var(--accent);">
+          <h3>&#x1F3DB;&#xFE0F; Enterprise Console</h3>
+          <p>A browser-based admin panel for managing your entire governance configuration. Build custom rules with a visual editor, toggle policies, configure audit settings, and deploy changes &mdash; all gated by your Enterprise license key.</p>
+          <p style="font-size:12px;color:var(--text-muted);margin-top:8px;"><a href="admin.html" style="color:var(--accent);">Open Enterprise Console &rarr;</a></p>
+        </div>
+        <div class="card" style="border-top:3px solid var(--accent);">
           <h3>&#x1F6E1;&#xFE0F; Policy Enforcement</h3>
           <p>Switch between <strong>advisory</strong> and <strong>enforce</strong> mode. In enforce mode, prompts that fail quality rules or exceed risk thresholds are blocked before they reach any LLM. Both built-in and custom rules are enforced.</p>
           <p style="font-size:12px;color:var(--text-muted);margin-top:8px;">Setting: <code>policy_mode: 'advisory' | 'enforce'</code></p>
@@ -564,14 +579,14 @@
           <p style="font-size:12px;color:var(--text-muted);margin-top:8px;">Setting: <code>lock: true, lock_secret: '...'</code> &mdash; SHA-256 hashed, never stored in plaintext</p>
         </div>
         <div class="card" style="border-top:3px solid var(--accent);">
-          <h3>&#x1F4DC; Tamper-Evident Audit Trail</h3>
-          <p>Append-only JSONL audit log with SHA-256 hash chaining. Every optimization, approval, deletion, and configuration change is logged. If any entry is modified or deleted, all subsequent hashes break &mdash; tamper detected.</p>
+          <h3>&#x1F4DC; Hash-Chained Audit Trail</h3>
+          <p>Append-only JSONL audit log with SHA-256 hash chaining. Every optimization, approval, deletion, and configuration change is logged. If any entry is modified or deleted, all subsequent hashes break &mdash; integrity violation detected.</p>
           <p style="font-size:12px;color:var(--text-muted);margin-top:8px;">Setting: <code>audit_log: true</code> &mdash; local-only, no prompt content stored, privacy-safe</p>
         </div>
         <div class="card" style="border-top:3px solid var(--accent);">
-          <h3>&#x1F4CF; Custom Rules</h3>
-          <p>Define up to 25 organization-specific rules with regex patterns, severity levels (blocking or non-blocking), and risk dimensions. Custom rules integrate with policy enforcement &mdash; blocking rules prevent prompt approval in enforce mode.</p>
-          <p style="font-size:12px;color:var(--text-muted);margin-top:8px;">File: <code>~/.prompt-control-plane/custom-rules.json</code></p>
+          <h3>&#x1F4CF; Custom Governance Rules</h3>
+          <p>Build up to 25 organization-specific rules in the Enterprise Console with a visual editor. Define match patterns, risk dimensions, severity levels (blocking or non-blocking), and weights. Deploy with one click &mdash; rules take effect on the next optimization.</p>
+          <p style="font-size:12px;color:var(--text-muted);margin-top:8px;">Deploy via the <code>save_custom_rules</code> tool or the Enterprise Console</p>
         </div>
         <div class="card" style="border-top:3px solid var(--accent);">
           <h3>&#x23F1;&#xFE0F; Session Retention</h3>

@@ -9,20 +9,20 @@
   <link rel="apple-touch-icon" sizes="180x180" href="apple-touch-icon.png">
   <link rel="manifest" href="site.webmanifest">
   <title>Documentation — Prompt Control Plane | Developer Reference</title>
-  <meta name="description" content="Complete developer documentation for Prompt Control Plane. 19 MCP tools, CLI linter, GitHub Action, programmatic API, enterprise features, and architecture reference. Zero LLM calls, fully deterministic.">
+  <meta name="description" content="Complete developer documentation for Prompt Control Plane. 20 MCP tools, CLI linter, GitHub Action, programmatic API, enterprise features, and architecture reference. Zero LLM calls, fully deterministic.">
   <meta name="keywords" content="prompt control plane docs, MCP documentation, prompt linter API, prompt-lint CLI, prompt governance tools, enterprise prompt policy, audit trail, config lock, developer reference">
   <link rel="canonical" href="https://prompt-control-plane.pages.dev/docs.html">
 
   <!-- Open Graph -->
   <meta property="og:title" content="Documentation — Prompt Control Plane">
-  <meta property="og:description" content="Complete developer documentation for Prompt Control Plane. 19 tools, CLI, GitHub Action, API, enterprise features.">
+  <meta property="og:description" content="Complete developer documentation for Prompt Control Plane. 20 tools, CLI, GitHub Action, API, enterprise features.">
   <meta property="og:type" content="website">
   <meta property="og:url" content="https://prompt-control-plane.pages.dev/docs.html">
 
   <!-- Twitter Card -->
   <meta name="twitter:card" content="summary_large_image">
   <meta name="twitter:title" content="Documentation — Prompt Control Plane">
-  <meta name="twitter:description" content="Complete developer reference. 19 MCP tools, CLI linter, GitHub Action, programmatic API, enterprise governance features.">
+  <meta name="twitter:description" content="Complete developer reference. 20 MCP tools, CLI linter, GitHub Action, programmatic API, enterprise governance features.">
 
   <!-- Schema.org structured data -->
   <script type="application/ld+json">
@@ -30,7 +30,7 @@
     "@context": "https://schema.org",
     "@type": "TechArticle",
     "name": "Documentation — Prompt Control Plane",
-    "description": "Complete developer documentation for Prompt Control Plane — 19 MCP tools, CLI linter, GitHub Action, programmatic API, enterprise features.",
+    "description": "Complete developer documentation for Prompt Control Plane — 20 MCP tools, CLI linter, GitHub Action, programmatic API, enterprise features.",
     "url": "https://prompt-control-plane.pages.dev/docs.html",
     "isPartOf": {
       "@type": "WebSite",
@@ -755,7 +755,7 @@ optimize_prompt({
             </tr>
             <tr style="border-bottom:1px solid var(--border);">
               <td style="padding:8px 12px;"><code>intent_spec</code></td>
-              <td style="padding:8px 12px;">IntentSpec</td>
+              <td style="padding:8px 12px;">Intent</td>
               <td style="padding:8px 12px;">Decomposed intent: task type, audience, tone, constraints, definition of done</td>
               <td style="padding:8px 12px;"><span class="tag tag-free">All</span></td>
             </tr>
@@ -814,8 +814,8 @@ optimize_prompt({
       <p style="margin-top:1rem;"><strong>Enterprise-only pipeline stages</strong> that influence the PreviewPack (all configured via the <a href="admin.html" style="color:var(--accent);font-weight:600;">Enterprise Console</a>):</p>
       <ul style="margin-top:0.5rem; padding-left:1.5rem;">
         <li><strong>Policy Gate</strong> &mdash; can block or warn before compilation begins. Set enforcement mode and strictness in the Enterprise Console.</li>
-        <li><strong>Custom Rules</strong> &mdash; your regex-based rules affect risk score and blocking decisions. Build rules visually in the Enterprise Console, export to <code>~/.prompt-control-plane/custom-rules.json</code>, validate with <code>prompt-lint --validate-custom-rules</code>.</li>
-        <li><strong>Audit Log</strong> &mdash; every decision is written to a tamper-evident JSONL log with SHA-256 hash chaining. Explore and verify the chain visually in the Enterprise Console.</li>
+        <li><strong>Custom Rules</strong> &mdash; your regex-based rules affect risk score and blocking decisions. Build rules visually in the Enterprise Console and deploy with one click via the <code>save_custom_rules</code> tool. Validate with <code>prompt-lint --validate-custom-rules</code>.</li>
+        <li><strong>Audit Log</strong> &mdash; every decision is written to a hash-chained JSONL log with SHA-256 hash chaining. Explore and verify the chain visually in the Enterprise Console.</li>
       </ul>
 
       <!-- ════════════════════════════════════════════════════════════════════ -->
@@ -853,7 +853,7 @@ optimize_prompt({
           <td style="padding:6px 10px;">Zero external calls. Your prompts never leave your machine. No API keys required for analysis.</td>
         </tr>
         <tr>
-          <td style="padding:6px 10px;font-weight:600;">Tamper-evident audit</td>
+          <td style="padding:6px 10px;font-weight:600;">Hash-chained audit</td>
           <td style="padding:6px 10px;">Cryptographically chained log of every decision. If any entry is modified, the chain breaks. <span style="color:var(--text-muted);font-size:11px;">(Enterprise)</span></td>
         </tr>
       </table>
@@ -863,10 +863,10 @@ optimize_prompt({
       <!-- TOOL REFERENCE                                                      -->
       <!-- ════════════════════════════════════════════════════════════════════ -->
       <h2 id="tool-reference">Tool Reference</h2>
-      <p>Prompt Control Plane exposes 19 tools via MCP. Three are metered (count against your plan); the rest are free and unlimited. Every response includes a <code>request_id</code> for traceability.</p>
+      <p>Prompt Control Plane exposes 20 tools via MCP. Three are metered (count against your plan); the rest are free and unlimited. Every response includes a <code>request_id</code> for traceability.</p>
 
       <div class="tool-card" style="margin-bottom:32px;">
-        <h3 style="margin-top:0;">All 19 Tools at a Glance</h3>
+        <h3 style="margin-top:0;">All 20 Tools at a Glance</h3>
         <table style="width:100%; border-collapse:collapse; font-size:13px;">
           <thead>
             <tr style="border-bottom:2px solid var(--border); text-align:left;">
@@ -895,7 +895,8 @@ optimize_prompt({
             <tr style="border-bottom:1px solid var(--border);"><td style="padding:6px 10px;"><code>list_sessions</code></td><td>Sessions</td><td><span class="tag tag-free">Free</span></td><td style="color:var(--accent);font-weight:600;">Enterprise</td></tr>
             <tr style="border-bottom:1px solid var(--border);"><td style="padding:6px 10px;"><code>export_session</code></td><td>Sessions</td><td><span class="tag tag-free">Free</span></td><td style="color:var(--accent);font-weight:600;">Enterprise</td></tr>
             <tr style="border-bottom:1px solid var(--border);"><td style="padding:6px 10px;"><code>delete_session</code></td><td>Sessions</td><td><span class="tag tag-free">Free</span></td><td style="color:var(--accent);font-weight:600;">Enterprise</td></tr>
-            <tr><td style="padding:6px 10px;"><code>purge_sessions</code></td><td>Sessions</td><td><span class="tag tag-free">Free</span></td><td style="color:var(--accent);font-weight:600;">Enterprise</td></tr>
+            <tr style="border-bottom:1px solid var(--border);"><td style="padding:6px 10px;"><code>purge_sessions</code></td><td>Sessions</td><td><span class="tag tag-free">Free</span></td><td style="color:var(--accent);font-weight:600;">Enterprise</td></tr>
+            <tr><td style="padding:6px 10px;"><code>save_custom_rules</code></td><td>Governance</td><td><span class="tag tag-free">Free</span></td><td style="color:var(--accent);font-weight:600;">Enterprise</td></tr>
           </tbody>
         </table>
         <p style="font-size:12px; color:var(--text-muted); margin-top:8px;">*configure_optimizer: Enterprise settings (policy_mode, audit_log, config lock, session_retention_days) require Enterprise tier.</p>
@@ -1219,7 +1220,7 @@ optimize_prompt({
           <div class="param-row"><span class="param-desc">No parameters required.</span></div>
         </div>
         <div class="tool-output">Returns</div>
-        <p class="tool-output-desc"><code>LicenseData</code> (or null with purchase links if inactive): <code>tier</code>, <code>issued_at</code>, <code>expires_at</code>, <code>license_id</code>, <code>valid</code>, <code>validation_error</code> (if expired).</p>
+        <p class="tool-output-desc">License details (or null with purchase links if inactive): <code>tier</code>, <code>issued_at</code>, <code>expires_at</code>, <code>license_id</code>, <code>valid</code>, <code>validation_error</code> (if expired).</p>
       </div>
 
       <!-- ── Sessions ────────────────────────────────────────────────────── -->
@@ -1411,7 +1412,7 @@ optimize_prompt({
           <text x="894" y="226" text-anchor="middle" fill="var(--text-muted)" font-size="9">&rarr; sha256: f2e48b3...</text>
           <text x="894" y="244" text-anchor="middle" fill="var(--text-muted)" font-size="9">append-only JSONL</text>
           <text x="894" y="260" text-anchor="middle" fill="var(--text-muted)" font-size="9">SHA-256 hash chain</text>
-          <text x="894" y="274" text-anchor="middle" fill="var(--blue)" font-size="9">tamper-evident</text>
+          <text x="894" y="274" text-anchor="middle" fill="var(--blue)" font-size="9">hash-chained</text>
 
           <!-- Policy Mode Comparison box -->
           <rect x="10" y="280" width="290" height="120" rx="8" fill="var(--surface)" stroke="var(--border)" stroke-width="1"/>
@@ -1448,7 +1449,7 @@ optimize_prompt({
       <p>In enforce mode, <code>approve_prompt</code> returns an error with <code>policy_violations</code> listing each triggered BLOCKING rule (rule_id, description, severity, risk_dimension). The user must resolve the issues via <code>refine_prompt</code> or adjust the prompt before re-attempting approval.</p>
 
       <h3>Audit Logging <span class="tag-enterprise">Enterprise</span></h3>
-      <p>Append-only, tamper-evident JSONL audit trail. Every significant action generates an entry with SHA-256 hash chaining.</p>
+      <p>Append-only, hash-chained JSONL audit trail. Every significant action generates an entry with SHA-256 hash chaining.</p>
       <h4>Enable</h4>
       <div class="code-block">configure_optimizer({
   audit_log: <span class="keyword">true</span>
@@ -1468,7 +1469,7 @@ optimize_prompt({
   <span class="string">"integrity_hash"</span>: <span class="string">"a3f2..."</span>  <span class="comment">// SHA-256: hash(prev_hash + JSON(entry))</span>
 }</div>
       <h4>Verify integrity</h4>
-      <p>If any line in the JSONL file is deleted or modified, the hash chain breaks. To verify: iterate the log, recompute <code>SHA-256(prev_hash + line)</code> for each entry, and compare against the stored <code>integrity_hash</code>. A mismatch indicates tampering.</p>
+      <p>If any line in the JSONL file is deleted or modified, the hash chain breaks. To verify: iterate the log, recompute <code>SHA-256(prev_hash + line)</code> for each entry, and compare against the stored <code>integrity_hash</code>. A mismatch indicates unauthorized modification.</p>
       <div class="callout callout-warning">
         <p><strong>Privacy invariant:</strong> The audit log never stores raw_prompt, compiled_prompt, or prompt_preview content. Only metadata (event type, session ID, risk score, outcome) is recorded.</p>
       </div>
@@ -1646,7 +1647,7 @@ console.<span class="fn">log</span>(result.cost.costs);         <span class="com
 
       <h3>OptimizeResult Shape</h3>
       <div class="code-block"><span class="keyword">interface</span> OptimizeResult {
-  intent: IntentSpec;             <span class="comment">// Parsed intent from raw prompt</span>
+  intent: Intent;             <span class="comment">// Parsed intent from raw prompt</span>
   quality: QualityScore;          <span class="comment">// Quality score (0-100, multi-dimensional)</span>
   compiled: <span class="keyword">string</span>;               <span class="comment">// Optimized prompt for target LLM</span>
   changes: <span class="keyword">string</span>[];              <span class="comment">// Structural changes applied</span>
@@ -1667,8 +1668,8 @@ console.<span class="fn">log</span>(result.cost.costs);         <span class="com
           <tr><td>Risk</td><td>Rule evaluation, risk scoring, risk level derivation</td></tr>
           <tr><td>Profiles</td><td>Optimization profile resolution and suggestions</td></tr>
           <tr><td>Enterprise</td><td>Policy evaluation, audit logging, session management</td></tr>
-          <tr><td>Custom Rules</td><td><code>CustomRulesManager</code>, <code>customRules</code></td></tr>
-          <tr><td>Types</td><td>All TypeScript interfaces and types (see <a href="https://github.com/rishiatlan/Prompt-Optimizer-MCP/blob/main/src/types.ts">types.ts</a>)</td></tr>
+          <tr><td>Custom Rules</td><td>Custom rule loading, validation, hash calculation</td></tr>
+          <tr><td>Types</td><td>All TypeScript interfaces and types</td></tr>
         </tbody>
       </table>
 
@@ -1729,9 +1730,6 @@ console.<span class="fn">log</span>(result.cost.costs);         <span class="com
         </tbody>
       </table>
       <p>When limits are exceeded, the oldest sessions are automatically cleaned up.</p>
-
-      <h3>Phase A / Phase B</h3>
-      <p>The current release (Phase A) uses local file-based storage. All tool handlers use an async <code>StorageInterface</code> that abstracts the backend. Phase B will swap to Cloudflare Worker + Supabase without changing any tool handler code, test contracts, or interfaces.</p>
 
     </main>
   </div>

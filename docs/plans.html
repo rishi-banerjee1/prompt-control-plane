@@ -9,20 +9,20 @@
   <link rel="apple-touch-icon" sizes="180x180" href="apple-touch-icon.png">
   <link rel="manifest" href="site.webmanifest">
   <title>Pricing &amp; Comparison — Prompt Control Plane | Pricing, Features &amp; Enterprise</title>
-  <meta name="description" content="Compare all Prompt Control Plane tiers: Free, Pro, Power, and Enterprise. Full feature comparison across 19 tools, enterprise governance features, and pricing details.">
+  <meta name="description" content="Compare all Prompt Control Plane tiers: Free, Pro, Power, and Enterprise. Full feature comparison across 20 tools, enterprise governance features, and pricing details.">
   <meta name="keywords" content="prompt governance pricing, prompt control plane plans, MCP server pricing, enterprise prompt governance, prompt policy enforcement pricing, audit trail, config lock, custom rules">
   <link rel="canonical" href="https://prompt-control-plane.pages.dev/plans.html">
 
   <!-- Open Graph -->
   <meta property="og:title" content="Pricing &amp; Comparison — Prompt Control Plane">
-  <meta property="og:description" content="Compare all tiers: Free, Pro, Power, Enterprise. 19 tools, enterprise governance, audit trails, policy enforcement.">
+  <meta property="og:description" content="Compare all tiers: Free, Pro, Power, Enterprise. 20 tools, enterprise governance, audit trails, policy enforcement.">
   <meta property="og:type" content="website">
   <meta property="og:url" content="https://prompt-control-plane.pages.dev/plans.html">
 
   <!-- Twitter Card -->
   <meta name="twitter:card" content="summary_large_image">
   <meta name="twitter:title" content="Pricing &amp; Comparison — Prompt Control Plane">
-  <meta name="twitter:description" content="Compare all tiers: Free, Pro, Power, Enterprise. 19 tools, enterprise governance, audit trails, policy enforcement.">
+  <meta name="twitter:description" content="Compare all tiers: Free, Pro, Power, Enterprise. 20 tools, enterprise governance, audit trails, policy enforcement.">
 
   <!-- Schema.org structured data -->
   <script type="application/ld+json">
@@ -30,7 +30,7 @@
     "@context": "https://schema.org",
     "@type": "WebPage",
     "name": "Pricing & Comparison — Prompt Control Plane",
-    "description": "Full feature comparison across all Prompt Control Plane tiers. 19 tools, enterprise governance, audit trails, policy enforcement.",
+    "description": "Full feature comparison across all Prompt Control Plane tiers. 20 tools, enterprise governance, audit trails, policy enforcement.",
     "url": "https://prompt-control-plane.pages.dev/plans.html",
     "isPartOf": {
       "@type": "WebSite",
@@ -242,7 +242,7 @@
           <ul>
             <li>10 lifetime optimizations</li>
             <li>5 per minute rate limit</li>
-            <li>All 19 tools</li>
+            <li>All 20 tools</li>
             <li>All 3 output formats</li>
             <li>Unlimited scoring &amp; checking</li>
           </ul>
@@ -255,7 +255,7 @@
           <ul>
             <li>100 optimizations / month</li>
             <li>30 per minute rate limit</li>
-            <li>All 19 tools</li>
+            <li>All 20 tools</li>
             <li>Always-on mode</li>
             <li>Offline license key</li>
           </ul>
@@ -268,7 +268,7 @@
           <ul>
             <li>Unlimited optimizations</li>
             <li>60 per minute rate limit</li>
-            <li>All 19 tools</li>
+            <li>All 20 tools</li>
             <li>Always-on mode</li>
             <li>Priority support</li>
           </ul>
@@ -282,7 +282,7 @@
             <li>Unlimited optimizations</li>
             <li>120 per minute rate limit</li>
             <li>Policy enforcement (advisory + enforce modes)</li>
-            <li>Tamper-evident audit trail (JSONL, hash-chained)</li>
+            <li>Hash-chained audit trail (JSONL, hash-chained)</li>
             <li>Config lock with passphrase protection</li>
             <li>Custom rules engine (up to 25 rules)</li>
             <li>Session lifecycle management</li>
@@ -302,7 +302,7 @@
   <section class="section section-alt" id="comparison">
     <div class="container-wide">
       <h2 class="section-title text-center">Full Feature Comparison</h2>
-      <p class="section-subtitle text-center">Every tool, every tier. All 19 tools are available on all plans &mdash; metering applies only to optimization calls.</p>
+      <p class="section-subtitle text-center">Every tool, every tier. All 20 tools are available on all plans &mdash; metering applies only to optimization calls.</p>
 
       <div class="comparison-wrapper">
         <table class="comparison-table">
@@ -583,7 +583,7 @@
       <!-- Audit Logging -->
       <div class="enterprise-feature">
         <h3><span class="ef-icon">&#x1f4dc;</span> Audit Logging</h3>
-        <p>Every action generates a JSONL audit entry with SHA-256 hash chaining. If any line is deleted or modified, the chain breaks and tampering is detectable. Local-only, opt-in, and never stores raw prompt content. Answers the question: who changed what, when, and was it allowed?</p>
+        <p>Every action generates a JSONL audit entry with SHA-256 hash chaining. If any line is deleted or modified, the chain breaks and unauthorized changes are detectable. Local-only, opt-in, and never stores raw prompt content. Answers the question: who changed what, when, and was it allowed?</p>
         <div class="ef-label">How to enable</div>
         <div class="ef-code">Enterprise Console &rarr; Policy Enforcement &rarr; enable audit trail toggle &rarr; Copy Command &rarr; Paste into Claude</div>
         <div class="ef-label">Example audit entry</div>
@@ -634,8 +634,8 @@
       <div class="enterprise-feature">
         <h3><span class="ef-icon">&#x1f4cb;</span> Custom Rules</h3>
         <p>Define your own regex-based rules that run on every prompt. Build them visually in the Enterprise Console &mdash; which validates regex syntax, enforces the schema, and exports a ready-to-use JSON file. Each rule specifies a match pattern, severity (BLOCKING or NON-BLOCKING), a risk dimension (hallucination, constraint, underspec, or scope), and a risk weight. Up to 25 custom rules. Rules are hashed for reproducibility and included in session exports.</p>
-        <div class="ef-label">How to create rules</div>
-        <div class="ef-code">Enterprise Console &rarr; Custom Rules &rarr; fill in rule form &rarr; Download File &rarr; save to ~/.prompt-control-plane/custom-rules.json</div>
+        <div class="ef-label">How to deploy rules</div>
+        <div class="ef-code">Enterprise Console &rarr; Custom Rules &rarr; build rules in visual editor &rarr; Copy &amp; Deploy &rarr; paste into any AI assistant connected to PCP &rarr; rules active instantly</div>
         <div class="ef-label">Example custom rule</div>
         <div class="ef-code">{
   "id": "no_pii_in_prompt",
@@ -706,7 +706,7 @@
           <h3 style="margin-top:0;">Compliance &amp; Governance</h3>
           <ul style="padding-left:1.2rem; line-height:1.8;">
             <li>Deterministic — same input produces same output, always</li>
-            <li>Tamper-evident audit trail with hash-chained JSONL entries</li>
+            <li>Hash-chained audit trail with hash-chained JSONL entries</li>
             <li>Policy enforcement blocks non-compliant prompts at approval</li>
             <li>Reproducible exports with rule-set hashes for audit</li>
             <li>Source-available — full code review available on GitHub</li>

@@ -43,7 +43,7 @@
 - Config lock/unlock requires Enterprise tier
 - Custom rules integration gated to Enterprise in MCP tools (ungated in CLI linter)
 - `tier_feature_unavailable` error response with upgrade URL
-- ~15 new tier gate tests
+- New tier gate tests
 
 ### Changed — Docs Site
 - Navigation updated across all pages: Home | Features | Models | Docs | Pricing
@@ -63,74 +63,51 @@
 
 ### Added
 - **Policy enforcement mode**: `policy_mode` config (`advisory` | `enforce`). When set to `enforce`, BLOCKING rules (built-in + custom) block `optimize_prompt` and `approve_prompt`. Risk threshold gating blocks `approve_prompt` when score >= strictness threshold (relaxed=40, standard=60, strict=75).
-- **Audit logging with hash chaining**: Opt-in JSONL audit trail (`audit_log: true`). Local-only, append-only, never stores prompt content. Each entry includes `integrity_hash` — SHA-256 chain linking every entry to its predecessor. Tamper-evident: if any line is deleted or modified, all subsequent hashes break. Verify with `auditLogger.verifyChain()`.
+- **Audit logging with hash chaining**: Opt-in JSONL audit trail. Local-only, append-only, never stores prompt content. Each entry includes an integrity hash linking every entry to its predecessor. If any line is deleted or modified, all subsequent hashes break — making unauthorized changes detectable.
 - **Config lock mode**: Passphrase-protected config locking (`lock: true, lock_secret: "..."`) prevents unauthorized changes. Only the correct passphrase can unlock. Wrong attempts are audit-logged. Stored as SHA-256 hash — secret never persisted.
 - **Tool 18 — `delete_session`** (FREE): Delete a single session by ID. Returns `deleted: true/false`.
 - **Tool 19 — `purge_sessions`** (FREE): Safe-by-default session purge with `older_than_days`, `keep_last`, `purge_all`, `dry_run`. Three-tier resolution: explicit purge_all → age filter → config default → no-op.
 - **`session_retention_days` config**: Optional auto-retention policy for `purge_sessions` default behavior.
 - **Policy hash**: SHA-256 of built-in + custom rule-set hashes + policy mode + strictness. Included in `approve_prompt` success response and `export_session` metadata for reproducibility.
 - **`policy_mode` in responses**: Visible in optimize_prompt, approve_prompt, pre_flight, and export_session outputs.
-- **`src/policy.ts`**: Pure policy evaluation module — `evaluatePolicyViolations`, `checkRiskThreshold`, `buildPolicyEnforcementSummary`, `calculatePolicyHash`.
-- **`src/auditLog.ts`**: AuditLogger class with no-throw invariant, JSONL append, 10-key detail cap, tamper-evident hash chain.
-- **65 new tests**: auditLog (18), sessionLifecycle (15), policyEnforcement (15), enterpriseWorkflow (2), contracts additions (15).
+- New tests covering audit logging, session lifecycle, policy enforcement, and enterprise workflows.
 
 ### Changed
 - Tool count: 17 → 19
-- `STRICTNESS_THRESHOLDS` moved to `src/policy.ts` as canonical source (re-exported for backward compatibility)
-- `registerTools` signature now accepts `engineVersion?: string` for metadata propagation
-- Test count: 595 → 660
-- Test files: 28 → 32
 
 ### Notes
 - **No breaking changes** to existing 17 MCP tools, CLI, or programmatic API.
 - New tools are FREE and unlimited.
-- Audit log is opt-in and local-only. Never stores raw_prompt or compiled_prompt. Tamper-evident via SHA-256 hash chain.
+- Audit log is opt-in and local-only. Never stores prompt content. Hash-chained for integrity verification.
 - Config lock uses passphrase-based protection (SHA-256 hash stored, secret never persisted). All lock/unlock/blocked attempts are audit-logged.
-- Storage layout unchanged: `~/.prompt-optimizer/session-{id}.json`. Purge only deletes session files — never touches config, usage, license, audit, or custom rules.
+- Purge only deletes session data — never touches config, usage, license, audit, or custom rules.
 - Architecture constraint preserved: **zero LLM calls inside. Deterministic. Offline. Reproducible.**
 
 ## [3.2.1] - 2026-03-01
 
 ### Added
-- **Reproducible session exports**: `exportSession()` now auto-calculates `rule_set_hash` (SHA-256 of all 14 built-in rules), `rule_set_version` (derived from rule count), and `risk_score` (computed from stored task type). No more placeholder values.
-- **`RULES_VERSION` constant**: `3.2.1-${rules.length}r` — rule count derived from the rules array, never hardcoded. Changes automatically if rules are added or removed.
-- **`calculateBuiltInRuleSetHash()`**: Deterministic SHA-256 hash of all built-in rules. Captures rule metadata + shared regex pattern libraries + v3.1 inline regex fingerprints. Uses `RegExp.toString()` (ECMA-262 §22.2.5.12, spec-stable) for cross-Node portability.
-- **Custom rules integration** (Phase 2): `computeRiskScoreWithCustomRules()` async wrapper, custom rule loading from `~/.prompt-optimizer/custom-rules/`, `--validate-custom-rules` CLI flag, API exports for `CustomRule`, `RuleMatch`, `CustomRulesConfig` types.
-- **15 reproducibility tests** (`test/reproducibility.test.ts`): Version format, hash stability, risk score verification, export auto-calculation, API barrel exports.
-
-### Changed
-- `exportSession()` signature simplified: removed optional `ruleSetHash`/`ruleSetVersion` parameters — all values auto-calculated.
-- Test count: 579 → 595
-- Test files: 27 → 28
+- **Reproducible session exports**: Session exports now auto-calculate `rule_set_hash`, `rule_set_version`, and `risk_score` — no more placeholder values.
+- **Custom rules integration**: User-defined regex rules for custom governance, CLI validation flag, and programmatic API support.
+- New reproducibility tests covering version format, hash stability, and export auto-calculation.
 
 ### Notes
 - **No breaking changes** to MCP tools, CLI, or programmatic API.
-- Hash is portable across Node 18/20/22 — uses explicit regex metadata, not `Function.prototype.toString()`.
+- Hash is portable across Node 18/20/22.
 - Architecture constraint preserved: **zero LLM calls inside. Deterministic. Offline. Reproducible.**
 
 ## [3.1.0] - 2026-03-01
 
 ### Added
-- **Smart Compression (H1-H5)**: 5 deterministic heuristics — license block strip, comment collapse, duplicate collapse, stub collapse, aggressive middle truncation
-- **Zone Scanner** (`src/zones.ts`): Protects fenced code, tables, lists, JSON, YAML blocks from heuristic modification
-- **Preserve Patterns** (`src/preservePatterns.ts`): Regex string-based upfront marking of untouchable lines
-- **Tool Pruning** (`prune_tools` tool #15): Task-type-aware scoring, mention protection, always-relevant tool set
-- **Pre-Flight Deltas** (`src/deltas.ts`): Estimated token savings for compression and pruning before user commits
-- **4 new risk rules** (10 → 14): `hallucination_risk`, `agent_underspec`, `conflicting_constraints`, `token_budget_mismatch`
-- **G21 Drift Guardrail**: 10 golden fixture prompts with locked risk levels — prevents rule regressions
-- **G36 Invariant**: Property-based test ensuring compressed_tokens ≤ original_tokens (100-input fuzz)
+- **Smart Compression**: 5 deterministic heuristics — license block strip, comment collapse, duplicate collapse, stub collapse, aggressive middle truncation. Zone-aware: protects fenced code, tables, lists, and structured blocks from modification.
+- **Tool Pruning** (`prune_tools`): Task-type-aware relevance scoring, mention protection, protected core tools
+- **Pre-Flight Deltas**: Estimated token savings for compression and pruning shown before user commits
+- **4 new risk rules**: Hallucination risk, agent underspec, conflicting constraints, token budget mismatch
 - `compress_context` response now includes `heuristics_applied` and `mode` fields (backward-compatible)
-- `prune_tools` output includes `schema_version: 1`
 - `pre_flight` now returns `compression_delta` conditionally when context is provided (token savings estimate)
-- 6 new source files: `constants.ts`, `tokenizer.ts`, `zones.ts`, `preservePatterns.ts`, `deltas.ts`, `pruner.ts`
-- 12 new test files, ~215 new tests
 
 ### Changed
 - Tool count: 14 → 15
 - Rule count: 10 → 14
-- Test count: ~312 → 527
-- `compressContext()` return type now includes `heuristics_applied: string[]` and `mode: string`
-- `compressContext()` now supports 5 overload signatures (context-only, intent string, IntentSpec, CompressionConfig, full 3-arg)
 
 ### Notes
 - **No breaking changes** to existing tools, types, CLI, or GitHub Action. All 14 original MCP tools unchanged.
@@ -140,27 +117,24 @@
 ## [3.0.0] - 2026-02-28
 
 ### Added
-- **Reasoning Complexity Classifier** (`classifyComplexity`): Deterministic heuristic that classifies prompts into 6 complexity types — `simple_factual`, `analytical`, `multi_step`, `creative`, `long_context`, `agent_orchestration`. Returns structured `{ complexity, confidence, signals }` with stable `key=value` signal contract.
-- **Optimization Profiles** (`src/profiles.ts`): 5 frozen presets — `cost_minimizer`, `balanced`, `quality_first`, `creative`, `enterprise_safe`. Each provides defaults for model tier, temperature, max tokens, and sensitivity settings.
-- **Model Routing Engine** (`routeModel`): 2-step deterministic routing — (1) pick tier from complexity + risk, (2) apply budget/latency overrides. Returns `ModelRecommendation` with `decision_path` audit trail, structured `savings_vs_default`, confidence score, and fallback model.
-- **Risk Scoring** (`computeRiskScore`): Dimensional risk scoring across 4 axes (underspec, hallucination, scope, constraint). Score 0-100 drives routing decisions. Explicit `RISK_WEIGHTS` mapping with blocking multipliers.
-- **Perplexity in PRICING_DATA**: `sonar` and `sonar-pro` models added for cost estimation and routing. Included in pricing + routing recommendations only (not a compile/output target — Perplexity prompts use `generic` format). Strict research-intent regex (G15) prevents false positives.
-- **`TIER_MODELS` constant**: Explicit frozen mapping of `small`/`mid`/`top` tiers to provider+model+temperature+maxTokens entries across all 4 providers.
-- **3 new MCP tools** (14 total):
+- **Reasoning Complexity Classifier**: Classifies prompts into 6 complexity types — `simple_factual`, `analytical`, `multi_step`, `creative`, `long_context`, `agent_orchestration`. Returns complexity, confidence, and signals.
+- **Optimization Profiles**: 5 built-in presets — `cost_minimizer`, `balanced`, `quality_first`, `creative`, `enterprise_safe`. Each provides defaults for model tier, temperature, and sensitivity settings.
+- **Model Routing Engine**: 2-step deterministic routing — (1) pick tier from complexity + risk, (2) apply budget/latency overrides. Returns recommendation with `decision_path` audit trail, savings estimate, confidence, and fallback model.
+- **Risk Scoring**: Dimensional risk scoring across 4 axes (underspec, hallucination, scope, constraint). Score 0–100 drives routing decisions.
+- **Perplexity support**: Sonar and Sonar Pro models added for cost estimation and routing. Included in pricing and routing recommendations only (not a compile/output target).
+- **3 new capabilities** (14 total):
   - `classify_task` (FREE): Classify prompt by task type, complexity, risk, and suggested profile.
   - `route_model` (FREE): Route to optimal model with full `decision_path` audit trail.
   - `pre_flight` (METERED): Full pre-flight pipeline — classify, assess risk, route model, score quality. Counts as 1 optimization use.
-- **~100 new tests** (311 total): Routing matrix, complexity classifier, profiles, risk scoring, research intent regex, contract tests for all new exports.
 
 ### Changed
-- **`ModelTier`**: Changed from `'haiku' | 'sonnet' | 'opus'` to `'small' | 'mid' | 'top'` — canonical routing tier used everywhere (G9).
-- **`estimateCost` / `estimateCostForText`**: Now include Perplexity in cost comparison output.
-- **API exports** (`src/api.ts`): 15+ new exports including `classifyComplexity`, `routeModel`, `computeRiskScore`, `PROFILES`, `TIER_MODELS`, and all new types.
+- **Model routing tiers**: Now uses provider-agnostic `small` / `mid` / `top` tier system.
+- **Cost estimation**: Now includes Perplexity in cost comparison output.
 
 ### Notes
 - **No breaking changes** to existing tools, types, or CLI. All 11 original MCP tools, `prompt-lint` CLI, and GitHub Action are unchanged. Existing linter workflows continue without modification.
 - Architecture constraint preserved: **zero LLM calls inside. Deterministic. Offline. Reproducible.**
-- `pre_flight` does NOT call `optimize_prompt` internally — no double-metering (G6). `classify_task` + `route_model` are free and unlimited.
+- `pre_flight` does NOT call `optimize_prompt` internally — no double-metering. `classify_task` + `route_model` are free and unlimited.
 - Risk score (0–100) drives routing; `riskLevel` is derived for display only (`0-29=low`, `30-59=medium`, `60-100=high`).
 - All v3 tool outputs include `schema_version: 1` for forward-compatible versioning.
 
@@ -183,7 +157,7 @@
 - **GitHub Action** (`action.yml`): Composite action to lint prompt files in CI. Drop `uses: rishiatlan/Prompt-Optimizer-MCP@v2` into any workflow.
 - **CI test fixtures**: `test/fixtures/good-prompt.txt` and `bad-prompt.txt` for action self-testing.
 - **Action self-test workflow**: `.github/workflows/action-selftest.yml` with pass, fail, strictness, and packaging jobs.
-- **29 new CLI tests**: All spawn `node bin/lint.js` as a child process for real exit-code verification.
+- Comprehensive CLI test suite with real exit-code verification.
 
 ### Changed
 - **Positioning**: Prompt Optimizer MCP is now positioned as a **prompt linter** — "The Prompt Linter for LLM Applications." Existing functionality is unchanged; the framing better reflects what the tool does (scoring, analysis, standardization).
@@ -236,7 +210,7 @@
 - **Ed25519 offline license activation**: `set_license` and `license_status` tools — no backend, no phone-home
 - **Monthly usage enforcement**: Calendar-month reset, tracked per-user in local storage
 - **6 new tools**: `check_prompt`, `configure_optimizer`, `get_usage`, `prompt_stats`, `set_license`, `license_status` (total: 11 tools)
-- **Persistent file-based storage**: `~/.prompt-optimizer/` with async StorageInterface (sessions, usage, config, stats, license)
+- **Persistent file-based storage**: Sessions, usage, config, stats, and license data persisted locally
 - **Multi-LLM output targets**: Claude (XML), OpenAI (system/user split), Generic (Markdown)
 - **Rate limiting**: Tier-keyed sliding window (free=5/min, pro=30/min, power=60/min)
 - **Usage metering**: Lifetime + monthly counters with metering-after-success invariant
@@ -244,18 +218,16 @@
 - **Configuration tool**: Set mode, threshold, strictness, target, ephemeral mode, session limits
 - **Multi-provider cost estimation**: Added OpenAI and Google model pricing alongside Anthropic
 - **Structured logging**: Request ID correlation, log levels, optional prompt logging
-- **Deterministic ordering**: All array fields sorted consistently via `src/sort.ts`
+- **Deterministic ordering**: All array fields sorted consistently for reproducibility
 - **GitHub Pages landing page**: `docs/index.html` with quality-first positioning
-- **License key generator**: `scripts/keygen.mjs` for Ed25519 keypair + batch key generation
-- **98 automated tests** across 7 test files (scorer, compiler, storage, freemium, contracts, security, license)
+- **License key generator**: Ed25519 keypair + batch key generation tooling
+- Comprehensive automated test suite
 
 ### Changed
 - `quality_after` replaced with `compilation_checklist` (structural coverage, not numeric score)
-- `PreviewPack` now includes `request_id`, `target`, `format_version: 1`, `scoring_version: 2`, `storage_health?`
-- All responses include `request_id` (success and error paths)
-- Scoring max changed from 96 to 100 (scoring_version: 2)
-- Sessions backed by async StorageInterface (was sync in-memory Map)
-- Package entry point moved to `dist/src/index.js` (was `dist/index.js`)
+- All responses now include `request_id` for traceability (success and error paths)
+- Scoring max changed from 96 to 100
+- Sessions backed by persistent storage (was in-memory only)
 
 ### Breaking Changes (v1 → v2)
 - `quality_after` removed — use `compilation_checklist` instead

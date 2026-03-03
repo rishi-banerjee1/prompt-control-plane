@@ -230,7 +230,7 @@ Add to your project's `.mcp.json` (or `~/.claude/settings.json` for global acces
 }
 ```
 
-Restart Claude Code. All 19 tools appear automatically. Free tier gives you 10 optimizations to try it out.
+Restart Claude Code. All 20 tools appear automatically. Free tier gives you 10 optimizations to try it out.
 
 <details>
 <summary><strong>Claude Desktop config path</strong></summary>
@@ -367,14 +367,14 @@ console.log(result.compiled);       // Full XML-compiled prompt
 console.log(result.cost);           // Token + cost estimates
 ```
 
-The `optimize()` function runs the exact same pipeline as the `optimize_prompt` MCP tool: analyze → score → compile → checklist → estimate cost. Pure, synchronous, deterministic.
+The `optimize()` function runs the exact same pipeline as the `optimize_prompt` MCP tool. Pure, synchronous, deterministic.
 
 ### API Exports
 
 | Import | What it does |
 |--------|-------------|
 | `optimize(prompt, context?, target?)` | Full pipeline → `OptimizeResult` |
-| `analyzePrompt(prompt, context?)` | Raw prompt → `IntentSpec` |
+| `analyzePrompt(prompt, context?)` | Raw prompt → `Intent` (parsed intent object) |
 | `scorePrompt(intent, context?)` | Intent → `QualityScore` (0–100) |
 | `compilePrompt(intent, context?, target?)` | Intent → compiled prompt string |
 | `generateChecklist(compiledPrompt)` | Compiled prompt → structural coverage |
@@ -411,7 +411,7 @@ console.log(withCtx.cost);   // Higher token count (context included)
 | Activate Pro license | Ask Claude: "Use set_license with key: pcp_..." |
 | Check license status | Ask Claude: "Use license_status" |
 
-## 19 MCP Tools
+## 20 Capabilities
 
 | # | Tool | Free/Metered | Purpose |
 |---|------|-------------|---------|
@@ -434,6 +434,7 @@ console.log(withCtx.cost);   // Higher token count (context included)
 | 17 | `export_session` | Free | Full session export with rule-set hash + policy hash for reproducibility |
 | 18 | `delete_session` | Free | Delete a single session by ID |
 | 19 | `purge_sessions` | Free | Bulk purge by age policy, with dry-run + keep_last safety |
+| 20 | `save_custom_rules` | Free (Enterprise) | Save custom governance rules built in the Enterprise Console |
 
 ## Pricing
 
@@ -443,7 +444,12 @@ console.log(withCtx.cost);   // Higher token count (context included)
 | **Optimizations** | 10 lifetime | 100/month | Unlimited | Unlimited |
 | **Rate limit** | 5/min | 30/min | 60/min | 120/min |
 | **Always-on mode** | — | — | ✓ | ✓ |
-| **All 19 tools** | ✓ | ✓ | ✓ | ✓ |
+| **All 20 capabilities** | ✓ | ✓ | ✓ | ✓ |
+| **Enterprise Console** | — | — | — | ✓ |
+| **Policy Enforcement** | — | — | — | ✓ |
+| **Custom Governance Rules** | — | — | — | ✓ |
+| **Hash-Chained Audit Trail** | — | — | — | ✓ |
+| **Config Lock Mode** | — | — | — | ✓ |
 | **Support** | Community | Email | Priority | Dedicated |
 | **SLA** | — | — | — | Custom |
 
@@ -459,43 +465,45 @@ console.log(withCtx.cost);   // Higher token count (context included)
 4. Done — your tier upgrades instantly. Verify with `license_status`.
 5. **Enterprise**: [Contact sales](https://prompt-control-plane.pages.dev/contact.html) for custom license key generation.
 
-## Enterprise Controls
+## Enterprise Features
+
+Enterprise features are gated by an Enterprise license key. All features below are managed through the **[Enterprise Console](https://prompt-control-plane.pages.dev/admin.html)** — a web-based admin interface with one-click toggles.
+
+### Enterprise Console
+
+A browser-based admin panel that provides full visibility and control over your Prompt Control Plane deployment. Requires an Enterprise license key to access. Configure policies, build custom rules, manage audit settings, and deploy governance changes — all without touching configuration files.
 
 ### Policy Enforcement
 
-Switch from advisory to enforce mode. BLOCKING rules (built-in + custom) gate every prompt optimization and approval. Risk threshold gating blocks high-risk approvals based on strictness (relaxed=40, standard=60, strict=75).
+Switch from advisory to enforce mode. In enforce mode, BLOCKING rules (built-in + custom) gate every prompt optimization and approval. Risk threshold gating blocks high-risk approvals based on strictness level (relaxed, standard, strict). All blocked actions include the specific violation details.
 
-```
-configure_optimizer(policy_mode='enforce', strictness='strict')
-```
+### Policy-Locked Configuration
 
-### Config Lock Mode
+Lock your governance settings so no one can change policy, strictness, or audit settings without the correct passphrase. Every lock, unlock, and blocked attempt is audit-logged. When activated through the Enterprise Console, the lock passphrase is auto-derived from your license key.
 
-Lock your governance config with a passphrase. No one can change policy, strictness, or audit settings without the correct secret. Every lock, unlock, and blocked attempt is audit-logged.
+### Hash-Chained Audit Trail
 
-```
-configure_optimizer(lock=true, lock_secret='your-admin-passphrase')
-```
+Every governance action generates a JSONL audit entry with integrity verification. Each entry is hash-chained to its predecessor — if any line is deleted or modified, all subsequent hashes break, making unauthorized changes detectable. Local-only, opt-in, never stores prompt content.
 
-### Tamper-Evident Audit Trail
+### Custom Governance Rules
 
-Every action generates a JSONL audit entry with SHA-256 hash chaining. If any line is deleted or modified, all subsequent hashes break. Local-only, opt-in, never stores prompt content.
+Build custom regex-based rules in the Enterprise Console with a visual editor. Define match patterns, negative patterns, risk dimensions, severity levels (BLOCKING or NON-BLOCKING), and risk weights. Deploy rules directly to your Prompt Control Plane with one click via the `save_custom_rules` tool — they take effect on the next optimization. Up to 25 rules per deployment.
 
-```
-configure_optimizer(audit_log=true)
-```
+### Session & Data Lifecycle
 
-### Data Retention & Deletion
+| Action | What Happens |
+|--------|-------------|
+| Delete one session | Removes a single session record |
+| Purge by age | Deletes sessions older than a specified number of days |
+| Preview before purge | Shows what would be deleted without actually deleting |
+| Purge all | Deletes all sessions (requires explicit confirmation) |
+| Keep newest N | Retains the N newest sessions, deletes the rest |
 
-| Action | Tool | What Happens |
-|--------|------|-------------|
-| Delete one session | `delete_session(session_id)` | Removes `session-{id}.json` only |
-| Purge by age | `purge_sessions(older_than_days=30)` | Deletes sessions older than 30 days |
-| Preview purge | `purge_sessions(older_than_days=30, dry_run=true)` | Shows what would be deleted without deleting |
-| Purge all | `purge_sessions(purge_all=true)` | Deletes all sessions (explicit opt-in required) |
-| Keep newest N | `purge_sessions(purge_all=true, keep_last=5)` | Keeps 5 newest, deletes the rest |
+Purge only affects session data. Configuration, audit log, license, usage data, and custom rules are never deleted.
 
-Purge only deletes `session-*.json` files. Config, audit log, license, usage, and custom rules are never deleted.
+### Reproducible Session Exports
+
+Every session export includes `rule_set_hash`, `rule_set_version`, `risk_score`, and `policy_hash` — enabling full reproducibility. Given the same prompt, configuration, and rules, the output is identical. Any change to rules or policy produces a different hash.
 
 ## How It Works
 
@@ -629,7 +637,7 @@ Hard caps: max 3 blocking questions per cycle, max 5 assumptions shown.
 <details>
 <summary><strong>Compiled Prompt Format (XML-tagged)</strong></summary>
 
-The compiler produces an Anthropic-optimized XML structure:
+The default output format is an XML-tagged structure optimized for Claude:
 
 ```xml
 <role>
@@ -679,7 +687,7 @@ Every compiled prompt gets: role, goal, definition of done, constraints (includi
 <details>
 <summary><strong>Cost Estimation Details</strong></summary>
 
-Token estimation uses `ceil(text.length / 4)` — a good approximation for English text with Claude's tokenizer.
+Token estimation uses a standard word-based approximation calibrated against real-world tokenizer behavior.
 
 Output tokens are estimated based on task type:
 - Questions: min(input, 500) — short answers
@@ -698,7 +706,7 @@ Model recommendation logic:
 - **Sonnet** — writing, communication, research, analysis, standard code changes (best balance)
 - **Opus** — high-risk tasks, complex planning, large-scope creation/refactoring (maximum capability)
 
-Pricing is hardcoded from published rates (Anthropic, OpenAI, Google, Perplexity) and versioned in `src/estimator.ts`.
+Pricing is based on published rates from Anthropic, OpenAI, Google, and Perplexity — kept up to date with each release.
 
 </details>
 
@@ -1072,7 +1080,7 @@ Reason:         Balanced task — Sonnet offers the best
 | `npx` hangs or is slow | First run downloads the package. Use `npm install -g claude-prompt-optimizer-mcp` for instant startup. |
 | `Cannot find module` error (source install) | Run `npm run build` first. The `dist/` directory must exist. |
 | Session expired | Sessions have a 30-minute TTL. Call `optimize_prompt` again to start a new session. |
-| False positive on blocking questions | The regex rules are tunable in `src/rules.ts`. Adjust patterns for your workflow. |
+| False positive on blocking questions | The detection rules are context-dependent. Refine your prompt to be more specific, or use Enterprise custom rules to tune detection for your workflow. |
 | "Scope explosion" triggers incorrectly | The rule detects broad scope language without nearby qualifiers. Context-dependent — may need prompt refinement. |
 | Cost estimates seem off | Token estimation uses an empirical approximation. For precise counts, use Anthropic's tokenizer directly. |
 | No model recommendation | Default is Sonnet. Opus is recommended only for high-risk or large-scope tasks. |
@@ -1093,7 +1101,7 @@ Reason:         Balanced task — Sonnet offers the best
 - [x] NPM package — `npx claude-prompt-optimizer-mcp` for zero-friction install
 - [x] Structured audience/tone/platform detection — 19 audience patterns, 9 platforms, tone signals
 - [x] Multi-LLM output targets — Claude (XML), OpenAI (system/user), Generic (Markdown)
-- [x] Persistent file-based storage (`~/.prompt-control-plane/`) with async StorageInterface
+- [x] Persistent file-based storage (`~/.prompt-control-plane/`)
 - [x] 3-tier freemium system — Free (10 lifetime), Pro (₹499/mo, 100/mo), Power (₹899/mo, unlimited)
 - [x] Ed25519 offline license key activation — no phone-home, no backend
 - [x] Monthly usage enforcement with calendar-month reset
@@ -1113,8 +1121,8 @@ Reason:         Balanced task — Sonnet offers the best
 - [x] v3.2.0 Enterprise Unlock: 4-tier system with Enterprise (unlimited, 120/min, dedicated support), contact form, updated gating
 - [x] v3.2.1 Custom Rules: user-defined regex rules in `~/.prompt-control-plane/custom-rules/`, risk dimension integration, CLI validation
 - [x] v3.2.1 Reproducible Exports: auto-calculated `rule_set_hash`, `rule_set_version`, `risk_score` in session exports — no placeholders
-- [x] v3.3.0 Enterprise Operations: policy enforcement, config lock mode, tamper-evident audit trail, session lifecycle management
-- [x] 19 MCP tools, comprehensive test suite
+- [x] v3.3.0 Enterprise Operations: policy enforcement, config lock mode, hash-chained audit trail, session lifecycle management
+- [x] 20 capabilities including custom governance rules (Enterprise), comprehensive test suite
 - [ ] Optional Haiku pass for nuanced ambiguity detection
 - [ ] Prompt template library (common patterns)
 - [ ] Integration with Claude Code hooks for auto-trigger on complex tasks

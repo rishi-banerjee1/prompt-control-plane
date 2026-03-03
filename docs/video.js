@@ -419,7 +419,7 @@
            tag:'estimator.ts  ·  router.ts'},
           {num:'5',color:C.primary,
            title:'Log every decision permanently',
-           body:'Every optimize, approve, delete, and block event writes to a tamper-evident JSONL audit log using SHA-256 hash chaining. Risk score, session ID, policy outcome, timestamp — your compliance team can review everything, any time.',
+           body:'Every optimize, approve, delete, and block event writes to a hash-chained JSONL audit log using SHA-256 hash chaining. Risk score, session ID, policy outcome, timestamp — your compliance team can review everything, any time.',
            tag:'auditLog.ts'},
         ];
 
@@ -806,7 +806,7 @@
         // ── Audit Log ──────────────────────────────────────
         const aa=fi(lf,140,28)*ao;
         box(ctx,60,312,980,152,{fill:C.surface,stroke:C.border,r:12,alpha:aa});
-        txt(ctx,'TAMPER-EVIDENT AUDIT LOG  —  SHA-256 Hash Chaining',W/2,332,
+        txt(ctx,'HASH-CHAINED AUDIT LOG  —  SHA-256 Hash Chaining',W/2,332,
           {size:11,color:C.green,bold:true,mono:true,align:'center',alpha:aa});
         txt(ctx,'Every entry carries the SHA-256 hash of the prior entry. Alter one line — every downstream hash breaks.',
           W/2,350,{size:11,color:C.dim,align:'center',alpha:aa});
@@ -830,7 +830,7 @@
 
         narrator(ctx,
           ['In Enterprise mode, prompts above your risk threshold are blocked before the model ever runs.',
-           'Every decision is logged with SHA-256 chaining — tamper one entry, the whole chain invalidates.'],
+           'Every decision is logged with SHA-256 chaining — modify one entry, the whole chain invalidates.'],
           lf,90,lt-90);
         drawChapter(ctx,7,10,'Enterprise',lf,0);
       }

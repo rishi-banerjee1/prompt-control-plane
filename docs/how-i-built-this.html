@@ -713,12 +713,12 @@
 
       <p><strong>MCP (Model Context Protocol)</strong> is a standard that lets you give AI assistants new abilities. Normally, Claude can only chat with you. With MCP, you can give it &ldquo;tools&rdquo; &mdash; specific capabilities that it can call during a conversation.</p>
 
-      <p>My MCP gives Claude 19 tools, grouped into four categories:</p>
+      <p>My MCP gives Claude 20 tools, grouped into four categories:</p>
 
       <ul>
         <li><strong>Governance:</strong> Optimize prompts, enforce policies, score risk, classify task complexity, route to optimal models</li>
         <li><strong>Operations:</strong> Compress context, prune irrelevant tools, run full pre-flight analysis before any work begins</li>
-        <li><strong>Enterprise:</strong> Configure policy modes, lock config with passphrases, manage sessions, export tamper-evident audit trails</li>
+        <li><strong>Enterprise:</strong> Configure policy modes, lock config with passphrases, manage sessions, export hash-chained audit trails</li>
         <li><strong>Utility:</strong> Estimate costs across 4 providers, check prompt quality, manage licenses, view usage stats</li>
       </ul>
 
@@ -871,7 +871,7 @@
           <tr><th>Tier</th><th>Price</th><th>What You Get</th></tr>
         </thead>
         <tbody>
-          <tr><td><strong>Free</strong></td><td>₹0</td><td>10 lifetime optimizations, all 19 tools</td></tr>
+          <tr><td><strong>Free</strong></td><td>₹0</td><td>10 lifetime optimizations, all 20 tools</td></tr>
           <tr><td><strong>Pro</strong></td><td>₹499/mo</td><td>100/month, 30 requests/min</td></tr>
           <tr><td><strong>Power</strong></td><td>₹899/mo</td><td>Unlimited, 60 requests/min, always-on mode</td></tr>
           <tr><td><strong>Enterprise</strong></td><td>Custom</td><td>Policy enforcement, audit trail, config lock, custom rules, 120 requests/min</td></tr>
@@ -991,7 +991,6 @@
       <h2 id="whats-next">What&rsquo;s Next</h2>
 
       <ul>
-        <li><strong>Phase B (cloud storage):</strong> Move from local files to Cloudflare Workers + Supabase. The async <code>StorageInterface</code> was designed for this from day one. Same tool contracts, same test suite, only the storage implementation swaps.</li>
         <li><strong>Team features:</strong> Shared policy configurations, team-wide audit dashboards, and centralized rule management for organizations running multiple AI agents.</li>
         <li><strong>Broader MCP ecosystem:</strong> Already works with Claude Desktop, Claude Code, Cursor, Windsurf, and any MCP-compatible client. Tracking new clients as the ecosystem grows.</li>
         <li><strong>Compound knowledge:</strong> Every edge case discovered becomes a new detection rule. 14 rules today, growing. The scoring dimensions, compiler templates, and ambiguity detectors are the product&rsquo;s real moat.</li>
@@ -1188,8 +1187,8 @@
           <div class="metric-label">Lines of TypeScript</div>
         </div>
         <div class="metric-card">
-          <div class="metric-value"><span class="green">676+</span></div>
-          <div class="metric-label">Automated tests (32 test files)</div>
+          <div class="metric-value"><span class="green">690+</span></div>
+          <div class="metric-label">Automated tests</div>
         </div>
         <div class="metric-card">
           <div class="metric-value">2</div>
@@ -1253,7 +1252,7 @@
         <p>Introduced the Enterprise tier with 120 requests/min and <code>always_on</code> mode. Split the monolithic landing page into a multi-page docs site with dark/light theme. Shipped the <code>prompt-lint</code> CLI binary so teams can lint prompts in CI without MCP. Published the <code>prompt-lint</code> GitHub Action so any repo can add prompt governance to pull request checks. Moved hosting from GitHub Pages to Cloudflare Pages for faster global edge delivery.</p>
 
         <h3>v3.3: Enterprise Operations</h3>
-        <p>The release that made it a real governance product. Policy enforcement with advisory and enforce modes, where enforce actually blocks deployment on violations. A tamper-evident audit trail using SHA-256 hash chaining (if any entry is modified, all subsequent hashes break). Config lock with passphrase protection so governance settings cannot be changed without authorization. Session lifecycle management with delete, purge, retention policies, and dry-run safety. Custom rules engine where teams define their own detection patterns with regex, severity levels, and risk dimensions.</p>
+        <p>The release that made it a real governance product. Policy enforcement with advisory and enforce modes, where enforce actually blocks deployment on violations. A hash-chained audit trail using SHA-256 hash chaining (if any entry is modified, all subsequent hashes break). Config lock with passphrase protection so governance settings cannot be changed without authorization. Session lifecycle management with delete, purge, retention policies, and dry-run safety. Custom rules engine where teams define their own detection patterns with regex, severity levels, and risk dimensions.</p>
 
         <h3>v4.0: Prompt Control Plane</h3>
         <p>Renamed the product. Updated every surface: npm, GitHub, docs site, directories. The rebrand reflected what the product had become. Not a linter. Not an optimizer. A control plane for how organizations manage AI prompts. Enterprise tier gates enforced in code. Reproducible session exports with auto-calculated rule-set hashes. Professional documentation site at <a href="https://prompt-control-plane.pages.dev">prompt-control-plane.pages.dev</a>.</p>

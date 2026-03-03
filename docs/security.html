@@ -9,20 +9,20 @@
   <link rel="apple-touch-icon" sizes="180x180" href="apple-touch-icon.png">
   <link rel="manifest" href="site.webmanifest">
   <title>Security — Prompt Control Plane | Built for Teams That Take Security Seriously</title>
-  <meta name="description" content="Security architecture of Prompt Control Plane. Zero external calls, local-only storage, Ed25519 license keys, tamper-evident audit trail, minimal dependencies. Built for enterprise security review.">
+  <meta name="description" content="Security architecture of Prompt Control Plane. Zero external calls, local-only storage, Ed25519 license keys, hash-chained audit trail, minimal dependencies. Built for enterprise security review.">
   <meta name="robots" content="index, follow">
   <link rel="canonical" href="https://prompt-control-plane.pages.dev/security.html">
 
   <!-- Open Graph -->
   <meta property="og:title" content="Security — Prompt Control Plane">
-  <meta property="og:description" content="Zero external calls during operation. Local-only storage. Ed25519 license keys. Tamper-evident audit trail. Built for enterprise security review.">
+  <meta property="og:description" content="Zero external calls during operation. Local-only storage. Ed25519 license keys. Hash-chained audit trail. Built for enterprise security review.">
   <meta property="og:type" content="website">
   <meta property="og:url" content="https://prompt-control-plane.pages.dev/security.html">
 
   <!-- Twitter Card -->
   <meta name="twitter:card" content="summary_large_image">
   <meta name="twitter:title" content="Security — Prompt Control Plane">
-  <meta name="twitter:description" content="Zero external calls during operation. Local-only storage. Ed25519 license keys. Tamper-evident audit trail.">
+  <meta name="twitter:description" content="Zero external calls during operation. Local-only storage. Ed25519 license keys. Hash-chained audit trail.">
 
   <script type="application/ld+json">
   {
@@ -316,7 +316,7 @@
         <h2>Data Handling</h2>
         <p>All application data is stored locally at <code>~/.prompt-control-plane/</code>. This directory contains session data, configuration, usage statistics, license information, and the optional audit trail. None of this data is ever transmitted anywhere.</p>
         <p>The audit trail is designed with privacy as a first principle. It records only operation metadata &mdash; event type, timestamp, outcome, and a limited set of non-sensitive details. It never stores the raw prompt text, the compiled output, or any intermediate analysis content. This is enforced at the code level, not by policy.</p>
-        <p>The audit trail uses SHA-256 hash chaining for tamper evidence. Each log entry includes an integrity hash computed from the previous entry's hash and the current entry's content. If any line is deleted, modified, or reordered, all subsequent hashes break, making unauthorized changes immediately detectable.</p>
+        <p>The audit trail uses SHA-256 hash chaining for integrity verification. Each log entry includes an integrity hash computed from the previous entry's hash and the current entry's content. If any line is deleted, modified, or reordered, all subsequent hashes break, making unauthorized changes immediately detectable.</p>
 
         <div class="prop-grid">
           <div class="prop-item">
@@ -370,7 +370,7 @@
         <h2>Supply Chain</h2>
         <p>Prompt Control Plane has a minimal dependency footprint. The only runtime dependency is the MCP SDK (<code>@modelcontextprotocol/sdk</code>) for the server transport layer. All business logic &mdash; scoring, compilation, routing, compression, policy enforcement, and audit logging &mdash; is implemented with zero external dependencies.</p>
         <p>Source maps are stripped from the published npm tarball to prevent exposure of internal implementation details. All business logic is compiled from TypeScript to standard JavaScript. There is no use of <code>eval()</code>, no dynamic imports, and no runtime code generation.</p>
-        <p>The npm package ships only compiled output (<code>dist/</code>), entry point scripts (<code>bin/</code>), the README, and the LICENSE file. Test files, source TypeScript, configuration files, and development tooling are excluded from the published package.</p>
+        <p>The npm package ships only compiled output, entry point scripts, the README, and the LICENSE file. Test files, source TypeScript, configuration files, and development tooling are excluded from the published package.</p>
       </div>
 
       <!-- Responsible Disclosure -->

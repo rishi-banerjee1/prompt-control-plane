@@ -2,14 +2,14 @@
 
 > Deterministic prompt governance for production LLM systems.
 
-Prompt Control Plane is a governance engine that enforces structure on every prompt before it reaches a model. It scores risk, enforces policies, compiles structured prompts, and logs every action to a tamper-evident audit trail. Zero LLM calls run inside the engine. Fully deterministic, offline-first, reproducible.
+Prompt Control Plane is a governance engine that enforces structure on every prompt before it reaches a model. It scores risk, enforces policies, compiles structured prompts, and logs every action to a hash-chained audit trail. Zero LLM calls run inside the engine. Fully deterministic, offline-first, reproducible.
 
 ## Key Facts
-- 19 MCP tools for prompt governance
+- 20 MCP tools for prompt governance
 - Policy enforcement with advisory and enforce modes
 - Risk scoring across hallucination, ambiguity, scope expansion, and constraint conflict
 - Deterministic cross-provider routing (Anthropic, OpenAI, Google Gemini, Perplexity)
-- Tamper-evident hash-chained audit trail
+- Hash-chained hash-chained audit trail
 - Config lock with passphrase protection
 - Custom rules with regex patterns and risk dimensions
 - Ships as MCP server, CLI linter (prompt-lint), and GitHub Action
