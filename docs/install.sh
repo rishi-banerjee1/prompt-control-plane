@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 # Prompt Control Plane — Quick Installer
-# Usage: curl -fsSL https://getpcp.site/install.sh | bash
+# Usage: curl -fsSL https://getpcp.pages.dev/install.sh | bash
 
 set -euo pipefail
 

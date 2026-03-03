@@ -2,4 +2,4 @@ User-agent: *
 Allow: /
 Disallow: /thank-you.html
 
-Sitemap: https://getpcp.site/sitemap.xml
+Sitemap: https://getpcp.pages.dev/sitemap.xml

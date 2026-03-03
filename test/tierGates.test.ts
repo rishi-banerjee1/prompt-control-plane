@@ -53,7 +53,7 @@ describe('tier_feature_unavailable error shape', () => {
       error: 'tier_feature_unavailable',
       message: 'policy_mode requires Enterprise tier.',
       current_tier: 'free' as Tier,
-      enterprise_purchase_url: 'https://getpcp.site/contact',
+      enterprise_purchase_url: 'https://getpcp.pages.dev/contact',
     };
 
     assert.equal(error.error, 'tier_feature_unavailable');

@@ -940,7 +940,7 @@
         rr(ctx,W/2-220,H/2+8,440,48,10);
         ctx.fillStyle=C.surface2; ctx.fill(); ctx.strokeStyle=C.primary+'70'; ctx.lineWidth=1.5; ctx.stroke();
         ctx.restore();
-        txt(ctx,'getpcp.site',W/2,H/2+33,
+        txt(ctx,'getpcp.pages.dev',W/2,H/2+33,
           {size:15,color:C.primary,align:'center',bold:true,mono:true,alpha:ua});
 
         // Tier badges

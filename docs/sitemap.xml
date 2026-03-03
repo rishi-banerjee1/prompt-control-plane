@@ -1,16 +1,16 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
-  <url><loc>https://getpcp.site/</loc><priority>1.0</priority></url>
-  <url><loc>https://getpcp.site/features.html</loc><priority>0.9</priority></url>
-  <url><loc>https://getpcp.site/plans.html</loc><priority>0.9</priority></url>
-  <url><loc>https://getpcp.site/why.html</loc><priority>0.85</priority></url>
-  <url><loc>https://getpcp.site/docs.html</loc><priority>0.8</priority></url>
-  <url><loc>https://getpcp.site/models.html</loc><priority>0.8</priority></url>
-  <url><loc>https://getpcp.site/different.html</loc><priority>0.8</priority></url>
-  <url><loc>https://getpcp.site/blog.html</loc><priority>0.7</priority></url>
-  <url><loc>https://getpcp.site/changelog.html</loc><priority>0.6</priority></url>
-  <url><loc>https://getpcp.site/contact.html</loc><priority>0.6</priority></url>
-  <url><loc>https://getpcp.site/security.html</loc><priority>0.5</priority></url>
-  <url><loc>https://getpcp.site/privacy.html</loc><priority>0.3</priority></url>
-  <url><loc>https://getpcp.site/terms.html</loc><priority>0.3</priority></url>
+  <url><loc>https://getpcp.pages.dev/</loc><priority>1.0</priority></url>
+  <url><loc>https://getpcp.pages.dev/features.html</loc><priority>0.9</priority></url>
+  <url><loc>https://getpcp.pages.dev/plans.html</loc><priority>0.9</priority></url>
+  <url><loc>https://getpcp.pages.dev/why.html</loc><priority>0.85</priority></url>
+  <url><loc>https://getpcp.pages.dev/docs.html</loc><priority>0.8</priority></url>
+  <url><loc>https://getpcp.pages.dev/models.html</loc><priority>0.8</priority></url>
+  <url><loc>https://getpcp.pages.dev/different.html</loc><priority>0.8</priority></url>
+  <url><loc>https://getpcp.pages.dev/blog.html</loc><priority>0.7</priority></url>
+  <url><loc>https://getpcp.pages.dev/changelog.html</loc><priority>0.6</priority></url>
+  <url><loc>https://getpcp.pages.dev/contact.html</loc><priority>0.6</priority></url>
+  <url><loc>https://getpcp.pages.dev/security.html</loc><priority>0.5</priority></url>
+  <url><loc>https://getpcp.pages.dev/privacy.html</loc><priority>0.3</priority></url>
+  <url><loc>https://getpcp.pages.dev/terms.html</loc><priority>0.3</priority></url>
 </urlset>
