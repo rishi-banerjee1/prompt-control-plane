@@ -68,7 +68,7 @@ export { AuditLogger, auditLogger, GENESIS_HASH } from './auditLog.js';
 // ─── v3.3: Session History ───────────────────────────────────────────────
 export { SessionHistoryManager, sessionHistory } from './sessionHistory.js';
 
-// ─── v3.3: Custom Rules ─────────────────────────────────────────────────
+// ─── v3.3: Custom Rules (v4.1: saveRules via CustomRulesManager) ────────
 export { CustomRulesManager, customRules } from './customRules.js';
 
 // ─── Types ───────────────────────────────────────────────────────────────────

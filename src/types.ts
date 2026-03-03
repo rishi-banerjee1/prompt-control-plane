@@ -455,7 +455,7 @@ export type PolicyMode = 'advisory' | 'enforce';
 
 // ─── Audit Types (v3.3.0) ───────────────────────────────────────────────────
 
-export type AuditEvent = 'optimize' | 'approve' | 'delete' | 'purge' | 'configure' | 'license_activate';
+export type AuditEvent = 'optimize' | 'approve' | 'delete' | 'purge' | 'configure' | 'license_activate' | 'save_custom_rules';
 export type AuditOutcome = 'success' | 'blocked' | 'error';
 
 /**

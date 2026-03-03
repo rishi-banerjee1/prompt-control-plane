@@ -699,22 +699,23 @@
 
         <div id="rules-export" style="display:none;">
           <div class="cmd-box">
-            <div class="cmd-box-label">Deploy your rules — choose one method</div>
-            <div style="margin-bottom:14px;">
-              <div style="font-size:0.78rem;font-weight:600;margin-bottom:6px;color:var(--text);">Option 1: Paste into your AI assistant (works with any LLM connected to PCP)</div>
-              <div class="cmd-text" id="rules-deploy-cmd" style="font-size:0.78rem;"></div>
-              <button class="btn btn-primary btn-sm" onclick="copyEl('rules-deploy-cmd',this)" style="margin-top:6px;">Copy Command</button>
+            <div class="cmd-box-label">Deploy to your Prompt Control Plane</div>
+            <p style="font-size:0.78rem;color:var(--text-muted);margin:0 0 12px;">Copy this command and paste it into any AI assistant connected to PCP. Your rules will be saved instantly and take effect on the next optimization.</p>
+            <div class="cmd-text" id="rules-deploy-cmd" style="font-size:0.78rem;"></div>
+            <div class="btn-row" style="margin-top:8px;">
+              <button class="btn btn-primary btn-sm" onclick="copyEl('rules-deploy-cmd',this)">&#x1F4CB; Copy &amp; Deploy</button>
+              <button class="btn btn-secondary btn-sm" onclick="downloadRules()">Download JSON</button>
             </div>
-            <div style="margin-bottom:14px;">
-              <div style="font-size:0.78rem;font-weight:600;margin-bottom:6px;color:var(--text);">Option 2: Download and save manually to <code>~/.prompt-control-plane/custom-rules.json</code></div>
-              <div class="cmd-text" id="rules-json" style="white-space:pre;font-size:0.75rem;max-height:200px;overflow-y:auto;"></div>
-              <div class="btn-row" style="margin-top:6px;">
-                <button class="btn btn-secondary btn-sm" onclick="copyEl('rules-json',this)">Copy JSON</button>
-                <button class="btn btn-secondary btn-sm" onclick="downloadRules()">Download File</button>
+            <details style="margin-top:12px;">
+              <summary style="font-size:0.75rem;color:var(--text-muted);cursor:pointer;">Advanced: raw JSON &amp; manual save</summary>
+              <div style="margin-top:8px;">
+                <div class="cmd-text" id="rules-json" style="white-space:pre;font-size:0.75rem;max-height:200px;overflow-y:auto;"></div>
+                <div class="btn-row" style="margin-top:6px;">
+                  <button class="btn btn-secondary btn-sm" onclick="copyEl('rules-json',this)">Copy JSON</button>
+                </div>
+                <p style="font-size:0.72rem;color:var(--text-muted);margin:8px 0 0;">Save to <code>~/.prompt-control-plane/custom-rules.json</code>, then validate: <code>prompt-lint --validate-custom-rules</code></p>
               </div>
-            </div>
-            <div style="font-size:0.78rem;font-weight:600;margin-bottom:4px;color:var(--text);">Validate after saving</div>
-            <div class="cmd-text" style="font-size:0.78rem;">prompt-lint --validate-custom-rules</div>
+            </details>
           </div>
         </div>
       </section>
@@ -1006,9 +1007,10 @@
         </div>
       `).join('');
       var rulesJson = JSON.stringify({ rules }, null, 2);
+      var rulesOnly = JSON.stringify(rules, null, 2);
       document.getElementById('rules-json').textContent = rulesJson;
       document.getElementById('rules-deploy-cmd').textContent =
-        'Please save the following custom rules to ~/.prompt-control-plane/custom-rules.json and confirm:\n\n' + rulesJson;
+        'Please use the save_custom_rules tool to deploy these governance rules to my Prompt Control Plane:\n\n' + rulesOnly;
       document.getElementById('rules-export').style.display = 'block';
     }
     function downloadRules() {

@@ -1,10 +1,11 @@
-// tools.ts — MCP tool registrations for Prompt Control Plane v4.0.
-// 19 tools total. Metered: optimize_prompt, refine_prompt, pre_flight. Free: all others.
+// tools.ts — MCP tool registrations for Prompt Control Plane v4.1.
+// 20 tools total. Metered: optimize_prompt, refine_prompt, pre_flight. Free: all others.
 // v3 additions: classify_task (FREE), route_model (FREE), pre_flight (METERED — G6).
 // v3.1 additions: prune_tools (FREE).
 // v3.2.1 additions: list_sessions (FREE), export_session (FREE).
 // v3.3.0 additions: delete_session (FREE), purge_sessions (FREE).
 // v4.0.0: Enterprise tier gates, full rebrand to Prompt Control Plane.
+// v4.1: save_custom_rules (FREE) — console↔product integration.
 // Build-mode invariants enforced: I1 (deterministic ordering), I2 (request_id on all),
 // I3 (metering-after-success), I4 (rate limit via canUseOptimization), I5 (degraded health in response).
 
@@ -1862,6 +1863,93 @@ export function registerTools(
           request_id: requestId,
           error: 'internal_error',
           message: `purge_sessions failed: ${err instanceof Error ? err.message : 'unknown error'}`,
+        });
+      }
+    },
+  );
+
+  // ─── Tool 20: save_custom_rules (FREE but tier-gated, v4.1) ────────────
+
+  server.tool(
+    'save_custom_rules',
+    'Save custom governance rules to the local rules file (~/.prompt-control-plane/custom-rules.json). Validates all rules against the product schema, writes to disk, and returns the rule-set hash. Rules take effect on the next optimization. Works with any LLM connected to PCP. Enterprise tier only.',
+    {
+      rules: z.array(z.object({
+        id: z.string().min(1).max(64).describe('Snake_case rule ID — must start with lowercase letter (a-z), then a-z0-9_ chars'),
+        description: z.string().min(1).max(200).describe('Human-readable rule description (max 200 chars)'),
+        pattern: z.string().min(1).max(500).describe('Regex pattern to match against prompt text (required)'),
+        negative_pattern: z.string().max(500).optional().describe('Regex — if prompt matches this, rule does NOT fire'),
+        applies_to: z.enum(['code', 'prose', 'all']).describe('Which prompt types this rule applies to'),
+        severity: z.enum(['BLOCKING', 'NON-BLOCKING']).describe('BLOCKING rules can gate optimization in enforce mode'),
+        risk_dimension: z.enum(['hallucination', 'constraint', 'underspec', 'scope']).describe('Which risk dimension this rule affects'),
+        risk_weight: z.number().int().min(1).max(25).describe('How much this rule contributes to risk score (1-25)'),
+      })).min(1).max(25).describe('Array of custom governance rules (1-25). Build these in the Enterprise Console or craft by hand.'),
+    },
+    async ({ rules }) => {
+      const ctx = await buildCtx();
+      const { requestId } = ctx;
+
+      try {
+        // Enterprise-only gate: custom rules are an enterprise governance feature
+        if (ctx.tier !== 'enterprise') {
+          return errorResponse({
+            request_id: requestId,
+            error: 'enterprise_required',
+            message: `Custom governance rules are an Enterprise-only feature. Current tier: ${ctx.tier}`,
+            current_tier: ctx.tier,
+            required_tier: 'enterprise',
+            enterprise_purchase_url: ENTERPRISE_PURCHASE_URL,
+            next_step: 'Contact us for an Enterprise license to unlock custom governance rules.',
+          });
+        }
+
+        const { customRules } = await import('./customRules.js');
+        const result = await customRules.saveRules(rules);
+
+        // Audit log if enabled (v3.3.0 pattern)
+        if (ctx.config.audit_log) {
+          const { auditLogger } = await import('./auditLog.js');
+          await auditLogger.append({
+            timestamp: new Date().toISOString(),
+            event: 'save_custom_rules',
+            request_id: requestId,
+            policy_mode: ctx.config.policy_mode || 'advisory',
+            outcome: 'success',
+            details: {
+              saved_count: result.saved_count,
+              rule_set_hash: result.rule_set_hash,
+            },
+          });
+        }
+
+        log.info(requestId, `save_custom_rules: saved ${result.saved_count} rules`);
+        return jsonResponse({
+          request_id: requestId,
+          schema_version: 1,
+          ...result,
+          message: `${result.saved_count} custom rule(s) saved successfully. They will take effect on the next optimization.`,
+        });
+      } catch (err) {
+        // Audit failed save attempt
+        if (ctx.config.audit_log) {
+          try {
+            const { auditLogger } = await import('./auditLog.js');
+            await auditLogger.append({
+              timestamp: new Date().toISOString(),
+              event: 'save_custom_rules',
+              request_id: requestId,
+              policy_mode: ctx.config.policy_mode || 'advisory',
+              outcome: 'error',
+              details: { error: err instanceof Error ? err.message : String(err) },
+            });
+          } catch { /* no-throw audit invariant */ }
+        }
+
+        log.error(requestId, 'save_custom_rules failed:', err instanceof Error ? err.message : String(err));
+        return errorResponse({
+          request_id: requestId,
+          error: 'save_custom_rules_failed',
+          message: err instanceof Error ? err.message : 'unknown error',
         });
       }
     },

@@ -1,9 +1,10 @@
-// customRules.ts — Custom rule management for v3.2.1
-// File-based read-only loading, validation, deterministic hashing, rule evaluation
+// customRules.ts — Custom rule management for v3.2.1 + save support (v4.1)
+// File-based loading, saving, validation, deterministic hashing, rule evaluation
 
 import * as fs from 'node:fs/promises';
 import * as path from 'node:path';
 import { createHash } from 'node:crypto';
+import { platform } from 'node:os';
 import { log } from './logger.js';
 import type { CustomRule, CustomRulesConfig, TaskType, RuleMatch } from './types.js';
 
@@ -259,6 +260,72 @@ export class CustomRulesManager {
       .join('\n');
 
     return createHash('sha256').update(hashInput, 'utf8').digest('hex');
+  }
+
+  /**
+   * Save custom rules to disk after full validation.
+   * Validates every rule, sorts by ID, writes JSON, sets chmod 600 on POSIX.
+   * Throws on validation failure or write error — callers should catch.
+   */
+  async saveRules(rules: CustomRule[]): Promise<{
+    saved_count: number;
+    rule_ids: string[];
+    rule_set_hash: string;
+    file_path: string;
+    created_at: string;
+  }> {
+    // 1. Enforce hard cap
+    if (rules.length > MAX_RULES) {
+      throw new Error(`Maximum ${MAX_RULES} rules allowed, received ${rules.length}`);
+    }
+
+    // 2. Validate every rule — reject batch if any invalid
+    const errors: string[] = [];
+    for (const rule of rules) {
+      const result = this.validateRule(rule);
+      if (!result.valid) {
+        errors.push(`${rule.id || '(no id)'}: ${result.errors.join(', ')}`);
+      }
+    }
+    if (errors.length > 0) {
+      throw new Error(`Invalid rules:\n${errors.join('\n')}`);
+    }
+
+    // 3. Sort by ID for deterministic ordering (matches loadRules behavior)
+    const sorted = [...rules].sort((a, b) => a.id.localeCompare(b.id));
+
+    // 4. Build config envelope
+    const createdAt = Date.now();
+    const config: CustomRulesConfig = {
+      schema_version: 1,
+      created_at: createdAt,
+      rules: sorted,
+    };
+
+    // 5. Write to disk
+    await fs.mkdir(this.dataDir, { recursive: true });
+    const filePath = path.join(this.dataDir, 'custom-rules.json');
+    await fs.writeFile(filePath, JSON.stringify(config, null, 2), 'utf-8');
+
+    // 6. Set file permissions (chmod 600 on POSIX — same pattern as license.ts)
+    if (platform() !== 'win32') {
+      try {
+        await fs.chmod(filePath, 0o600);
+      } catch {
+        // Best-effort — skip on permission errors (e.g., some CI envs)
+      }
+    }
+
+    // 7. Return confirmation with hash
+    const hash = this.calculateRuleSetHash(sorted);
+    log.info('customRules', `Saved ${sorted.length} rules to ${filePath}`);
+    return {
+      saved_count: sorted.length,
+      rule_ids: sorted.map(r => r.id),
+      rule_set_hash: hash,
+      file_path: filePath,
+      created_at: new Date(createdAt).toISOString(),
+    };
   }
 
   /**
