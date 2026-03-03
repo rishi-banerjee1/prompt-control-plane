@@ -208,16 +208,22 @@ Changes Made:
 
 **Requires Node.js 18+ with ESM support.** Pick one method — 30 seconds or less.
 
-| Method | Command / Config |
-|--------|-----------------|
-| **MCP Config** (recommended) | Add to `.mcp.json` or `~/.claude/settings.json` — see below |
-| **npx** | `npx -y claude-prompt-optimizer-mcp` |
-| **npm global** | `npm install -g claude-prompt-optimizer-mcp` |
+| Method | Command |
+|--------|---------|
+| **npm global** (recommended) | `npm install -g claude-prompt-optimizer-mcp` |
 | **curl** | `curl -fsSL https://getpcp.site/install.sh \| bash` |
 
-### MCP Config (Claude Code / Claude Desktop)
+```bash
+npm install -g claude-prompt-optimizer-mcp
+pcp preflight "Your prompt here" --json
+```
 
-Add to your project's `.mcp.json` (or `~/.claude/settings.json` for global access):
+Free tier gives you 10 optimizations to try it out.
+
+<details>
+<summary><strong>Add MCP integration (optional — for AI-assisted workflows)</strong></summary>
+
+Add to your project's `.mcp.json` (or `~/.claude/settings.json` for global access) to use inside Claude Code, Cursor, or Windsurf:
 
 ```json
 {
@@ -230,46 +236,11 @@ Add to your project's `.mcp.json` (or `~/.claude/settings.json` for global acces
 }
 ```
 
-Restart Claude Code. All 20 tools appear automatically. Free tier gives you 10 optimizations to try it out.
+Restart your MCP client. All 20 tools appear automatically.
 
-<details>
-<summary><strong>Claude Desktop config path</strong></summary>
-
+**Claude Desktop config path:**
 - **macOS**: `~/Library/Application Support/Claude/claude_desktop_config.json`
 - **Windows**: `%APPDATA%\Claude\claude_desktop_config.json`
-
-Same JSON config as above.
-
-</details>
-
-<details>
-<summary><strong>Global install (faster startup, no npx download check)</strong></summary>
-
-```bash
-npm install -g claude-prompt-optimizer-mcp
-```
-
-Then use in your MCP config:
-```json
-{
-  "mcpServers": {
-    "prompt-optimizer": {
-      "command": "claude-prompt-optimizer-mcp"
-    }
-  }
-}
-```
-
-</details>
-
-<details>
-<summary><strong>Curl installer (installs globally + prints MCP config)</strong></summary>
-
-```bash
-curl -fsSL https://getpcp.site/install.sh | bash
-```
-
-Checks Node.js ≥ 18, installs the package globally, and prints the MCP config JSON for your platform.
 
 </details>
 
@@ -280,18 +251,6 @@ Checks Node.js ≥ 18, installs the package globally, and prints the MCP config 
 git clone https://github.com/rishiatlan/Prompt-Optimizer-MCP.git
 cd Prompt-Optimizer-MCP
 npm install && npm run build
-```
-
-Then use in your MCP config:
-```json
-{
-  "mcpServers": {
-    "prompt-optimizer": {
-      "command": "node",
-      "args": ["/absolute/path/to/Prompt-Optimizer-MCP/dist/src/index.js"]
-    }
-  }
-}
 ```
 
 </details>
