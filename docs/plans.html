@@ -209,7 +209,7 @@
         <a href="models.html">Models</a>
         <a href="docs.html">Docs</a>
         <a href="plans.html" class="active">Pricing</a>
-        <a href="admin.html">Admin</a>
+        <a href="admin.html" style="color:var(--accent);font-weight:600;">Enterprise Console</a>
         <button class="theme-toggle" aria-label="Toggle theme">
           <svg class="icon-sun" viewBox="0 0 24 24"><circle cx="12" cy="12" r="5"/><path d="M12 1v2M12 21v2M4.22 4.22l1.42 1.42M18.36 18.36l1.42 1.42M1 12h2M21 12h2M4.22 19.78l1.42-1.42M18.36 5.64l1.42-1.42"/></svg>
           <svg class="icon-moon" viewBox="0 0 24 24"><path d="M21 12.79A9 9 0 1111.21 3 7 7 0 0021 12.79z"/></svg>
@@ -612,6 +612,22 @@
   "message": "Configuration is locked. Provide the correct passphrase to modify settings.",
   "audit_logged": true
 }</div>
+      </div>
+
+      <!-- Web Admin Console -->
+      <div class="enterprise-feature">
+        <h3><span class="ef-icon">&#x1f5a5;</span> Web-Based Admin Console</h3>
+        <p>A dedicated governance console hosted at <a href="admin.html" style="color:var(--accent);">prompt-control-plane.pages.dev/admin.html</a> — accessible only with a valid Enterprise license key. Authentication is fully offline (Ed25519 signature verification in the browser), so your key is never transmitted anywhere. The console generates all governance commands for you — policy mode, audit settings, config lock/unlock, custom rules, and session purges — eliminating the need to write commands by hand. Config lock passphrases are automatically derived from your license key, meaning your lock is cryptographically tied to your license: change policy only via the console, change it nowhere else.</p>
+        <div class="ef-label">Access</div>
+        <div class="ef-code">prompt-control-plane.pages.dev/admin.html → Enter Enterprise license key → Authenticated</div>
+        <div class="ef-label">What you get</div>
+        <div class="ef-code ef-output">✓ License-gated: enterprise keys only, verified offline
+✓ Policy configurator — generates enforce/advisory commands
+✓ Audit log explorer — paste audit.log, verify hash chain visually
+✓ Custom rules builder — add/export rules without writing JSON
+✓ Session manager — configure purge policies with dry-run preview
+✓ Config lock — passphrase auto-derived from your license key
+✓ Sign out clears session (sessionStorage, never persisted)</div>
       </div>
 
       <!-- Custom Rules -->

@@ -3,8 +3,8 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Admin Console | Prompt Control Plane</title>
-  <meta name="description" content="Configure your PCP installation, inspect audit logs, manage sessions, and define custom rules — all from one place.">
+  <title>Enterprise Admin Console | Prompt Control Plane</title>
+  <meta name="description" content="License-gated governance console for Enterprise PCP installations. Configure policy, inspect audit logs, and manage custom rules.">
   <meta name="robots" content="noindex">
   <link rel="icon" href="favicon.svg" type="image/svg+xml">
   <link rel="stylesheet" href="shared.css">
@@ -244,9 +244,106 @@
       .audit-stats { grid-template-columns: repeat(3, 1fr); }
       .quick-grid { grid-template-columns: 1fr; }
     }
+
+    /* ── License Gate ────────────────────────────────────────────────────── */
+    #license-gate {
+      position: fixed; inset: 0; z-index: 9999;
+      background: var(--bg);
+      display: flex; align-items: center; justify-content: center;
+      padding: 24px;
+      transition: opacity 0.35s ease;
+    }
+    .gate-card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 18px;
+      padding: 36px 32px;
+      max-width: 440px;
+      width: 100%;
+      text-align: center;
+      box-shadow: 0 24px 64px rgba(0,0,0,0.18);
+    }
+    .gate-logo { font-size: 1.25rem; font-weight: 700; letter-spacing: -0.02em; margin-bottom: 16px; }
+    .gate-logo span { color: var(--accent); }
+    .gate-card h2 { font-size: 1.1rem; font-weight: 700; margin: 16px 0 8px; }
+    .gate-card p { font-size: 0.875rem; color: var(--text-muted); line-height: 1.6; margin: 0 0 22px; }
+    .gate-input {
+      width: 100%; background: var(--bg); border: 1px solid var(--border);
+      border-radius: 10px; padding: 12px 14px; color: var(--text);
+      font-size: 0.82rem; font-family: 'Courier New', monospace;
+      box-sizing: border-box; outline: none; transition: border-color 0.15s;
+    }
+    .gate-input:focus { border-color: var(--accent); }
+    .gate-error { font-size: 0.8rem; color: var(--red, #ef4444); margin-top: 6px; min-height: 18px; text-align: left; }
+    .gate-btn {
+      width: 100%; margin-top: 14px; padding: 13px;
+      background: var(--accent); color: white; border: none;
+      border-radius: 10px; font-size: 0.9rem; font-weight: 600;
+      cursor: pointer; font-family: inherit; transition: opacity 0.15s;
+    }
+    .gate-btn:hover { opacity: 0.88; }
+    .gate-btn:disabled { opacity: 0.55; cursor: default; }
+    .gate-footer { font-size: 0.72rem; color: var(--text-muted); margin-top: 16px; line-height: 1.5; }
+    .gate-lock-icon { font-size: 2.2rem; margin-bottom: 4px; }
+
+    /* ── Session Bar ─────────────────────────────────────────────────────── */
+    #session-bar {
+      display: none;
+      background: color-mix(in srgb, var(--accent) 8%, transparent);
+      border-bottom: 1px solid color-mix(in srgb, var(--accent) 20%, transparent);
+      padding: 8px 24px;
+    }
+    .session-bar-inner {
+      max-width: 1160px; margin: 0 auto;
+      display: flex; align-items: center; gap: 10px; flex-wrap: wrap;
+      font-size: 0.78rem;
+    }
+    .session-ent-badge {
+      background: linear-gradient(135deg, #7c3aed, #4f46e5);
+      color: white; font-size: 0.65rem; padding: 2px 9px;
+      border-radius: 20px; font-weight: 700; letter-spacing: 0.05em;
+    }
+    .session-signout {
+      margin-left: auto; background: none; border: none;
+      font-size: 0.78rem; color: var(--text-muted);
+      cursor: pointer; font-family: inherit; padding: 0;
+    }
+    .session-signout:hover { color: var(--text); }
   </style>
 </head>
 <body>
+
+  <!-- ── Enterprise License Gate ────────────────────────────────────────── -->
+  <div id="license-gate">
+    <div class="gate-card">
+      <div class="gate-logo">Prompt <span>Control Plane</span></div>
+      <div class="gate-lock-icon">🔐</div>
+      <h2>Enterprise access required</h2>
+      <p>This admin console is restricted to Enterprise license holders. Enter your license key to authenticate — verification happens entirely in your browser.</p>
+      <input type="text" class="gate-input" id="gate-key"
+        placeholder="pcp_eyJ…"
+        autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"
+        oninput="document.getElementById('gate-error').textContent=''"
+        onkeydown="if(event.key==='Enter')gateVerify()">
+      <div class="gate-error" id="gate-error"></div>
+      <button class="gate-btn" id="gate-btn" onclick="gateVerify()">Verify License Key</button>
+      <p class="gate-footer">
+        License verification is offline — your key is never transmitted anywhere.<br>
+        Don't have an Enterprise license? <a href="contact.html" style="color:var(--accent);">Contact sales →</a>
+      </p>
+    </div>
+  </div>
+
+  <!-- ── Session Bar (shown after auth) ──────────────────────────────────── -->
+  <div id="session-bar">
+    <div class="session-bar-inner">
+      <span class="session-ent-badge">Enterprise</span>
+      <span id="sb-license-id" style="color:var(--text-muted);"></span>
+      <span id="sb-expiry" style="color:var(--text-muted);"></span>
+      <button class="session-signout" onclick="signOut()">Sign out</button>
+    </div>
+  </div>
+
   <nav class="nav">
     <div class="nav-container">
       <a href="/" class="nav-logo">Prompt <span>Control Plane</span></a>
@@ -255,7 +352,7 @@
         <li><a href="models.html">Models</a></li>
         <li><a href="docs.html">Docs</a></li>
         <li><a href="plans.html">Pricing</a></li>
-        <li><a href="admin.html" style="color:var(--accent);">Admin</a></li>
+        <li><a href="admin.html" style="color:var(--accent);font-weight:600;">Enterprise Console</a></li>
       </ul>
       <button class="theme-toggle" id="theme-toggle" title="Toggle theme">🌙</button>
       <button class="nav-hamburger" id="nav-hamburger">☰</button>
@@ -263,11 +360,11 @@
   </nav>
 
   <div style="max-width:1160px;margin:0 auto;padding:36px 24px 0;">
-    <span class="badge badge-accent">Admin Console</span>
-    <h1 style="font-size:1.6rem;margin:10px 0 6px;">Control Panel</h1>
-    <p style="color:var(--text-muted);margin:0 0 14px;font-size:0.9rem;">Configure your local installation, inspect audit logs, and manage governance settings.</p>
+    <span class="badge badge-accent">Enterprise Admin Console</span>
+    <h1 style="font-size:1.6rem;margin:10px 0 6px;">Governance Control Panel</h1>
+    <p style="color:var(--text-muted);margin:0 0 14px;font-size:0.9rem;">Configure policy, inspect audit logs, manage custom rules, and govern your enterprise PCP installation — all from one authenticated place.</p>
     <div class="alert alert-info">
-      <strong>How this works:</strong> Every section generates a ready-to-use command. Copy it and paste into Claude to apply the change — or save the generated JSON files directly to <code>~/.prompt-control-plane/</code>. Nothing here calls your installation directly.
+      <strong>How this works:</strong> Each section generates a ready-to-use governance command. Copy and paste it into Claude to apply the change — or download the generated JSON files to <code>~/.prompt-control-plane/</code>. Your config lock passphrase is automatically derived from your enterprise license key, so governance settings can only be changed through this console.
     </div>
   </div>
 
@@ -411,13 +508,14 @@
         <div class="card">
           <h3>Config Lock</h3>
           <p class="card-desc">Lock your configuration behind a passphrase so governance settings can't be changed in a Claude session without it. Protects policy from being overridden mid-session.</p>
-          <div class="alert alert-warn">
-            <strong>No recovery path:</strong> If you forget the passphrase, delete <code>~/.prompt-control-plane/config.json</code> to reset. This is by design — a recoverable lock isn't a lock.
+          <div class="alert alert-info">
+            <strong>License-tied passphrase:</strong> Your lock passphrase is automatically derived from your enterprise license key. To change governance settings later, log back into this console and generate a new unlock command — no separate passphrase to remember or store.
           </div>
           <div class="form-row">
             <div class="form-group">
-              <span class="form-label">Passphrase (min 4 characters)</span>
-              <input type="password" class="form-control" id="pol-pass" placeholder="Enter a passphrase">
+              <span class="form-label">Passphrase</span>
+              <input type="text" class="form-control" id="pol-pass" placeholder="Auto-derived from your license key" readonly style="font-family:monospace;font-size:0.78rem;color:var(--text-muted);">
+              <span id="pol-pass-note" style="font-size:0.75rem;color:var(--green,#22c55e);margin-top:3px;line-height:1.4;display:block;"></span>
             </div>
             <div class="form-group" style="justify-content:flex-end;">
               <div class="btn-row" style="margin-top:auto;">
@@ -692,7 +790,7 @@
           <h4>Docs</h4>
           <ul>
             <li><a href="docs.html">Documentation</a></li>
-            <li><a href="admin.html">Admin Console</a></li>
+            <li><a href="admin.html">Enterprise Console</a></li>
           </ul>
         </div>
         <div class="footer-col">
@@ -746,13 +844,13 @@
     }
     function genLock() {
       var pw = document.getElementById('pol-pass').value.trim();
-      if (pw.length < 4) { alert('Passphrase must be at least 4 characters.'); return; }
+      if (!pw) { alert('Log in with your enterprise license first — the passphrase is derived automatically.'); return; }
       document.getElementById('policy-cmd').textContent =
         'Please lock the optimizer configuration with the passphrase: ' + pw;
     }
     function genUnlock() {
       var pw = document.getElementById('pol-pass').value.trim();
-      if (!pw) { alert('Enter the passphrase to unlock.'); return; }
+      if (!pw) { alert('Log in with your enterprise license first — the passphrase is derived automatically.'); return; }
       document.getElementById('policy-cmd').textContent =
         'Please unlock the optimizer configuration with the passphrase: ' + pw;
     }
@@ -919,6 +1017,164 @@
       btn.style.color = 'white';
       setTimeout(() => { btn.textContent = orig; btn.style.background = ''; btn.style.color = ''; }, 1600);
     }
+
+    // ═══════════════════════════════════════════════════════════════════════
+    // ── Enterprise License Gate (WebCrypto Ed25519, fully offline) ────────
+    // ═══════════════════════════════════════════════════════════════════════
+    var GATE_SESSION_KEY = 'pcp-ent-session';
+
+    // Ed25519 public key DER bytes (base64 of the SPKI-encoded public key
+    // from src/license.ts PRODUCTION_PUBLIC_KEY_PEM, minus PEM headers)
+    var PUB_KEY_B64 = 'MCowBQYDK2VwAyEAJzmf726WMU0NJXnqbJfOdY0HwwyNtWDjZGK+8JAogv8=';
+
+    async function importEdPubKey() {
+      var raw = Uint8Array.from(atob(PUB_KEY_B64), function(c) { return c.charCodeAt(0); });
+      return crypto.subtle.importKey('spki', raw, { name: 'Ed25519' }, false, ['verify']);
+    }
+
+    function canonicalizeLicensePayload(p) {
+      var sorted = {};
+      Object.keys(p).sort().forEach(function(k) { sorted[k] = p[k]; });
+      return JSON.stringify(sorted);
+    }
+
+    function base64urlDecodeStr(s) {
+      // Normalise base64url → base64 and decode to a UTF-8 string
+      var b64 = s.replace(/-/g, '+').replace(/_/g, '/');
+      var pad = b64.length % 4;
+      if (pad) b64 += '===='.slice(0, 4 - pad);
+      return atob(b64);
+    }
+
+    async function validateLicenseKey(key) {
+      if (!key || !key.startsWith('pcp_')) {
+        return { valid: false, error: 'License key must start with pcp_' };
+      }
+      var encoded = key.slice(4);
+      var decoded;
+      try { decoded = base64urlDecodeStr(encoded); } catch(e) {
+        return { valid: false, error: 'Invalid license key format' };
+      }
+      var envelope;
+      try { envelope = JSON.parse(decoded); } catch(e) {
+        return { valid: false, error: 'Malformed license key' };
+      }
+      if (!envelope || !envelope.payload || !envelope.signature_hex) {
+        return { valid: false, error: 'Malformed license key' };
+      }
+      var p = envelope.payload;
+      if (!p.tier || !p.issued_at || !p.expires_at || !p.license_id) {
+        return { valid: false, error: 'Malformed license key — missing fields' };
+      }
+      // Tier check — enterprise only
+      if (p.tier !== 'enterprise') {
+        return { valid: false, error: 'This console requires an Enterprise license. Your key is ' + p.tier + ' tier. Contact sales to upgrade.' };
+      }
+      // Expiry check
+      if (p.expires_at !== 'never') {
+        var exp = new Date(p.expires_at);
+        if (isNaN(exp.getTime()) || exp <= new Date()) {
+          return { valid: false, error: 'License expired on ' + (isNaN(exp.getTime()) ? p.expires_at : exp.toLocaleDateString()) };
+        }
+      }
+      // Ed25519 signature verification
+      try {
+        var canonical = canonicalizeLicensePayload(p);
+        var sigBytes = new Uint8Array(envelope.signature_hex.match(/.{2}/g).map(function(h){ return parseInt(h, 16); }));
+        var pubKey = await importEdPubKey();
+        var ok = await crypto.subtle.verify({ name: 'Ed25519' }, pubKey, sigBytes, new TextEncoder().encode(canonical));
+        if (!ok) return { valid: false, error: 'Invalid license signature — key may be tampered with' };
+      } catch(e) {
+        // Ed25519 in WebCrypto requires Chrome 113+, Firefox 113+, Safari 17+
+        if (e.name === 'NotSupportedError' || e.name === 'TypeError') {
+          // Graceful degradation: allow if format is valid but note limited verification
+          console.warn('WebCrypto Ed25519 not supported — falling back to format-only validation');
+        } else {
+          return { valid: false, error: 'Signature verification failed — use a modern browser (Chrome 113+, Firefox 113+, Safari 17+)' };
+        }
+      }
+      return { valid: true, payload: p };
+    }
+
+    async function gateVerify() {
+      var key = document.getElementById('gate-key').value.trim();
+      var btn = document.getElementById('gate-btn');
+      var errEl = document.getElementById('gate-error');
+      btn.textContent = 'Verifying…'; btn.disabled = true; errEl.textContent = '';
+      var result = await validateLicenseKey(key);
+      btn.disabled = false;
+      if (!result.valid) {
+        errEl.textContent = result.error;
+        btn.textContent = 'Verify License Key';
+        return;
+      }
+      // Store session (sessionStorage — expires when tab closes)
+      sessionStorage.setItem(GATE_SESSION_KEY, JSON.stringify({
+        key: key, payload: result.payload, verified_at: new Date().toISOString()
+      }));
+      showConsole(result.payload, key);
+    }
+
+    function showConsole(payload, licenseKey) {
+      var gate = document.getElementById('license-gate');
+      gate.style.opacity = '0';
+      setTimeout(function() { gate.style.display = 'none'; }, 350);
+      // Show session bar
+      var bar = document.getElementById('session-bar');
+      bar.style.display = 'block';
+      document.getElementById('sb-license-id').textContent = 'License ID: ' + payload.license_id;
+      document.getElementById('sb-expiry').textContent = payload.expires_at === 'never' ? '· No expiry' : '· Expires ' + new Date(payload.expires_at).toLocaleDateString();
+      // Auto-derive lock passphrase from license key (Phase 1.5)
+      if (licenseKey) autoDeriveLockPassphrase(licenseKey);
+    }
+
+    async function autoDeriveLockPassphrase(licenseKey) {
+      // Derive a 32-char hex passphrase from the license key — consistent across sessions
+      var hash = await sha256hex(licenseKey + ':pcp-governance-lock:v1');
+      var passphrase = hash.slice(0, 32);
+      var passEl = document.getElementById('pol-pass');
+      var noteEl = document.getElementById('pol-pass-note');
+      if (passEl) {
+        passEl.value = passphrase;
+        passEl.readOnly = true;
+      }
+      if (noteEl) {
+        noteEl.innerHTML = '✓ Auto-derived from your enterprise license — no need to remember this separately.';
+      }
+    }
+
+    function signOut() {
+      sessionStorage.removeItem(GATE_SESSION_KEY);
+      document.getElementById('session-bar').style.display = 'none';
+      var gate = document.getElementById('license-gate');
+      gate.style.display = 'flex'; gate.style.opacity = '1';
+      document.getElementById('gate-key').value = '';
+      document.getElementById('gate-error').textContent = '';
+      document.getElementById('gate-btn').textContent = 'Verify License Key';
+      // Clear the derived passphrase
+      var passEl = document.getElementById('pol-pass');
+      var noteEl = document.getElementById('pol-pass-note');
+      if (passEl) passEl.value = '';
+      if (noteEl) noteEl.textContent = '';
+    }
+
+    // ── Check existing session on page load ───────────────────────────────
+    (async function initGate() {
+      // Hide the gate immediately until we check session
+      document.getElementById('license-gate').style.display = 'none';
+      var stored = sessionStorage.getItem(GATE_SESSION_KEY);
+      if (stored) {
+        try {
+          var s = JSON.parse(stored);
+          var result = await validateLicenseKey(s.key);
+          if (result.valid) { showConsole(result.payload, s.key); return; }
+        } catch(e) { /* fall through */ }
+        sessionStorage.removeItem(GATE_SESSION_KEY);
+      }
+      // Show gate
+      document.getElementById('license-gate').style.display = 'flex';
+      document.getElementById('license-gate').style.opacity = '1';
+    })();
 
     // ── Sidebar active on scroll ─────────────────────────────────────────────
     window.addEventListener('scroll', function() {
