@@ -1,0 +1,942 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Admin Console | Prompt Control Plane</title>
+  <meta name="description" content="Configure your PCP installation, inspect audit logs, manage sessions, and define custom rules — all from one place.">
+  <meta name="robots" content="noindex">
+  <link rel="icon" href="favicon.svg" type="image/svg+xml">
+  <link rel="stylesheet" href="shared.css">
+  <style>
+    .admin-layout {
+      display: grid;
+      grid-template-columns: 210px 1fr;
+      gap: 0;
+      max-width: 1160px;
+      margin: 0 auto;
+      padding: 40px 24px 80px;
+    }
+    .admin-sidebar {
+      position: sticky;
+      top: 80px;
+      height: fit-content;
+      padding-right: 32px;
+      border-right: 1px solid var(--border);
+    }
+    .sidebar-group { margin-bottom: 28px; }
+    .sidebar-group-label {
+      font-size: 0.68rem;
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+      color: var(--text-muted);
+      margin: 0 0 8px 12px;
+    }
+    .sidebar-nav { list-style: none; padding: 0; margin: 0; }
+    .sidebar-nav li a {
+      display: block;
+      padding: 7px 12px;
+      border-radius: 8px;
+      font-size: 0.875rem;
+      color: var(--text-muted);
+      text-decoration: none;
+      transition: background 0.15s, color 0.15s;
+    }
+    .sidebar-nav li a:hover { background: var(--surface); color: var(--text); }
+    .sidebar-nav li a.active { background: var(--surface); color: var(--accent); font-weight: 500; }
+
+    .admin-main { padding-left: 40px; min-width: 0; }
+    .admin-section { margin-bottom: 56px; scroll-margin-top: 90px; }
+    .section-title-row {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      margin-bottom: 20px;
+    }
+    .section-title-row h2 { font-size: 1.2rem; margin: 0; }
+
+    .card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 22px;
+      margin-bottom: 14px;
+    }
+    .card h3 { font-size: 0.95rem; font-weight: 600; margin: 0 0 4px; }
+    .card-desc { font-size: 0.825rem; color: var(--text-muted); margin: 0 0 18px; line-height: 1.5; }
+
+    .form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; margin-bottom: 14px; }
+    .form-group { display: flex; flex-direction: column; gap: 5px; }
+    .form-label {
+      font-size: 0.72rem;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+      color: var(--text-muted);
+    }
+    .form-control {
+      background: var(--bg);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 8px 11px;
+      color: var(--text);
+      font-size: 0.875rem;
+      font-family: inherit;
+      outline: none;
+      transition: border-color 0.15s;
+      box-sizing: border-box;
+      width: 100%;
+    }
+    .form-control:focus { border-color: var(--accent); }
+
+    .toggle-row { display: flex; align-items: center; gap: 10px; margin: 6px 0; }
+    .toggle { position: relative; width: 38px; height: 21px; flex-shrink: 0; }
+    .toggle input { opacity: 0; width: 0; height: 0; }
+    .toggle-track {
+      position: absolute;
+      inset: 0;
+      background: var(--border);
+      border-radius: 21px;
+      cursor: pointer;
+      transition: background 0.2s;
+    }
+    .toggle-track::before {
+      content: '';
+      position: absolute;
+      width: 15px; height: 15px;
+      left: 3px; top: 3px;
+      background: white;
+      border-radius: 50%;
+      transition: transform 0.2s;
+    }
+    .toggle input:checked + .toggle-track { background: var(--accent); }
+    .toggle input:checked + .toggle-track::before { transform: translateX(17px); }
+    .toggle-label { font-size: 0.85rem; }
+
+    .range-row { display: flex; align-items: center; gap: 10px; }
+    .range-row input[type=range] { flex: 1; accent-color: var(--accent); }
+    .range-val { font-size: 0.85rem; font-weight: 700; color: var(--accent); min-width: 30px; text-align: right; }
+
+    .cmd-box {
+      background: var(--bg);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      padding: 14px 16px;
+      margin-top: 18px;
+    }
+    .cmd-box-label { font-size: 0.68rem; text-transform: uppercase; letter-spacing: 0.1em; color: var(--text-muted); margin-bottom: 8px; }
+    .cmd-text {
+      font-size: 0.85rem;
+      font-family: 'Courier New', monospace;
+      color: var(--text);
+      background: var(--code-bg, #0d1117);
+      border-radius: 7px;
+      padding: 10px 13px;
+      margin-bottom: 10px;
+      word-break: break-word;
+      line-height: 1.5;
+      min-height: 40px;
+    }
+
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
+      padding: 8px 15px;
+      border-radius: 8px;
+      font-size: 0.85rem;
+      font-weight: 500;
+      cursor: pointer;
+      border: none;
+      font-family: inherit;
+      transition: opacity 0.15s, transform 0.1s;
+    }
+    .btn:active { transform: scale(0.97); }
+    .btn-primary { background: var(--accent); color: white; }
+    .btn-secondary { background: var(--surface); border: 1px solid var(--border); color: var(--text); }
+    .btn-danger { background: var(--red, #ef4444); color: white; }
+    .btn-sm { padding: 5px 10px; font-size: 0.78rem; }
+    .btn-row { display: flex; gap: 8px; flex-wrap: wrap; }
+
+    /* Alert */
+    .alert { border-radius: 8px; padding: 11px 14px; font-size: 0.85rem; margin-bottom: 14px; line-height: 1.5; }
+    .alert-info { background: color-mix(in srgb, var(--accent) 10%, transparent); border: 1px solid color-mix(in srgb, var(--accent) 25%, transparent); }
+    .alert-warn { background: color-mix(in srgb, var(--orange) 10%, transparent); border: 1px solid color-mix(in srgb, var(--orange) 25%, transparent); }
+
+    /* Audit Log */
+    .paste-area {
+      width: 100%;
+      min-height: 110px;
+      background: var(--bg);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      padding: 11px;
+      color: var(--text);
+      font-family: 'Courier New', monospace;
+      font-size: 0.78rem;
+      resize: vertical;
+      box-sizing: border-box;
+    }
+    .audit-stats { display: grid; grid-template-columns: repeat(5, 1fr); gap: 10px; margin-bottom: 16px; }
+    .stat-tile { background: var(--bg); border: 1px solid var(--border); border-radius: 8px; padding: 10px; text-align: center; }
+    .stat-tile .n { font-size: 1.6rem; font-weight: 700; color: var(--accent); display: block; }
+    .stat-tile .l { font-size: 0.65rem; text-transform: uppercase; color: var(--text-muted); }
+    .audit-filters { display: flex; gap: 8px; flex-wrap: wrap; margin-bottom: 14px; }
+    .audit-filters select, .audit-filters input {
+      background: var(--bg);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 6px 10px;
+      color: var(--text);
+      font-size: 0.8rem;
+      font-family: inherit;
+    }
+    .audit-filters input { flex: 1; min-width: 120px; }
+    .audit-table { width: 100%; border-collapse: collapse; font-size: 0.8rem; }
+    .audit-table th {
+      text-align: left;
+      padding: 7px 11px;
+      background: var(--bg);
+      border-bottom: 1px solid var(--border);
+      color: var(--text-muted);
+      font-size: 0.68rem;
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+      font-weight: 600;
+      position: sticky;
+      top: 56px;
+    }
+    .audit-table td { padding: 7px 11px; border-bottom: 1px solid var(--border); vertical-align: middle; }
+    .audit-table tr:hover td { background: var(--surface); }
+    .chain-ok { color: var(--green, #22c55e); font-size: 0.75rem; font-weight: 600; }
+    .chain-fail { color: var(--red, #ef4444); font-size: 0.75rem; font-weight: 600; }
+    .outcome-success { color: var(--green); }
+    .outcome-blocked { color: var(--red); }
+    .outcome-error { color: var(--orange); }
+
+    /* Custom Rules */
+    .rule-item { background: var(--bg); border: 1px solid var(--border); border-radius: 10px; padding: 14px; margin-bottom: 10px; }
+    .rule-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 6px; }
+    .rule-id { font-size: 0.8rem; font-weight: 700; color: var(--accent); font-family: monospace; }
+    .sev-blocking { color: var(--red); font-size: 0.72rem; font-weight: 700; }
+    .sev-nonblocking { color: var(--orange); font-size: 0.72rem; font-weight: 700; }
+    .rule-meta { display: flex; gap: 14px; flex-wrap: wrap; font-size: 0.75rem; color: var(--text-muted); }
+    .regex-ok { color: var(--green); font-size: 0.75rem; }
+    .regex-fail { color: var(--red); font-size: 0.75rem; }
+
+    /* Quick Commands */
+    .quick-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+    .quick-card { background: var(--bg); border: 1px solid var(--border); border-radius: 10px; padding: 14px; }
+    .quick-card h4 { font-size: 0.875rem; margin: 0 0 5px; }
+    .quick-card p { font-size: 0.78rem; color: var(--text-muted); margin: 0 0 9px; line-height: 1.4; }
+    .quick-snippet { font-family: monospace; font-size: 0.75rem; background: var(--code-bg, #0d1117); padding: 7px 10px; border-radius: 6px; color: var(--green); margin-bottom: 8px; word-break: break-all; }
+
+    /* Ent badge */
+    .ent { display: inline-block; background: linear-gradient(135deg, #7c3aed, #4f46e5); color: white; font-size: 0.62rem; padding: 2px 7px; border-radius: 20px; font-weight: 700; letter-spacing: 0.05em; vertical-align: middle; }
+
+    @media (max-width: 720px) {
+      .admin-layout { grid-template-columns: 1fr; padding: 24px 16px 60px; }
+      .admin-sidebar { position: static; padding-right: 0; border-right: none; border-bottom: 1px solid var(--border); padding-bottom: 20px; margin-bottom: 28px; }
+      .sidebar-nav { display: flex; flex-wrap: wrap; gap: 6px; }
+      .sidebar-nav li a { padding: 5px 11px; background: var(--surface); border-radius: 20px; font-size: 0.8rem; }
+      .admin-main { padding-left: 0; }
+      .form-row { grid-template-columns: 1fr; }
+      .audit-stats { grid-template-columns: repeat(3, 1fr); }
+      .quick-grid { grid-template-columns: 1fr; }
+    }
+  </style>
+</head>
+<body>
+  <nav class="nav">
+    <div class="nav-container">
+      <a href="/" class="nav-logo">Prompt <span>Control Plane</span></a>
+      <ul class="nav-links">
+        <li><a href="features.html">Features</a></li>
+        <li><a href="models.html">Models</a></li>
+        <li><a href="docs.html">Docs</a></li>
+        <li><a href="plans.html">Pricing</a></li>
+        <li><a href="admin.html" style="color:var(--accent);">Admin</a></li>
+      </ul>
+      <button class="theme-toggle" id="theme-toggle" title="Toggle theme">🌙</button>
+      <button class="nav-hamburger" id="nav-hamburger">☰</button>
+    </div>
+  </nav>
+
+  <div style="max-width:1160px;margin:0 auto;padding:36px 24px 0;">
+    <span class="badge badge-accent">Admin Console</span>
+    <h1 style="font-size:1.6rem;margin:10px 0 6px;">Control Panel</h1>
+    <p style="color:var(--text-muted);margin:0 0 14px;font-size:0.9rem;">Configure your local installation, inspect audit logs, and manage governance settings.</p>
+    <div class="alert alert-info">
+      <strong>How this works:</strong> Every section generates a ready-to-use command. Copy it and paste into Claude to apply the change — or save the generated JSON files directly to <code>~/.prompt-control-plane/</code>. Nothing here calls your installation directly.
+    </div>
+  </div>
+
+  <div class="admin-layout">
+
+    <!-- ─── Sidebar ─────────────────────────────────────────────────────── -->
+    <aside class="admin-sidebar">
+      <div class="sidebar-group">
+        <div class="sidebar-group-label">Configuration</div>
+        <ul class="sidebar-nav">
+          <li><a href="#optimizer" class="active">Optimizer Settings</a></li>
+          <li><a href="#policy">Policy Enforcement</a></li>
+          <li><a href="#sessions">Session Management</a></li>
+        </ul>
+      </div>
+      <div class="sidebar-group">
+        <div class="sidebar-group-label">Governance</div>
+        <ul class="sidebar-nav">
+          <li><a href="#audit">Audit Log Explorer</a></li>
+          <li><a href="#rules">Custom Rules</a></li>
+        </ul>
+      </div>
+      <div class="sidebar-group">
+        <div class="sidebar-group-label">Reference</div>
+        <ul class="sidebar-nav">
+          <li><a href="#commands">Quick Commands</a></li>
+        </ul>
+      </div>
+    </aside>
+
+    <!-- ─── Main ─────────────────────────────────────────────────────────── -->
+    <main class="admin-main">
+
+      <!-- ══ Optimizer Settings ══════════════════════════════════════════════ -->
+      <section class="admin-section" id="optimizer">
+        <div class="section-title-row">
+          <h2>Optimizer Settings</h2>
+        </div>
+
+        <div class="card">
+          <h3>Core Behavior</h3>
+          <p class="card-desc">Controls when the optimizer runs and what format it produces.</p>
+          <div class="form-row">
+            <div class="form-group">
+              <span class="form-label">Mode</span>
+              <select class="form-control" id="opt-mode" onchange="updateOptimizerCmd()">
+                <option value="manual">Manual — optimize only when you ask</option>
+                <option value="always_on">Always On — optimize every prompt automatically</option>
+              </select>
+            </div>
+            <div class="form-group">
+              <span class="form-label">Default Output Format</span>
+              <select class="form-control" id="opt-target" onchange="updateOptimizerCmd()">
+                <option value="claude">Claude — XML tagged format</option>
+                <option value="openai">OpenAI — system / user split</option>
+                <option value="generic">Generic — plain Markdown</option>
+              </select>
+            </div>
+          </div>
+          <div class="form-row">
+            <div class="form-group">
+              <span class="form-label">Strictness</span>
+              <select class="form-control" id="opt-strictness" onchange="updateOptimizerCmd()">
+                <option value="relaxed">Relaxed — fewer flags, lower bar</option>
+                <option value="standard" selected>Standard — balanced (recommended)</option>
+                <option value="strict">Strict — more flags, higher bar</option>
+              </select>
+            </div>
+            <div class="form-group">
+              <span class="form-label">Quality Threshold</span>
+              <div class="range-row" style="margin-top:4px;">
+                <input type="range" id="opt-threshold" min="0" max="100" value="70" oninput="document.getElementById('opt-tval').textContent=this.value;updateOptimizerCmd()">
+                <span class="range-val" id="opt-tval">70</span>
+              </div>
+              <span style="font-size:0.75rem;color:var(--text-muted);">Prompts scoring below this value are flagged</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="card">
+          <h3>Session Storage</h3>
+          <p class="card-desc">Control how many sessions are stored and how long they're kept.</p>
+          <div class="form-row">
+            <div class="form-group">
+              <span class="form-label">Max Sessions Stored</span>
+              <input type="number" class="form-control" id="opt-maxsess" value="500" min="1" max="10000" oninput="updateOptimizerCmd()">
+            </div>
+            <div class="form-group">
+              <span class="form-label">Auto-Purge After (days — leave blank to disable)</span>
+              <input type="number" class="form-control" id="opt-retention" placeholder="e.g. 90" min="1" max="365" oninput="updateOptimizerCmd()">
+            </div>
+          </div>
+          <div class="toggle-row">
+            <label class="toggle"><input type="checkbox" id="opt-ephemeral" onchange="updateOptimizerCmd()"><span class="toggle-track"></span></label>
+            <span class="toggle-label">Ephemeral mode — sessions stay in memory only, never written to disk</span>
+          </div>
+        </div>
+
+        <div class="cmd-box">
+          <div class="cmd-box-label">Generated Claude command — paste this into Claude to apply</div>
+          <div class="cmd-text" id="optimizer-cmd"></div>
+          <div class="btn-row">
+            <button class="btn btn-primary btn-sm" onclick="copyEl('optimizer-cmd',this)">Copy Command</button>
+          </div>
+        </div>
+      </section>
+
+      <!-- ══ Policy Enforcement ══════════════════════════════════════════════ -->
+      <section class="admin-section" id="policy">
+        <div class="section-title-row">
+          <h2>Policy Enforcement</h2>
+          <span class="ent">Enterprise</span>
+        </div>
+
+        <div class="card">
+          <h3>Enforcement Mode</h3>
+          <p class="card-desc">In <strong>Advisory</strong> mode, policy issues are flagged as warnings and prompts proceed. In <strong>Enforce</strong> mode, any BLOCKING violation or risk score above the threshold stops the prompt entirely.</p>
+          <div class="form-row">
+            <div class="form-group">
+              <span class="form-label">Policy Mode</span>
+              <select class="form-control" id="pol-mode" onchange="updatePolicyCmd()">
+                <option value="advisory">Advisory — flag and warn, never block</option>
+                <option value="enforce">Enforce — block on violations</option>
+              </select>
+            </div>
+            <div class="form-group">
+              <span class="form-label">Strictness</span>
+              <select class="form-control" id="pol-strictness" onchange="updatePolicyCmd()">
+                <option value="relaxed">Relaxed — blocks at risk score ≥ 40</option>
+                <option value="standard" selected>Standard — blocks at risk score ≥ 60</option>
+                <option value="strict">Strict — blocks at risk score ≥ 75</option>
+              </select>
+            </div>
+          </div>
+          <div class="toggle-row">
+            <label class="toggle"><input type="checkbox" id="pol-audit" onchange="updatePolicyCmd()"><span class="toggle-track"></span></label>
+            <span class="toggle-label">Enable tamper-evident audit trail — writes to <code>~/.prompt-control-plane/audit.log</code></span>
+          </div>
+        </div>
+
+        <div class="card">
+          <h3>Config Lock</h3>
+          <p class="card-desc">Lock your configuration behind a passphrase so governance settings can't be changed in a Claude session without it. Protects policy from being overridden mid-session.</p>
+          <div class="alert alert-warn">
+            <strong>No recovery path:</strong> If you forget the passphrase, delete <code>~/.prompt-control-plane/config.json</code> to reset. This is by design — a recoverable lock isn't a lock.
+          </div>
+          <div class="form-row">
+            <div class="form-group">
+              <span class="form-label">Passphrase (min 4 characters)</span>
+              <input type="password" class="form-control" id="pol-pass" placeholder="Enter a passphrase">
+            </div>
+            <div class="form-group" style="justify-content:flex-end;">
+              <div class="btn-row" style="margin-top:auto;">
+                <button class="btn btn-primary" onclick="genLock()">Generate Lock Command</button>
+                <button class="btn btn-secondary" onclick="genUnlock()">Generate Unlock Command</button>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="cmd-box">
+          <div class="cmd-box-label">Generated Claude command</div>
+          <div class="cmd-text" id="policy-cmd"></div>
+          <div class="btn-row">
+            <button class="btn btn-primary btn-sm" onclick="copyEl('policy-cmd',this)">Copy Command</button>
+          </div>
+        </div>
+      </section>
+
+      <!-- ══ Session Management ══════════════════════════════════════════════ -->
+      <section class="admin-section" id="sessions">
+        <div class="section-title-row">
+          <h2>Session Management</h2>
+        </div>
+
+        <div class="card">
+          <h3>Purge Sessions</h3>
+          <p class="card-desc">Remove old sessions from your history. Run a dry-run first to preview what will be removed — no sessions are deleted until you run without dry-run.</p>
+          <div class="form-row">
+            <div class="form-group">
+              <span class="form-label">Delete sessions older than (days)</span>
+              <input type="number" class="form-control" id="sess-age" value="30" min="1" max="365" oninput="updateSessionCmd()">
+            </div>
+            <div class="form-group">
+              <span class="form-label">Always keep the last N sessions</span>
+              <input type="number" class="form-control" id="sess-keep" value="50" min="0" max="1000" oninput="updateSessionCmd()">
+            </div>
+          </div>
+          <div class="toggle-row">
+            <label class="toggle"><input type="checkbox" id="sess-dry" checked onchange="updateSessionCmd()"><span class="toggle-track"></span></label>
+            <span class="toggle-label">Dry run — show what would be removed, don't delete anything yet</span>
+          </div>
+        </div>
+
+        <div class="cmd-box">
+          <div class="cmd-box-label">Generated Claude command</div>
+          <div class="cmd-text" id="session-cmd"></div>
+          <div class="btn-row">
+            <button class="btn btn-primary btn-sm" onclick="copyEl('session-cmd',this)">Copy Command</button>
+          </div>
+        </div>
+      </section>
+
+      <!-- ══ Audit Log Explorer ══════════════════════════════════════════════ -->
+      <section class="admin-section" id="audit">
+        <div class="section-title-row">
+          <h2>Audit Log Explorer</h2>
+          <span class="ent">Enterprise</span>
+        </div>
+
+        <div class="card">
+          <h3>Load Your Audit Log</h3>
+          <p class="card-desc">Paste the contents of <code>~/.prompt-control-plane/audit.log</code> below. The explorer parses every entry and verifies the SHA-256 hash chain — any modified or deleted line breaks the chain and will be flagged.</p>
+          <textarea class="paste-area" id="audit-input" placeholder="Paste audit.log content here (JSONL — one JSON object per line)…"></textarea>
+          <div class="btn-row" style="margin-top:12px;">
+            <button class="btn btn-primary" onclick="parseAudit()">Parse &amp; Verify Chain</button>
+            <button class="btn btn-secondary" onclick="document.getElementById('audit-input').value='';document.getElementById('audit-results').style.display='none'">Clear</button>
+          </div>
+        </div>
+
+        <div id="audit-results" style="display:none;">
+          <div class="audit-stats" id="audit-stats"></div>
+          <div class="audit-filters">
+            <select id="af-outcome" onchange="filterAudit()">
+              <option value="">All outcomes</option>
+              <option value="success">Success</option>
+              <option value="blocked">Blocked</option>
+              <option value="error">Error</option>
+            </select>
+            <select id="af-event" onchange="filterAudit()">
+              <option value="">All events</option>
+              <option value="optimize">optimize</option>
+              <option value="approve">approve</option>
+              <option value="configure">configure</option>
+              <option value="license_activate">license_activate</option>
+              <option value="delete">delete</option>
+              <option value="purge">purge</option>
+            </select>
+            <input class="form-control" id="af-search" placeholder="Search entries…" oninput="filterAudit()" style="flex:1;min-width:120px;">
+          </div>
+          <div style="overflow-x:auto;">
+            <table class="audit-table">
+              <thead>
+                <tr>
+                  <th>#</th>
+                  <th>Timestamp</th>
+                  <th>Event</th>
+                  <th>Outcome</th>
+                  <th>Details</th>
+                  <th>Chain</th>
+                </tr>
+              </thead>
+              <tbody id="audit-tbody"></tbody>
+            </table>
+          </div>
+        </div>
+      </section>
+
+      <!-- ══ Custom Rules ══════════════════════════════════════════════════════ -->
+      <section class="admin-section" id="rules">
+        <div class="section-title-row">
+          <h2>Custom Rules</h2>
+          <span class="ent">Enterprise</span>
+        </div>
+
+        <div class="card">
+          <h3>Add a Rule</h3>
+          <p class="card-desc">Define rules that run on every prompt. BLOCKING rules reject the prompt in enforce mode. NON-BLOCKING rules add to the risk score. Maximum 25 rules.</p>
+          <div class="form-row">
+            <div class="form-group">
+              <span class="form-label">Rule ID (snake_case, max 64 chars)</span>
+              <input type="text" class="form-control" id="r-id" placeholder="e.g. no_credentials">
+            </div>
+            <div class="form-group">
+              <span class="form-label">Description (max 200 chars)</span>
+              <input type="text" class="form-control" id="r-desc" placeholder="What this rule catches and why it matters">
+            </div>
+          </div>
+          <div class="form-row">
+            <div class="form-group">
+              <span class="form-label">Pattern — flag if matched (regex)</span>
+              <input type="text" class="form-control" id="r-pat" placeholder="e.g. (password|api.?key|secret)" oninput="liveRegex('r-pat','r-pat-s')">
+              <span id="r-pat-s" style="font-size:0.75rem;margin-top:2px;"></span>
+            </div>
+            <div class="form-group">
+              <span class="form-label">Negative Pattern — flag if NOT matched (optional)</span>
+              <input type="text" class="form-control" id="r-neg" placeholder="Optional" oninput="liveRegex('r-neg','r-neg-s')">
+              <span id="r-neg-s" style="font-size:0.75rem;margin-top:2px;"></span>
+            </div>
+          </div>
+          <div class="form-row">
+            <div class="form-group">
+              <span class="form-label">Applies To</span>
+              <select class="form-control" id="r-applies">
+                <option value="all">All prompts</option>
+                <option value="code">Code prompts only</option>
+                <option value="prose">Prose prompts only</option>
+              </select>
+            </div>
+            <div class="form-group">
+              <span class="form-label">Severity</span>
+              <select class="form-control" id="r-severity">
+                <option value="NON-BLOCKING">NON-BLOCKING — adds to risk score</option>
+                <option value="BLOCKING">BLOCKING — rejects in enforce mode</option>
+              </select>
+            </div>
+          </div>
+          <div class="form-row">
+            <div class="form-group">
+              <span class="form-label">Risk Dimension</span>
+              <select class="form-control" id="r-dim">
+                <option value="constraint">Constraint violation</option>
+                <option value="hallucination">Hallucination risk</option>
+                <option value="underspec">Underspecification</option>
+                <option value="scope">Scope explosion</option>
+              </select>
+            </div>
+            <div class="form-group">
+              <span class="form-label">Risk Weight</span>
+              <div class="range-row" style="margin-top:4px;">
+                <input type="range" id="r-weight" min="1" max="25" value="10" oninput="document.getElementById('r-wval').textContent=this.value">
+                <span class="range-val" id="r-wval">10</span>
+                <span style="font-size:0.75rem;color:var(--text-muted);">/ 25</span>
+              </div>
+            </div>
+          </div>
+          <button class="btn btn-primary" onclick="addRule()" style="margin-top:4px;">Add Rule</button>
+        </div>
+
+        <div id="rules-list"></div>
+
+        <div id="rules-export" style="display:none;">
+          <div class="cmd-box">
+            <div class="cmd-box-label">Save as <code>~/.prompt-control-plane/custom-rules.json</code></div>
+            <div class="cmd-text" id="rules-json" style="white-space:pre;font-size:0.75rem;max-height:300px;overflow-y:auto;"></div>
+            <div class="btn-row" style="margin-top:8px;">
+              <button class="btn btn-primary btn-sm" onclick="copyEl('rules-json',this)">Copy JSON</button>
+              <button class="btn btn-secondary btn-sm" onclick="downloadRules()">Download File</button>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- ══ Quick Commands ══════════════════════════════════════════════════ -->
+      <section class="admin-section" id="commands">
+        <div class="section-title-row">
+          <h2>Quick Commands</h2>
+        </div>
+        <p style="color:var(--text-muted);font-size:0.85rem;margin:0 0 18px;">Copy-ready phrases to paste into Claude for common operations.</p>
+
+        <div class="quick-grid">
+          <div class="quick-card">
+            <h4>Check usage &amp; quota</h4>
+            <p>See how many optimizations you've used this month and what's remaining.</p>
+            <div class="quick-snippet">Please show my current usage and remaining quota.</div>
+            <button class="btn btn-secondary btn-sm" onclick="copyText('Please show my current usage and remaining quota.',this)">Copy</button>
+          </div>
+          <div class="quick-card">
+            <h4>View license status</h4>
+            <p>Check your current tier, license expiry, and upgrade options.</p>
+            <div class="quick-snippet">Please show my current license status and tier.</div>
+            <button class="btn btn-secondary btn-sm" onclick="copyText('Please show my current license status and tier.',this)">Copy</button>
+          </div>
+          <div class="quick-card">
+            <h4>Quick score a prompt</h4>
+            <p>Instant pass/fail score and top issues — free, no quota used.</p>
+            <div class="quick-snippet">Please run a quick check on this prompt: [your prompt]</div>
+            <button class="btn btn-secondary btn-sm" onclick="copyText('Please run a quick check on this prompt: ',this)">Copy</button>
+          </div>
+          <div class="quick-card">
+            <h4>Pre-flight analysis</h4>
+            <p>Classify task, assess risk, and route to the right model before optimizing.</p>
+            <div class="quick-snippet">Please run a pre-flight analysis on: [your prompt]</div>
+            <button class="btn btn-secondary btn-sm" onclick="copyText('Please run a pre-flight analysis on: ',this)">Copy</button>
+          </div>
+          <div class="quick-card">
+            <h4>View optimization stats</h4>
+            <p>Aggregate metrics across all your sessions — scores, savings, top task types.</p>
+            <div class="quick-snippet">Please show my prompt optimization statistics.</div>
+            <button class="btn btn-secondary btn-sm" onclick="copyText('Please show my prompt optimization statistics.',this)">Copy</button>
+          </div>
+          <div class="quick-card">
+            <h4>Export a session</h4>
+            <p>Get a full reproducible export with rule-set hash for audit or sharing.</p>
+            <div class="quick-snippet">Please export session [session-id] with full details.</div>
+            <button class="btn btn-secondary btn-sm" onclick="copyText('Please export session [session-id] with full details.',this)">Copy</button>
+          </div>
+          <div class="quick-card">
+            <h4>Validate custom rules file</h4>
+            <p>Check your custom rules JSON for schema errors before applying.</p>
+            <div class="quick-snippet">prompt-lint --validate-custom-rules</div>
+            <button class="btn btn-secondary btn-sm" onclick="copyText('prompt-lint --validate-custom-rules',this)">Copy</button>
+          </div>
+          <div class="quick-card">
+            <h4>Reset to defaults</h4>
+            <p>Restore all optimizer settings to their out-of-the-box state.</p>
+            <div class="quick-snippet">Please reset the optimizer configuration to default settings.</div>
+            <button class="btn btn-secondary btn-sm" onclick="copyText('Please reset the optimizer configuration to default settings.',this)">Copy</button>
+          </div>
+        </div>
+      </section>
+
+    </main>
+  </div>
+
+  <footer class="footer">
+    <div class="footer-container">
+      <div class="footer-brand">
+        <div class="footer-logo">Prompt <span>Control Plane</span></div>
+        <p>Deterministic prompt governance for AI teams.</p>
+      </div>
+      <div class="footer-links">
+        <div class="footer-col">
+          <h4>Product</h4>
+          <ul>
+            <li><a href="features.html">Features</a></li>
+            <li><a href="models.html">Models</a></li>
+            <li><a href="plans.html">Pricing</a></li>
+          </ul>
+        </div>
+        <div class="footer-col">
+          <h4>Docs</h4>
+          <ul>
+            <li><a href="docs.html">Documentation</a></li>
+            <li><a href="admin.html">Admin Console</a></li>
+          </ul>
+        </div>
+        <div class="footer-col">
+          <h4>More</h4>
+          <ul>
+            <li><a href="how-i-built-this.html">How I Built This</a></li>
+            <li><a href="contact.html">Enterprise</a></li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </footer>
+
+  <script src="shared.js"></script>
+  <script>
+    // ── State ────────────────────────────────────────────────────────────────
+    var rules = JSON.parse(localStorage.getItem('pcp-rules') || '[]');
+    var auditRows = [];
+
+    // ── Optimizer command ────────────────────────────────────────────────────
+    function updateOptimizerCmd() {
+      var mode       = document.getElementById('opt-mode').value;
+      var target     = document.getElementById('opt-target').value;
+      var strictness = document.getElementById('opt-strictness').value;
+      var threshold  = document.getElementById('opt-threshold').value;
+      var maxSess    = document.getElementById('opt-maxsess').value;
+      var retention  = document.getElementById('opt-retention').value;
+      var ephemeral  = document.getElementById('opt-ephemeral').checked;
+      var parts = [
+        'mode to ' + mode,
+        'default output format to ' + target,
+        'strictness to ' + strictness,
+        'quality threshold to ' + threshold
+      ];
+      if (maxSess) parts.push('max sessions to ' + maxSess);
+      if (retention) parts.push('session retention to ' + retention + ' days');
+      if (ephemeral) parts.push('ephemeral mode on');
+      document.getElementById('optimizer-cmd').textContent =
+        'Please configure the optimizer with ' + parts.join(', ') + '.';
+    }
+
+    // ── Policy command ────────────────────────────────────────────────────────
+    function updatePolicyCmd() {
+      var mode       = document.getElementById('pol-mode').value;
+      var strictness = document.getElementById('pol-strictness').value;
+      var audit      = document.getElementById('pol-audit').checked;
+      var parts = ['policy mode to ' + mode, 'strictness to ' + strictness];
+      if (audit) parts.push('audit logging enabled');
+      document.getElementById('policy-cmd').textContent =
+        'Please configure the optimizer with ' + parts.join(', ') + '.';
+    }
+    function genLock() {
+      var pw = document.getElementById('pol-pass').value.trim();
+      if (pw.length < 4) { alert('Passphrase must be at least 4 characters.'); return; }
+      document.getElementById('policy-cmd').textContent =
+        'Please lock the optimizer configuration with the passphrase: ' + pw;
+    }
+    function genUnlock() {
+      var pw = document.getElementById('pol-pass').value.trim();
+      if (!pw) { alert('Enter the passphrase to unlock.'); return; }
+      document.getElementById('policy-cmd').textContent =
+        'Please unlock the optimizer configuration with the passphrase: ' + pw;
+    }
+
+    // ── Session command ───────────────────────────────────────────────────────
+    function updateSessionCmd() {
+      var age   = document.getElementById('sess-age').value;
+      var keep  = document.getElementById('sess-keep').value;
+      var dry   = document.getElementById('sess-dry').checked;
+      var cmd   = 'Please purge sessions older than ' + age + ' days';
+      if (keep > 0) cmd += ', keeping the last ' + keep;
+      cmd += dry ? '. Run as a dry run — show me what would be removed without removing anything.'
+                 : '.';
+      document.getElementById('session-cmd').textContent = cmd;
+    }
+
+    // ── Audit log ─────────────────────────────────────────────────────────────
+    async function sha256hex(str) {
+      var buf = await crypto.subtle.digest('SHA-256', new TextEncoder().encode(str));
+      return Array.from(new Uint8Array(buf)).map(b => b.toString(16).padStart(2,'0')).join('');
+    }
+    function stableJSON(v) {
+      if (Array.isArray(v)) return '[' + v.map(stableJSON).join(',') + ']';
+      if (v !== null && typeof v === 'object')
+        return '{' + Object.keys(v).sort().map(k => JSON.stringify(k) + ':' + stableJSON(v[k])).join(',') + '}';
+      return JSON.stringify(v);
+    }
+    async function parseAudit() {
+      var raw = document.getElementById('audit-input').value.trim();
+      if (!raw) return alert('Paste your audit.log content first.');
+      var entries = raw.split('\n').filter(l => l.trim()).map(l => { try { return JSON.parse(l); } catch(e) { return null; } }).filter(Boolean);
+      if (!entries.length) return alert('No valid JSON entries found — check the format.');
+      var prevHash = '0'.repeat(64);
+      auditRows = [];
+      for (var e of entries) {
+        var { integrity_hash, ...base } = e;
+        var expected = await sha256hex(prevHash + stableJSON(base));
+        auditRows.push({ ...e, _ok: integrity_hash === expected, _n: auditRows.length + 1 });
+        prevHash = integrity_hash || expected;
+      }
+      var fails = auditRows.filter(r => !r._ok).length;
+      var stat = (label, n, color) =>
+        `<div class="stat-tile"><span class="n" ${color?'style="color:'+color+'"':''}>${n}</span><div class="l">${label}</div></div>`;
+      document.getElementById('audit-stats').innerHTML =
+        stat('Total', auditRows.length) +
+        stat('Success', auditRows.filter(r => r.outcome==='success').length) +
+        stat('Blocked', auditRows.filter(r => r.outcome==='blocked').length, 'var(--red)') +
+        stat('Errors', auditRows.filter(r => r.outcome==='error').length, 'var(--orange)') +
+        stat('Chain Breaks', fails, fails ? 'var(--red)' : 'var(--green)');
+      renderAuditRows(auditRows);
+      document.getElementById('audit-results').style.display = 'block';
+    }
+    function renderAuditRows(rows) {
+      document.getElementById('audit-tbody').innerHTML = rows.map(r => {
+        var ts = r.timestamp ? new Date(r.timestamp).toLocaleString() : '—';
+        var det = r.details ? Object.entries(r.details).slice(0,3).map(([k,v])=>k+': '+v).join('<br>') : '—';
+        var oc = r.outcome === 'success' ? 'outcome-success' : r.outcome === 'blocked' ? 'outcome-blocked' : 'outcome-error';
+        return `<tr>
+          <td>${r._n}</td>
+          <td style="white-space:nowrap;font-size:0.75rem;">${ts}</td>
+          <td><code style="font-size:0.75rem;">${r.event||'—'}</code></td>
+          <td class="${oc}">${r.outcome||'—'}</td>
+          <td style="font-size:0.75rem;max-width:200px;">${det}</td>
+          <td>${r._ok ? '<span class="chain-ok">✓ OK</span>' : '<span class="chain-fail">✗ BROKEN</span>'}</td>
+        </tr>`;
+      }).join('');
+    }
+    function filterAudit() {
+      var oc = document.getElementById('af-outcome').value;
+      var ev = document.getElementById('af-event').value;
+      var q  = document.getElementById('af-search').value.toLowerCase();
+      renderAuditRows(auditRows.filter(r =>
+        (!oc || r.outcome === oc) &&
+        (!ev || r.event === ev) &&
+        (!q  || JSON.stringify(r).toLowerCase().includes(q))
+      ));
+    }
+
+    // ── Custom Rules ─────────────────────────────────────────────────────────
+    function liveRegex(inputId, statusId) {
+      var val = document.getElementById(inputId).value;
+      var el  = document.getElementById(statusId);
+      if (!val) { el.textContent = ''; return; }
+      try { new RegExp(val); el.textContent = '✓ Valid'; el.className = 'regex-ok'; }
+      catch(e) { el.textContent = '✗ ' + e.message; el.className = 'regex-fail'; }
+    }
+    function addRule() {
+      var id   = document.getElementById('r-id').value.trim();
+      var desc = document.getElementById('r-desc').value.trim();
+      var pat  = document.getElementById('r-pat').value.trim();
+      var neg  = document.getElementById('r-neg').value.trim();
+      if (!id || !desc || (!pat && !neg)) return alert('Rule ID, description, and at least one pattern are required.');
+      if (!/^[a-z0-9_]+$/.test(id)) return alert('Rule ID must be snake_case (a-z, 0-9, _).');
+      if (rules.find(r => r.id === id)) return alert('A rule with this ID already exists.');
+      if (rules.length >= 25) return alert('Maximum 25 custom rules.');
+      var rule = {
+        id, description: desc,
+        applies_to: document.getElementById('r-applies').value,
+        severity:   document.getElementById('r-severity').value,
+        risk_dimension: document.getElementById('r-dim').value,
+        risk_weight: parseInt(document.getElementById('r-weight').value)
+      };
+      if (pat) rule.pattern = pat;
+      if (neg) rule.negative_pattern = neg;
+      rules.push(rule);
+      localStorage.setItem('pcp-rules', JSON.stringify(rules));
+      renderRules();
+      ['r-id','r-desc','r-pat','r-neg'].forEach(id => { document.getElementById(id).value = ''; });
+      ['r-pat-s','r-neg-s'].forEach(id => { document.getElementById(id).textContent = ''; });
+    }
+    function removeRule(id) {
+      rules = rules.filter(r => r.id !== id);
+      localStorage.setItem('pcp-rules', JSON.stringify(rules));
+      renderRules();
+    }
+    function renderRules() {
+      var list = document.getElementById('rules-list');
+      if (!rules.length) {
+        list.innerHTML = '<p style="color:var(--text-muted);font-size:0.875rem;margin:0 0 16px;">No rules yet. Add your first rule above.</p>';
+        document.getElementById('rules-export').style.display = 'none';
+        return;
+      }
+      list.innerHTML = rules.map(r => `
+        <div class="rule-item">
+          <div class="rule-header">
+            <span class="rule-id">${r.id}</span>
+            <div style="display:flex;gap:8px;align-items:center;">
+              <span class="${r.severity==='BLOCKING'?'sev-blocking':'sev-nonblocking'}">${r.severity}</span>
+              <button class="btn btn-secondary btn-sm" onclick="removeRule('${r.id}')">Remove</button>
+            </div>
+          </div>
+          <p style="font-size:0.8rem;color:var(--text-muted);margin:0 0 8px;">${r.description}</p>
+          <div class="rule-meta">
+            ${r.pattern ? `<span>Match: <code>${r.pattern}</code></span>` : ''}
+            ${r.negative_pattern ? `<span>Must include: <code>${r.negative_pattern}</code></span>` : ''}
+            <span>Applies: ${r.applies_to}</span>
+            <span>Dimension: ${r.risk_dimension}</span>
+            <span>Weight: ${r.risk_weight}/25</span>
+          </div>
+        </div>
+      `).join('');
+      document.getElementById('rules-json').textContent = JSON.stringify({ rules }, null, 2);
+      document.getElementById('rules-export').style.display = 'block';
+    }
+    function downloadRules() {
+      var a = document.createElement('a');
+      a.href = URL.createObjectURL(new Blob([JSON.stringify({ rules }, null, 2)], { type: 'application/json' }));
+      a.download = 'custom-rules.json';
+      a.click();
+    }
+
+    // ── Copy helpers ─────────────────────────────────────────────────────────
+    function copyEl(id, btn) {
+      navigator.clipboard.writeText(document.getElementById(id).textContent).then(() => flash(btn));
+    }
+    function copyText(t, btn) {
+      navigator.clipboard.writeText(t).then(() => flash(btn));
+    }
+    function flash(btn) {
+      if (!btn) return;
+      var orig = btn.textContent;
+      btn.textContent = 'Copied!';
+      btn.style.background = 'var(--green)';
+      btn.style.color = 'white';
+      setTimeout(() => { btn.textContent = orig; btn.style.background = ''; btn.style.color = ''; }, 1600);
+    }
+
+    // ── Sidebar active on scroll ─────────────────────────────────────────────
+    window.addEventListener('scroll', function() {
+      var scrollY = window.scrollY + 110;
+      document.querySelectorAll('.admin-section').forEach(function(s) {
+        if (s.offsetTop <= scrollY && s.offsetTop + s.offsetHeight > scrollY) {
+          document.querySelectorAll('.sidebar-nav a').forEach(a => a.classList.remove('active'));
+          var link = document.querySelector('.sidebar-nav a[href="#' + s.id + '"]');
+          if (link) link.classList.add('active');
+        }
+      });
+    });
+
+    // ── Init ─────────────────────────────────────────────────────────────────
+    updateOptimizerCmd();
+    updatePolicyCmd();
+    updateSessionCmd();
+    renderRules();
+  </script>
+</body>
+</html>
