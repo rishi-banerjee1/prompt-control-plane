@@ -16,9 +16,9 @@
     }
   },
   "bin": {
-    "pcp-engine": "./bin/cli.js",
-    "prompt-lint": "./bin/lint.js",
-    "pcp": "./bin/pcp.js"
+    "pcp-engine": "bin/cli.js",
+    "prompt-lint": "bin/lint.js",
+    "pcp": "bin/pcp.js"
   },
   "files": [
     "dist/src/**/*.js",
