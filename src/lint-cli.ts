@@ -510,9 +510,15 @@ async function handleScore(args: SubcommandArgs): Promise<void> {
       dimensions: score.dimensions,
     }), args);
   } else if (!args.quiet) {
-    process.stdout.write(`Total: ${score.total}/100\n\n`);
-    for (const [name, value] of Object.entries(score.dimensions)) {
-      process.stdout.write(`  ${name}: ${value}/20\n`);
+    process.stdout.write(`Total: ${score.total}/100\n`);
+    if (score.confidence) {
+      const note = score.confidence_note ? ` — ${score.confidence_note}` : '';
+      process.stdout.write(`Confidence: ${score.confidence}${note}\n`);
+    }
+    process.stdout.write(`\n`);
+    for (const dim of score.dimensions) {
+      const firstNote = dim.notes?.length ? ` — ${dim.notes[0]}` : '';
+      process.stdout.write(`  ${dim.name}: ${dim.score}/${dim.max}${firstNote}\n`);
     }
   }
   process.exit(0);

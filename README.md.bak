@@ -2,7 +2,6 @@
 
 The control plane for AI prompts. Score, enforce policy, lock config, and audit every prompt decision. Free tier included.
 
-[![CI](https://github.com/rishiatlan/Prompt-Optimizer-MCP/actions/workflows/ci.yml/badge.svg)](https://github.com/rishiatlan/Prompt-Optimizer-MCP/actions/workflows/ci.yml)
 [![npm version](https://img.shields.io/npm/v/pcp-engine)](https://www.npmjs.com/package/pcp-engine)
 ![Node.js](https://img.shields.io/badge/Node.js-18%2B-339933?logo=node.js&logoColor=white)
 ![TypeScript](https://img.shields.io/badge/TypeScript-Strict-3178C6?logo=typescript&logoColor=white)
@@ -56,7 +55,7 @@ Real results from the deterministic pipeline. PCP scores the **input** prompt qu
 ```
 Raw: "make the code better"
 
-Quality:  48/100  Confidence: high
+Quality:  48/100  →  90/100  (+42)
 State:    ANALYZING
 
 Blocking Questions:
@@ -82,7 +81,7 @@ Changes Made:
 Raw: "Refactor auth middleware in
       src/auth/middleware.ts..."
 
-Quality:  81/100  Confidence: low
+Quality:  81/100  →  90/100  (+9)
 State:    COMPILED
 Risk:     high (auth domain)
 Model:    opus (recommended)
@@ -110,7 +109,7 @@ Raw: "update payment processing and
       then fix rate limiting and
       finally clean up tests"
 
-Quality:  51/100  Confidence: medium
+Quality:  51/100  →  90/100  (+39)
 Risk:     high (payment domain)
 Blocking: 3 questions
 
@@ -156,7 +155,7 @@ Raw: "Write a Slack post for my
       dashboard feature. Celebratory
       but professional, 3-sprint effort."
 
-Quality:  71/100  Confidence: medium
+Quality:  71/100  →  90/100  (+19)
 Task:     writing
 Model:    sonnet (recommended)
 
@@ -184,7 +183,7 @@ Raw: "Create a roadmap for migrating
       quarters. 15 endpoints, React
       frontend, 3 mobile apps."
 
-Quality:  56/100  Confidence: medium
+Quality:  56/100  →  90/100  (+34)
 Task:     planning
 Model:    sonnet (recommended)
 
@@ -630,7 +629,7 @@ Prompts are scored 0–100 across multiple weighted dimensions. Each deduction i
 
 Scoring adapts to task type: code tasks reward file paths and code references; writing/communication tasks reward audience, tone, platform, and length constraints.
 
-The confidence level shows how much improvement to expect: high means significant structural gains, medium means targeted refinements, low means the prompt is already strong.
+The before/after delta shows exactly what improved: "Your prompt went from 48 to 90."
 
 </details>
 
@@ -760,7 +759,7 @@ Storage also tracks:
 ```
 Raw prompt: "make the code better"
 
-Quality Score:  48/100  Confidence: high
+Quality Score:  48/100  →  90/100  (+42)
 State:          ANALYZING
 Risk Level:     medium
 Model Rec:      sonnet
@@ -801,7 +800,7 @@ cookies. Replace validateSession() with validateJWT().
 Do not touch the user model or database layer.
 Must pass all existing tests in auth.test.ts."
 
-Quality Score:  81/100  Confidence: low
+Quality Score:  81/100  →  90/100  (+9)
 State:          COMPILED
 Risk Level:     high (auth domain detected)
 Task Type:      refactor
@@ -840,7 +839,7 @@ Raw prompt: "update the payment processing to handle edge cases
 and also refactor the user dashboard and then fix the API
 rate limiting and finally clean up the test suite"
 
-Quality Score:  51/100  Confidence: medium
+Quality Score:  51/100  →  90/100  (+39)
 State:          ANALYZING
 Risk Level:     high (payment domain)
 Blocking:       3 questions
@@ -932,8 +931,9 @@ Saved:       ~228 tokens (57%)
 
 ── Step 4: Approved! ──
   Status:      APPROVED
-  Confidence:  medium (refined from 71/100 after user clarification)
-  Model:       opus (recommended)
+  Quality:     90/100
+  Improvement: +19 points
+  Model:       opus
   Reason:      High-risk task — max capability recommended.
 ```
 
@@ -948,7 +948,7 @@ announcing that our team shipped the new dashboard feature.
 Keep it celebratory but professional, mention it was a
 3-sprint effort, and tag the design team for their mockups."
 
-Quality Score:  71/100  Confidence: medium
+Quality Score:  71/100  →  90/100  (+19)
 State:          COMPILED
 Task Type:      writing
 Risk Level:     low
@@ -997,7 +997,7 @@ Memcached for our session caching layer. We need to support
 50K concurrent users, sessions expire after 30 minutes, and
 we are running on AWS."
 
-Quality Score:  61/100  Confidence: medium
+Quality Score:  61/100  →  90/100  (+29)
 State:          COMPILED
 Task Type:      research
 Risk Level:     low
@@ -1039,7 +1039,7 @@ GraphQL over the next 2 quarters. We have 15 endpoints, a
 React frontend, and 3 mobile apps consuming the API. The
 team has no GraphQL experience."
 
-Quality Score:  56/100  Confidence: medium
+Quality Score:  56/100  →  90/100  (+34)
 State:          COMPILED
 Task Type:      planning
 Risk Level:     low

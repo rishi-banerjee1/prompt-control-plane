@@ -1,4 +1,4 @@
-// test/cli.test.ts — Comprehensive CLI tests for pcp (v5.1.0).
+// test/cli.test.ts — Comprehensive CLI tests for pcp (v5.1.1).
 // Spawns `node bin/pcp.js` as a child process to test real exit codes, JSON envelopes,
 // subcommand behavior, policy enforcement, and backward compatibility.
 
@@ -71,7 +71,7 @@ describe('1. Backward compat', () => {
   it('--version prints v5', () => {
     const { stdout, exitCode } = run(['--version']);
     assert.equal(exitCode, 0);
-    assert.ok(stdout.includes('5.1.0'));
+    assert.ok(stdout.includes('5.1.1'));
   });
 
   it('stdin input works', () => {
@@ -114,7 +114,7 @@ describe('2. optimize', () => {
     assert.equal(exitCode, 0);
     const data = parseJson(stdout);
     assert.ok(data.request_id, 'missing request_id');
-    assert.equal(data.version, '5.1.0');
+    assert.equal(data.version, '5.1.1');
     assert.equal(data.schema_version, 1);
     assert.equal(data.subcommand, 'optimize');
     assert.ok(typeof data.policy_mode === 'string');
@@ -412,6 +412,30 @@ describe('7. score', () => {
     assert.ok(stdout.includes('Total:'));
     assert.ok(stdout.includes('/100'));
   });
+
+  it('human output renders dimension names, not array indices or [object Object]', () => {
+    // Regression: Object.entries() on an array yields numeric string keys and whole
+    // objects as values — 'score' command must iterate the array directly.
+    const { stdout, exitCode } = run(['score', GOOD]);
+    assert.equal(exitCode, 0);
+    assert.ok(!stdout.includes('[object Object]'), 'Output must not contain [object Object]');
+    assert.ok(!stdout.includes('  0:'), 'Output must not contain numeric array index "0:"');
+    assert.ok(!stdout.includes('  1:'), 'Output must not contain numeric array index "1:"');
+    // Each dimension line should match "  <word>: <number>/<number>"
+    const dimLines = stdout.split('\n').filter(l => /^\s{2}\w/.test(l));
+    assert.ok(dimLines.length >= 5, `Expected at least 5 dimension lines, got ${dimLines.length}`);
+    for (const line of dimLines) {
+      assert.match(line, /^\s{2}\w[\w\s]+:\s+\d+\/\d+/, `Dimension line has unexpected format: "${line}"`);
+    }
+  });
+
+  it('human output includes Confidence line', () => {
+    // Regression: confidence was added to QualityScore but never surfaced in human output.
+    const { stdout, exitCode } = run(['score', GOOD]);
+    assert.equal(exitCode, 0);
+    assert.ok(stdout.includes('Confidence:'), 'Expected Confidence: line in score output');
+    assert.match(stdout, /Confidence:\s+(low|medium|high)/, 'Confidence must be low, medium, or high');
+  });
 });
 
 // ─── 8. preflight (8 tests) ────────────────────────────────────────────────
@@ -579,7 +603,7 @@ describe('11. Envelope consistency', () => {
       const data = parseJson(stdout);
       assert.ok(data.request_id);
       assert.match(data.request_id, /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/);
-      assert.equal(data.version, '5.1.0');
+      assert.equal(data.version, '5.1.1');
       assert.equal(data.schema_version, 1);
       assert.equal(data.subcommand, sub);
       assert.ok(typeof data.policy_mode === 'string');
@@ -1006,7 +1030,7 @@ describe('17. Hook subcommand', () => {
     const { stdout } = runInDir(['hook', 'status', '--json'], hookDir);
     const json = JSON.parse(stdout.trim());
     assert.ok(json.request_id, 'Has request_id');
-    assert.equal(json.version, '5.1.0');
+    assert.equal(json.version, '5.1.1');
     assert.equal(json.schema_version, 1);
     assert.equal(json.subcommand, 'hook');
     assert.ok('policy_mode' in json, 'Has policy_mode');

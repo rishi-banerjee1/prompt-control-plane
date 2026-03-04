@@ -261,7 +261,7 @@ export function scorePrompt(spec: IntentSpec, context?: string): QualityScore {
 }
 
 /** Generate a compilation checklist showing structural coverage of the compiled prompt.
- * This replaces the old scoreCompiledPrompt which was dishonest (always ~90).
+ * This replaces the old scoreCompiledPrompt which was inaccurate (always ~90).
  * Checklist is a separate concept from numeric score — never enters aggregates. */
 export function generateChecklist(compiledPrompt: string): CompilationChecklist {
   const items: ChecklistItem[] = [
