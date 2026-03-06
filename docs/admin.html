@@ -347,15 +347,18 @@
   <nav class="nav">
     <div class="nav-container">
       <a href="/" class="nav-logo">Prompt <span>Control Plane</span></a>
-      <ul class="nav-links">
-        <li><a href="features.html">Features</a></li>
-        <li><a href="models.html">Models</a></li>
-        <li><a href="docs.html">Docs</a></li>
-        <li><a href="plans.html">Pricing</a></li>
-        <li><a href="admin.html" style="color:var(--accent);font-weight:600;">Enterprise Console</a></li>
-      </ul>
-      <button class="theme-toggle" id="theme-toggle" title="Toggle theme">🌙</button>
-      <button class="nav-hamburger" id="nav-hamburger">☰</button>
+      <div class="nav-links">
+        <a href="features.html">Features</a>
+        <a href="models.html">Models</a>
+        <a href="docs.html">Docs</a>
+        <a href="plans.html">Pricing</a>
+        <a href="changelog.html">Changelog</a>
+        <button class="theme-toggle" aria-label="Toggle theme">
+          <svg class="icon-sun" viewBox="0 0 24 24"><circle cx="12" cy="12" r="5"/><path d="M12 1v2M12 21v2M4.22 4.22l1.42 1.42M18.36 18.36l1.42 1.42M1 12h2M21 12h2M4.22 19.78l1.42-1.42M18.36 5.64l1.42-1.42"/></svg>
+          <svg class="icon-moon" viewBox="0 0 24 24"><path d="M21 12.79A9 9 0 1111.21 3 7 7 0 0021 12.79z"/></svg>
+        </button>
+      </div>
+      <button class="nav-hamburger" aria-label="Toggle menu">☰</button>
     </div>
   </nav>
 
@@ -501,7 +504,7 @@
           </div>
           <div class="toggle-row">
             <label class="toggle"><input type="checkbox" id="pol-audit" onchange="updatePolicyCmd()"><span class="toggle-track"></span></label>
-            <span class="toggle-label">Enable hash-chained audit trail — writes to <code>~/.prompt-control-plane/audit.jsonl</code></span>
+            <span class="toggle-label">Enable hash-chained audit trail — writes to <code>~/.prompt-control-plane/audit.log</code></span>
           </div>
         </div>
 
@@ -578,8 +581,8 @@
 
         <div class="card">
           <h3>Load Your Audit Log</h3>
-          <p class="card-desc">Paste the contents of <code>~/.prompt-control-plane/audit.jsonl</code> below. The explorer parses every entry and verifies the SHA-256 hash chain — any modified or deleted line breaks the chain and will be flagged.</p>
-          <textarea class="paste-area" id="audit-input" placeholder="Paste audit.jsonl content here (JSONL — one JSON object per line)…"></textarea>
+          <p class="card-desc">Paste the contents of <code>~/.prompt-control-plane/audit.log</code> below. The explorer parses every entry and verifies the SHA-256 hash chain — any modified or deleted line breaks the chain and will be flagged.</p>
+          <textarea class="paste-area" id="audit-input" placeholder="Paste audit.log content here (JSONL — one JSON object per line)…"></textarea>
           <div class="btn-row" style="margin-top:12px;">
             <button class="btn btn-primary" onclick="parseAudit()">Parse &amp; Verify Chain</button>
             <button class="btn btn-secondary" onclick="document.getElementById('audit-input').value='';document.getElementById('audit-results').style.display='none'">Clear</button>
@@ -603,6 +606,7 @@
               <option value="license_activate">license_activate</option>
               <option value="delete">delete</option>
               <option value="purge">purge</option>
+              <option value="save_custom_rules">save_custom_rules</option>
             </select>
             <input class="form-control" id="af-search" placeholder="Search entries…" oninput="filterAudit()" style="flex:1;min-width:120px;">
           </div>
@@ -791,26 +795,26 @@
       <div class="footer-links">
         <div class="footer-col">
           <h4>Product</h4>
-          <ul>
-            <li><a href="features.html">Features</a></li>
-            <li><a href="models.html">Models</a></li>
-            <li><a href="plans.html">Pricing</a></li>
-          </ul>
+          <a href="./">Home</a>
+          <a href="features.html">Features</a>
+          <a href="docs.html">Docs</a>
+          <a href="plans.html">Plans</a>
         </div>
         <div class="footer-col">
-          <h4>Docs</h4>
-          <ul>
-            <li><a href="docs.html">Documentation</a></li>
-            <li><a href="admin.html">Enterprise Console</a></li>
-          </ul>
+          <h4>Resources</h4>
+          <a href="changelog.html">Changelog</a>
+          <a href="https://github.com/rishi-banerjee1/prompt-control-plane">GitHub</a>
+          <a href="https://www.npmjs.com/package/pcp-engine">npm</a>
         </div>
         <div class="footer-col">
-          <h4>More</h4>
-          <ul>
-            <li><a href="contact.html">Enterprise</a></li>
-          </ul>
+          <h4>Legal</h4>
+          <a href="privacy.html">Privacy</a>
+          <a href="terms.html">Terms</a>
+          <a href="security.html">Security</a>
+          <a href="contact.html">Contact</a>
         </div>
       </div>
+      <p class="footer-copy">&copy; 2025-2026 Rishi Banerjee. Elastic License 2.0 (ELv2).</p>
     </div>
   </footer>
 
@@ -890,7 +894,7 @@
     }
     async function parseAudit() {
       var raw = document.getElementById('audit-input').value.trim();
-      if (!raw) return alert('Paste your audit.jsonl content first.');
+      if (!raw) return alert('Paste your audit.log content first.');
       var entries = raw.split('\n').filter(l => l.trim()).map(l => { try { return JSON.parse(l); } catch(e) { return null; } }).filter(Boolean);
       if (!entries.length) return alert('No valid JSON entries found — check the format.');
       var prevHash = '0'.repeat(64);

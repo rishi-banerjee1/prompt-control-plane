@@ -1274,7 +1274,7 @@ pcp hook install --threshold 70</div>
           <div class="param-row"><span class="param-name">session_id</span> <span class="param-type">string</span> <span class="param-required">required</span> <span class="param-desc">Session ID to export</span></div>
         </div>
         <div class="tool-output">Returns</div>
-        <p class="tool-output-desc"><code>SessionExport</code> &mdash; Contains raw_prompt, compiled_prompt, quality_before/after, rule_set_hash, rule_set_version, and metadata (target, task_type, complexity, risk_score, custom_rules_applied, engine_version, policy_mode, policy_hash).</p>
+        <p class="tool-output-desc"><code>SessionExport</code> &mdash; Contains raw_prompt, compiled_prompt, quality_before, rule_set_hash, rule_set_version, and metadata (target, task_type, complexity, risk_score, custom_rules_applied, engine_version, policy_mode, policy_hash).</p>
       </div>
 
       <!-- delete_session -->
@@ -1471,7 +1471,7 @@ pcp hook install --threshold 70</div>
       <p>Each line is a JSON object with these fields:</p>
       <div class="code-block">{
   <span class="string">"timestamp"</span>: <span class="string">"2026-03-01T10:30:00.000Z"</span>,
-  <span class="string">"event"</span>: <span class="string">"optimize"</span>,        <span class="comment">// optimize | approve | delete | purge | configure | license_activate</span>
+  <span class="string">"event"</span>: <span class="string">"optimize"</span>,        <span class="comment">// optimize | approve | delete | purge | configure | license_activate | save_custom_rules</span>
   <span class="string">"session_id"</span>: <span class="string">"abc-123"</span>,
   <span class="string">"request_id"</span>: <span class="string">"req_xyz"</span>,
   <span class="string">"task_type"</span>: <span class="string">"code_change"</span>,
@@ -1648,7 +1648,8 @@ pcp preflight <span class="string">"vague prompt"</span> --json  <span class="co
 
       <h3>CI Usage</h3>
       <div class="code-block"><span class="comment"># In your CI pipeline</span>
-npx pcp-engine pcp check --file <span class="string">"prompts/**/*.md"</span> --strict --json
+npm install -g pcp-engine
+pcp check --file <span class="string">"prompts/**/*.md"</span> --strict --json
 
 <span class="comment"># Read from stdin</span>
 echo <span class="string">"Write a blog post"</span> | pcp check --threshold 70</div>
@@ -1861,7 +1862,8 @@ pcp benchmark --json</div>
 
       <h3>CI Integration</h3>
       <div class="code-block"><span class="comment"># Add to your CI pipeline as a regression guard</span>
-npx pcp-engine pcp benchmark --json
+npm install -g pcp-engine
+pcp benchmark --json
 <span class="comment"># Exit code 1 if any prompt regresses beyond tolerance</span></div>
 
 
@@ -1894,7 +1896,7 @@ npx pcp-engine pcp benchmark --json
   <span class="file">usage.json</span>            <span class="desc"># Usage counters (total, period, tier)</span>
   <span class="file">stats.json</span>            <span class="desc"># Aggregated statistics</span>
   <span class="file">license.json</span>          <span class="desc"># License data (chmod 600 on POSIX)</span>
-  <span class="file">audit.jsonl</span>           <span class="desc"># Append-only audit trail (Enterprise)</span>
+  <span class="file">audit.log</span>             <span class="desc"># Append-only audit trail (Enterprise)</span>
   <span class="file">custom-rules.json</span>     <span class="desc"># Custom governance rules (Enterprise)</span>
   <span class="dir">sessions/</span>
     <span class="file">{session-id}.json</span>   <span class="desc"># Individual session files</span></div>

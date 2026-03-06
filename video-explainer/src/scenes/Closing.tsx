@@ -49,7 +49,7 @@ export const Closing: React.FC = () => {
             <StatBox value="0" label="LLM Calls" color={theme.accent} delay={5} />
             <StatBox value="20" label="MCP Tools" color={theme.primary} delay={10} />
             <StatBox value="15" label="CLI Commands" color={theme.accentGreen} delay={15} />
-            <StatBox value="832" label="Tests Passing" color={theme.accentYellow} delay={20} />
+            <StatBox value="10" label="Models" color={theme.accentYellow} delay={20} />
           </div>
         </AbsoluteFill>
       </Sequence>

@@ -64,7 +64,7 @@ PCP is a deterministic prompt quality engine -- it scores, compiles, and optimiz
 - `config.json` -- User configuration (mode, threshold, strictness)
 - `stats.json` -- Aggregated statistics
 - `license.json` -- License key data (chmod 600)
-- `audit.jsonl` -- Hash-chained audit trail
+- `audit.log` -- Hash-chained audit trail
 - `custom-rules.json` -- User-defined rules
 - `sessions/` -- Multi-turn session state
 

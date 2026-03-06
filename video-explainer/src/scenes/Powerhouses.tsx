@@ -54,13 +54,13 @@ export const Powerhouses: React.FC = () => {
               title="terminal"
               width={900}
               lines={[
-                {text: '$ pcp preflight "Fix the auth bug" --json', color: theme.textMuted, delay: FPS * 1.5},
+                {text: '$ pcp preflight "Explain what this code does" --json', color: theme.textMuted, delay: FPS * 1.5},
                 {text: '', delay: FPS * 3},
-                {text: '  "pqs": 53,', color: theme.accentYellow, delay: FPS * 4},
-                {text: '  "risk_level": "high",', color: theme.accentRed, delay: FPS * 5},
-                {text: '  "task_type": "debug",', color: theme.text, delay: FPS * 6},
-                {text: '  "recommended_model": "sonnet",', color: theme.accentGreen, delay: FPS * 7},
-                {text: '  "savings": "62% cheaper than gpt-4o"', color: theme.accent, delay: FPS * 8},
+                {text: '  "pqs": 42,', color: theme.accentYellow, delay: FPS * 4},
+                {text: '  "risk_level": "low",', color: theme.accentGreen, delay: FPS * 5},
+                {text: '  "task_type": "question",', color: theme.text, delay: FPS * 6},
+                {text: '  "recommended_model": "haiku",', color: theme.accentGreen, delay: FPS * 7},
+                {text: '  "savings": "63% cheaper than gpt-4o"', color: theme.accent, delay: FPS * 8},
               ]}
             />
           </FadeIn>
