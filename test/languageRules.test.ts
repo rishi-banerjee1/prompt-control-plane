@@ -46,10 +46,32 @@ function listPublicTextFiles(): string[] {
 }
 
 function stripHtmlRuntimeCode(text: string): string {
-  return text
-    .replace(/<!--[\s\S]*?-->/g, ' ')
-    .replace(/<script\b[\s\S]*?<\/script>/gi, ' ')
-    .replace(/<style\b[\s\S]*?<\/style>/gi, ' ');
+  let stripped = text.replace(/<!--[\s\S]*?-->/g, ' ');
+
+  for (const tag of ['script', 'style']) {
+    let lower = stripped.toLowerCase();
+    let start = lower.indexOf(`<${tag}`);
+
+    while (start !== -1) {
+      const nextChar = lower[start + tag.length + 1];
+      if (nextChar && !/[\s>/]/.test(nextChar)) {
+        start = lower.indexOf(`<${tag}`, start + tag.length + 1);
+        continue;
+      }
+
+      const endStart = lower.indexOf(`</${tag}`, start + tag.length + 1);
+      if (endStart === -1) break;
+
+      const endClose = lower.indexOf('>', endStart + tag.length + 2);
+      if (endClose === -1) break;
+
+      stripped = `${stripped.slice(0, start)} ${stripped.slice(endClose + 1)}`;
+      lower = stripped.toLowerCase();
+      start = lower.indexOf(`<${tag}`, start + 1);
+    }
+  }
+
+  return stripped;
 }
 
 function htmlCopyText(text: string): string {

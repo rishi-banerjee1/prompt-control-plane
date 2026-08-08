@@ -4,7 +4,7 @@ The control plane for AI prompts. Score, enforce policy, lock config, and audit 
 
 [![CI](https://github.com/rishi-banerjee1/prompt-control-plane/actions/workflows/ci.yml/badge.svg)](https://github.com/rishi-banerjee1/prompt-control-plane/actions/workflows/ci.yml)
 [![npm version](https://img.shields.io/npm/v/pcp-engine)](https://www.npmjs.com/package/pcp-engine)
-![Node.js](https://img.shields.io/badge/Node.js-18%2B-339933?logo=node.js&logoColor=white)
+![Node.js](https://img.shields.io/badge/Node.js-20%2B-339933?logo=node.js&logoColor=white)
 ![TypeScript](https://img.shields.io/badge/TypeScript-Strict-3178C6?logo=typescript&logoColor=white)
 ![License](https://img.shields.io/badge/License-ELv2-blue)
 ![No Dependencies](https://img.shields.io/badge/Runtime_Deps-3-brightgreen)
@@ -15,7 +15,7 @@ The control plane for AI prompts. Score, enforce policy, lock config, and audit 
 ## Quick Start
 
 ```bash
-# Install globally (requires Node.js 18+)
+# Install globally (requires Node.js 20+)
 npm install -g pcp-engine
 
 # Pre-flight: classify, score, route, and enforce policy in one call
@@ -438,7 +438,7 @@ When a prompt scores below the threshold, inline feedback is injected into the c
 
 ## Install
 
-**Requires Node.js 18+ with ESM support.** Pick one method: 30 seconds or less.
+**Requires Node.js 20+ with ESM support.** Pick one method: 30 seconds or less.
 
 | Method | Command |
 |--------|---------|
@@ -528,7 +528,7 @@ const withCtx = optimize('fix the bug', myCodeString);
 console.log(withCtx.cost);   // Higher token count (context included)
 ```
 
-> **ESM only.** This package requires Node 18+ with ESM support. `import` works; `require()` does not. The `./server` subpath starts the MCP stdio transport as a side effect: use it only for MCP server startup.
+> **ESM only.** This package requires Node 20+ with ESM support. `import` works; `require()` does not. The `./server` subpath starts the MCP stdio transport as a side effect: use it only for MCP server startup.
 
 ## Usage
 
