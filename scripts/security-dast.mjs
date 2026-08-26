@@ -57,9 +57,12 @@ async function checkLiveSite() {
   if (!baseUrl) return;
   const response = await fetch(baseUrl, { method: 'GET', redirect: 'manual' });
   if (!response.ok) fail('DAST-LIVE-001', `GET ${baseUrl} returned HTTP ${response.status}`);
-  for (const [name] of requiredHeaders) {
-    if (!response.headers.get(name)) fail('DAST-LIVE-001', `Live response missing ${name}`);
+  for (const [name, expected] of requiredHeaders) {
+    const value = response.headers.get(name) || '';
+    if (!value) fail('DAST-LIVE-001', `Live response missing ${name}`);
+    else if (!expected.test(value)) fail('DAST-LIVE-001', `Live ${name} does not meet baseline: ${value}`);
   }
+  console.log(`Security DAST live target checked: ${baseUrl}`);
 }
 
 await checkLiveSite();

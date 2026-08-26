@@ -63,6 +63,18 @@ Open security alerts observed on `main` before this remediation branch is merged
 
 Both alerts are addressed by this branch but remain open in GitHub until merged into `main` and rescanned.
 
+Branch protection applied to `main`:
+
+- required up-to-date status checks
+- required checks: `Test (Node 20)`, `Test (Node 22)`, `Enterprise Security Gates`, `Analyze (JavaScript/TypeScript)`, `Dependency Review`
+- CODEOWNER review required
+- one approving review required
+- stale approvals dismissed
+- last-push approval required
+- admins included
+- linear history required
+- force pushes and branch deletion blocked
+
 ## Resolved Findings
 
 ### ESEC-001: Nested dependency audit gap
@@ -137,6 +149,7 @@ Fix:
 - Added CI job `Enterprise Security Gates`.
 - Added GitHub Dependency Review workflow.
 - Added CODEOWNERS for repository ownership.
+- Applied GitHub branch protection to `main` with tests, CodeQL, dependency review, and enterprise security gates required.
 - Kept CodeQL `security-extended` workflow.
 
 Control impact:
@@ -186,6 +199,8 @@ Recommended next step:
 
 - Merge the remediation PR after checks pass.
 - Confirm Dependabot alert #50 and CodeQL alert #25 auto-close.
+
+Operational note: branch protection now correctly blocks self-approval. If the repository has only one maintainer, add a second trusted reviewer before merge rather than weakening the control.
 
 ### RISK-004: Compliance claims require organizational controls
 
@@ -239,7 +254,8 @@ Provide these artifacts:
 - `.github/CODEOWNERS`
 - `docs/_headers`
 - latest GitHub Actions run for this branch
-- latest Cloudflare Pages deployment URL
+- latest Cloudflare Pages deployment URL: `https://2ac6c228.getpcp.pages.dev`
+- public production domain live DAST target: `https://getpcp.site`
 - GitHub Dependabot and CodeQL alert screenshots after merge/rescan
 
 ## CISO Talking Points
@@ -257,7 +273,7 @@ Provide these artifacts:
 1. Remove inline scripts and event handlers, then remove `unsafe-inline` from CSP.
 2. Schedule independent VAPT for `getpcp.site`, npm package, CLI, GitHub Action, and MCP stdio server.
 3. Add release provenance/SBOM evidence for npm releases.
-4. Require branch protection on `main`: PR review, CODEOWNER review, up-to-date branch, linear history, signed commits where feasible, and required checks.
+4. Evaluate signed commit enforcement once all maintainers have signing configured.
 5. Confirm GitHub Dependabot and CodeQL alerts are closed after merge.
 6. Add quarterly access review and annual incident-response tabletop evidence outside the repo.
 
