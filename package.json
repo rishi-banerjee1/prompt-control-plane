@@ -38,9 +38,10 @@
     "test": "node --test dist/test/*.test.js",
     "security:sast": "node scripts/security-sast.mjs",
     "security:dast": "node scripts/security-dast.mjs",
+    "security:html-parser": "node --test scripts/html-security.test.mjs",
     "security:audit": "npm audit --audit-level=moderate",
     "security:audit:video": "npm audit --audit-level=moderate --prefix video-explainer",
-    "security:all": "npm run security:audit && npm run security:audit:video && npm run security:sast && npm run security:dast",
+    "security:all": "npm run security:audit && npm run security:audit:video && npm run security:sast && npm run security:dast && npm run security:html-parser",
     "prepublishOnly": "npm run build"
   },
   "keywords": [
@@ -87,6 +88,7 @@
   },
   "devDependencies": {
     "@types/node": "^25.3.5",
+    "parse5": "8.0.1",
     "typescript": "^5.8.0"
   },
   "engines": {

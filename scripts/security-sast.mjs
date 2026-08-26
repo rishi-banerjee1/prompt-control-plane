@@ -1,6 +1,7 @@
 #!/usr/bin/env node
 import { readdirSync, readFileSync, statSync } from 'node:fs';
 import { extname, join, relative, sep } from 'node:path';
+import { inspectHtml } from './html-security.mjs';
 
 const root = process.cwd();
 const findings = [];
@@ -68,18 +69,16 @@ function scanJsText(file, text, offsetLine = 0) {
 }
 
 function scanHtmlScripts(file, text) {
-  const scriptRe = /<script\b(?![^>]*\bsrc=)[^>]*>([\s\S]*?)<\/script\s*>/gi;
-  let match;
-  while ((match = scriptRe.exec(text))) {
-    scanJsText(file, match[1], lineForIndex(text, match.index) - 1);
+  const inspection = inspectHtml(text);
+  for (const script of inspection.scripts) {
+    if (!script.hasSrc) scanJsText(file, script.body, script.line - 1);
   }
 
-  const handlerRe = /\son[a-z]+\s*=/gi;
-  if (handlerRe.test(text)) {
+  if (inspection.eventHandlers.length) {
     warnings.push({
       rule: 'JS-CSP-002',
       file: relative(root, file),
-      line: lineForIndex(text, text.search(handlerRe)),
+      line: inspection.eventHandlers[0].line,
       message: 'inline event handlers weaken strict CSP; migrate during CSP hardening',
     });
   }

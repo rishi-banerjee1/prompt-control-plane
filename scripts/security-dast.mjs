@@ -2,6 +2,7 @@
 import { createHash } from 'node:crypto';
 import { readdirSync, readFileSync } from 'node:fs';
 import { resolve } from 'node:path';
+import { inspectHtml } from './html-security.mjs';
 
 const headerFile = resolve(process.cwd(), 'docs/_headers');
 const text = readFileSync(headerFile, 'utf8');
@@ -57,20 +58,19 @@ if (csp) {
 
 for (const filename of readdirSync(resolve(process.cwd(), 'docs')).filter((name) => name.endsWith('.html'))) {
   const html = readFileSync(resolve(process.cwd(), 'docs', filename), 'utf8');
-  if (/\son[a-z]+\s*=/i.test(html)) {
+  const inspection = inspectHtml(html);
+  if (inspection.eventHandlers.length) {
     fail('DAST-CSP-003', `${filename} contains an inline event handler`);
   }
 
-  for (const match of html.matchAll(/<script\b([^>]*)>([\s\S]*?)<\/script\s*>/gi)) {
-    const attributes = match[1];
-    const body = match[2];
-    if (/\bsrc\s*=/i.test(attributes)) continue;
-    if (!/\btype\s*=\s*["']application\/ld\+json["']/i.test(attributes)) {
+  for (const script of inspection.scripts) {
+    if (script.hasSrc) continue;
+    if (script.type !== 'application/ld+json') {
       fail('DAST-CSP-003', `${filename} contains an executable inline script`);
       continue;
     }
 
-    const hash = `'sha256-${createHash('sha256').update(body).digest('base64')}'`;
+    const hash = `'sha256-${createHash('sha256').update(script.body).digest('base64')}'`;
     if (!csp.includes(hash)) {
       fail('DAST-CSP-003', `${filename} JSON-LD hash is missing from CSP: ${hash}`);
     }
