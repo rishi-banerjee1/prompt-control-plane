@@ -1,5 +1,6 @@
 #!/usr/bin/env node
-import { readFileSync } from 'node:fs';
+import { createHash } from 'node:crypto';
+import { readdirSync, readFileSync } from 'node:fs';
 import { resolve } from 'node:path';
 
 const headerFile = resolve(process.cwd(), 'docs/_headers');
@@ -49,7 +50,31 @@ if (csp) {
   }
   if (/script-src[^;]*\*/i.test(csp)) fail('DAST-CSP-001', 'CSP script-src must not allow wildcard sources');
   if (/unsafe-eval/i.test(csp)) fail('DAST-CSP-001', 'CSP must not allow unsafe-eval');
-  if (/unsafe-inline/i.test(csp)) warn('DAST-CSP-002', 'CSP still allows unsafe-inline because static pages contain inline scripts/handlers');
+  if (/script-src[^;]*'unsafe-inline'/i.test(csp)) {
+    fail('DAST-CSP-002', "CSP script-src must not allow 'unsafe-inline'");
+  }
+}
+
+for (const filename of readdirSync(resolve(process.cwd(), 'docs')).filter((name) => name.endsWith('.html'))) {
+  const html = readFileSync(resolve(process.cwd(), 'docs', filename), 'utf8');
+  if (/\son[a-z]+\s*=/i.test(html)) {
+    fail('DAST-CSP-003', `${filename} contains an inline event handler`);
+  }
+
+  for (const match of html.matchAll(/<script\b([^>]*)>([\s\S]*?)<\/script>/gi)) {
+    const attributes = match[1];
+    const body = match[2];
+    if (/\bsrc\s*=/i.test(attributes)) continue;
+    if (!/\btype\s*=\s*["']application\/ld\+json["']/i.test(attributes)) {
+      fail('DAST-CSP-003', `${filename} contains an executable inline script`);
+      continue;
+    }
+
+    const hash = `'sha256-${createHash('sha256').update(body).digest('base64')}'`;
+    if (!csp.includes(hash)) {
+      fail('DAST-CSP-003', `${filename} JSON-LD hash is missing from CSP: ${hash}`);
+    }
+  }
 }
 
 async function checkLiveSite() {

@@ -83,6 +83,8 @@ All data is stored locally at `~/.prompt-control-plane/`:
 - **Dependabot** enabled for root npm, video explainer npm, and GitHub Actions dependencies
 - **CodeQL security-extended** runs on pull requests, main pushes, and a weekly schedule
 - **CODEOWNERS** maps repository ownership for security-sensitive surfaces
+- **All third-party GitHub Actions are pinned to immutable commit SHAs** with readable version comments
+- **CycloneDX 1.5 SBOMs** for the root and video explainer dependency trees are generated on every CI run and retained as evidence for 90 days
 - **No postinstall scripts** — the package runs no code during installation
 
 ### Required security gates

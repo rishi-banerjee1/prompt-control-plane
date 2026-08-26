@@ -102,6 +102,20 @@ function scanSecrets(file, text) {
   }
 }
 
+function scanActionPins(file, text) {
+  for (const match of text.matchAll(/\buses:\s*([^\s#]+)@([^\s#]+)/g)) {
+    const action = match[1];
+    const ref = match[2];
+    if (/^[0-9a-f]{40}$/.test(ref)) continue;
+    findings.push({
+      rule: 'CI-SUPPLY-001',
+      file: relative(root, file),
+      line: lineForIndex(text, match.index),
+      message: `${action}@${ref} is not pinned to an immutable commit SHA`,
+    });
+  }
+}
+
 for (const dir of sourceRoots) {
   walk(join(root, dir), file => {
     const ext = extname(file);
@@ -119,6 +133,12 @@ for (const dir of secretRoots) {
     scanSecrets(file, readFileSync(file, 'utf8'));
   });
 }
+
+walk(join(root, '.github', 'workflows'), file => {
+  if (!['.yml', '.yaml'].includes(extname(file))) return;
+  scanActionPins(file, readFileSync(file, 'utf8'));
+});
+scanActionPins(join(root, 'action.yml'), readFileSync(join(root, 'action.yml'), 'utf8'));
 
 if (warnings.length) {
   console.log('Security SAST warnings:');

@@ -7,7 +7,7 @@ Audience: enterprise CISO / security review
 
 ## Executive Summary
 
-Security readiness score: 3 = Strong.
+Security readiness score: 4 = Exceptional for repository-level engineering controls.
 
 Prompt Control Plane has a favorable security shape for enterprise review: deterministic TypeScript engine, local-first runtime, zero LLM calls inside the engine, no telemetry, no default prompt persistence, minimal runtime dependency surface, and cryptographic integrity controls for license validation and audit logs.
 
@@ -39,6 +39,13 @@ Important boundary: this repository can be made audit-ready and mapped to ISO 27
 - DAST-style checks:
   - repo-local security header and CSP scanner: `npm run security:dast`
   - live mode supported with `DAST_BASE_URL=https://getpcp.site npm run security:dast`
+- Supply-chain evidence:
+  - all external GitHub Actions pinned to immutable commit SHAs
+  - CycloneDX 1.5 SBOM generation for root and nested video dependency trees
+- Browser regression checks:
+  - affected static pages loaded with their externalized scripts
+  - license-gate keyboard flow and article clipboard action exercised
+  - no browser console warnings or errors observed
 - Manual VAPT-style review:
   - non-destructive validation of XSS paths, dependency exposure, static-site attack surface, browser storage behavior, and GitHub control gaps
 
@@ -149,6 +156,8 @@ Fix:
 - Added CI job `Enterprise Security Gates`.
 - Added GitHub Dependency Review workflow.
 - Added CODEOWNERS for repository ownership.
+- Pinned all third-party GitHub Actions to immutable commit SHAs.
+- Added CI-generated CycloneDX SBOM evidence for root and nested dependency trees with 90-day retention.
 - Applied GitHub branch protection to `main` with tests, CodeQL, dependency review, and enterprise security gates required.
 - Kept CodeQL `security-extended` workflow.
 
@@ -159,19 +168,22 @@ Control impact:
 
 ## Residual Risks
 
-### RISK-001: CSP still allows inline scripts
+### RISK-001: Inline styles remain allowed
 
-Severity: Medium
-Status: Accepted for short-term audit readiness, needs hardening backlog
+Severity: Low
+Status: Accepted with compensating controls
 
-The static site still contains inline scripts and some inline event handlers, so CSP currently requires `script-src 'unsafe-inline'` and `style-src 'unsafe-inline'`. The new SAST gate fails on dangerous parsing/code-execution sinks and warns on inline handlers, but strict CSP hardening remains future work.
+Executable inline scripts and inline event handlers have been removed. CSP `script-src` no longer permits `unsafe-inline`; exact SHA-256 hashes allow the non-executable JSON-LD metadata blocks. The static site still uses inline style blocks and attributes, so `style-src 'unsafe-inline'` remains for presentation compatibility.
+
+Compensating controls:
+
+- `script-src` is strict and does not allow inline execution or `unsafe-eval`.
+- browser HTML parsing and code-execution sinks fail the deterministic SAST gate.
+- CSP blocks objects, framing, and unapproved form destinations.
 
 Recommended next step:
 
-- Move inline scripts to external files.
-- Replace inline event attributes with `addEventListener`.
-- Add nonces or hashes only where externalization is not practical.
-- Remove `unsafe-inline` from `script-src`.
+- Move inline styles into same-origin stylesheets and remove `unsafe-inline` from `style-src` as a lower-priority hardening item.
 
 ### RISK-002: Formal VAPT not completed
 
@@ -226,10 +238,10 @@ This mapping is readiness evidence, not certification.
 
 ### ISO/IEC 27001:2022 readiness mapping
 
-- Secure development and change control: CI build/test gates, CodeQL, dependency review, CODEOWNERS.
+- Secure development and change control: CI build/test gates, CodeQL, dependency review, CODEOWNERS, immutable action references.
 - Technical vulnerability management: root and nested `npm audit`, Dependabot, GitHub security alerts, dependency review gate.
 - Secure coding: deterministic SAST, DOM XSS sink removal, dangerous code-execution sink detection.
-- Configuration management: checked-in Cloudflare Pages headers, security gate scripts, reproducible lockfile installs.
+- Configuration management: checked-in Cloudflare Pages headers, security gate scripts, reproducible lockfile installs, CycloneDX SBOM artifacts.
 - Logging and monitoring: GitHub Actions evidence, CodeQL history, Dependabot alerts, hash-chained product audit trail.
 - Information security in projects: `SECURITY.md`, security report, explicit residual risk tracking.
 
@@ -253,8 +265,9 @@ Provide these artifacts:
 - `.github/dependabot.yml`
 - `.github/CODEOWNERS`
 - `docs/_headers`
+- `cyclonedx-sboms` artifact from the latest `Enterprise Security Gates` run
 - latest GitHub Actions run for this branch
-- latest Cloudflare Pages deployment URL: `https://2ac6c228.getpcp.pages.dev`
+- latest Cloudflare Pages deployment URL: `https://f28b2373.getpcp.pages.dev`
 - public production domain live DAST target: `https://getpcp.site`
 - GitHub Dependabot and CodeQL alert screenshots after merge/rescan
 
@@ -270,9 +283,9 @@ Provide these artifacts:
 
 ## Next 30-Day Hardening Plan
 
-1. Remove inline scripts and event handlers, then remove `unsafe-inline` from CSP.
+1. Externalize inline styles, then remove `unsafe-inline` from `style-src`.
 2. Schedule independent VAPT for `getpcp.site`, npm package, CLI, GitHub Action, and MCP stdio server.
-3. Add release provenance/SBOM evidence for npm releases.
+3. Add npm release provenance and signed attestations.
 4. Evaluate signed commit enforcement once all maintainers have signing configured.
 5. Confirm GitHub Dependabot and CodeQL alerts are closed after merge.
 6. Add quarterly access review and annual incident-response tabletop evidence outside the repo.
