@@ -89,7 +89,7 @@
   "devDependencies": {
     "@types/node": "^25.3.5",
     "parse5": "8.0.1",
-    "typescript": "^5.8.0"
+    "typescript": "^7.0.2"
   },
   "engines": {
     "node": ">=20.0.0"
