@@ -68,7 +68,7 @@ function scanJsText(file, text, offsetLine = 0) {
 }
 
 function scanHtmlScripts(file, text) {
-  const scriptRe = /<script\b(?![^>]*\bsrc=)[^>]*>([\s\S]*?)<\/script>/gi;
+  const scriptRe = /<script\b(?![^>]*\bsrc=)[^>]*>([\s\S]*?)<\/script\s*>/gi;
   let match;
   while ((match = scriptRe.exec(text))) {
     scanJsText(file, match[1], lineForIndex(text, match.index) - 1);

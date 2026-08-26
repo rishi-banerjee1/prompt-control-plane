@@ -61,7 +61,7 @@ for (const filename of readdirSync(resolve(process.cwd(), 'docs')).filter((name)
     fail('DAST-CSP-003', `${filename} contains an inline event handler`);
   }
 
-  for (const match of html.matchAll(/<script\b([^>]*)>([\s\S]*?)<\/script>/gi)) {
+  for (const match of html.matchAll(/<script\b([^>]*)>([\s\S]*?)<\/script\s*>/gi)) {
     const attributes = match[1];
     const body = match[2];
     if (/\bsrc\s*=/i.test(attributes)) continue;
