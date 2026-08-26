@@ -87,7 +87,7 @@
     "zod": "^4.4.3"
   },
   "devDependencies": {
-    "@types/node": "^25.3.5",
+    "@types/node": "^26.2.0",
     "parse5": "8.0.1",
     "typescript": "^5.8.0"
   },
