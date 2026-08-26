@@ -271,6 +271,11 @@ Provide these artifacts:
 - public production domain live DAST target: `https://getpcp.site`
 - GitHub Dependabot and CodeQL alert screenshots after merge/rescan
 
+CI continuity note: the first run for commit `117194d` was affected by a GitHub Actions
+service incident and received no hosted runner (`runner_id: 0`, zero executed steps).
+GitHub successfully completed CI on rerun; commit `d61b088` retriggers fresh scanner
+runs so the final evidence set does not rely on startup-failure records.
+
 ## CISO Talking Points
 
 - The engine is deterministic and makes zero LLM calls internally.
