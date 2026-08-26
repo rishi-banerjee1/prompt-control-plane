@@ -840,7 +840,8 @@
       var inp = document.getElementById('demo-input');
       var out = document.getElementById('demo-output');
       if (!inp || !out) return;
-      inp.textContent = ''; out.innerHTML = '';
+      inp.textContent = '';
+      out.replaceChildren();
       inp.classList.add('cursor-blink');
       var i = 0;
       clearInterval(demoTimer);

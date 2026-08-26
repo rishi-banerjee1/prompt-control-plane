@@ -39,7 +39,7 @@ jobs:
         run: npm test
 
   lint-and-audit:
-    name: Lint & Audit
+    name: Enterprise Security Gates
     runs-on: ubuntu-latest
 
     steps:
@@ -53,5 +53,9 @@ jobs:
       - name: Install dependencies
         run: npm ci
 
-      - name: Security audit
-        run: npm audit --audit-level=moderate
+      - name: Install video explainer dependencies
+        run: npm ci
+        working-directory: video-explainer
+
+      - name: Security gates
+        run: npm run security:all

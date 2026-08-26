@@ -2007,7 +2007,18 @@ pcp benchmark --json
     PIPELINE.forEach(function(p, i){
       var node = document.createElement('div');
       node.className = 'pipe-node';
-      node.innerHTML = '<div class="pipe-box" style="--c:'+p.color+'"><div class="pipe-num">'+p.num+'</div><div class="pipe-name" style="color:'+p.color+'">'+p.name+'</div></div>';
+      var box = document.createElement('div');
+      box.className = 'pipe-box';
+      box.style.setProperty('--c', p.color);
+      var num = document.createElement('div');
+      num.className = 'pipe-num';
+      num.textContent = p.num;
+      var name = document.createElement('div');
+      name.className = 'pipe-name';
+      name.style.color = p.color;
+      name.textContent = p.name;
+      box.append(num, name);
+      node.appendChild(box);
       node.addEventListener('click', function(){
         document.querySelectorAll('.pipe-node').forEach(function(n){n.classList.remove('active');});
         node.classList.add('active');
@@ -2025,13 +2036,32 @@ pcp benchmark --json
     function showDetail(p){
       var detail = document.getElementById('pipe-detail');
       var content = document.getElementById('pipe-detail-content');
-      content.innerHTML =
-        '<h4 style="color:'+p.color+';">Phase '+p.num+': '+p.name+'</h4>'+
-        '<p style="margin:10px 0 16px;">'+p.desc+'</p>'+
-        '<div>'+
-          '<div style="font-size:0.7rem;text-transform:uppercase;letter-spacing:0.08em;color:var(--text-muted);margin-bottom:8px;">What you get back</div>'+
-          '<p style="font-size:14px;color:var(--green);background:var(--code-bg);padding:10px 14px;border-radius:8px;margin:0;line-height:1.5;">'+p.output+'</p>'+
-        '</div>';
+      content.replaceChildren();
+      var h = document.createElement('h4');
+      h.style.color = p.color;
+      h.textContent = 'Phase ' + p.num + ': ' + p.name;
+      var desc = document.createElement('p');
+      desc.style.margin = '10px 0 16px';
+      desc.textContent = p.desc;
+      var wrap = document.createElement('div');
+      var label = document.createElement('div');
+      label.style.fontSize = '0.7rem';
+      label.style.textTransform = 'uppercase';
+      label.style.letterSpacing = '0.08em';
+      label.style.color = 'var(--text-muted)';
+      label.style.marginBottom = '8px';
+      label.textContent = 'What you get back';
+      var output = document.createElement('p');
+      output.style.fontSize = '14px';
+      output.style.color = 'var(--green)';
+      output.style.background = 'var(--code-bg)';
+      output.style.padding = '10px 14px';
+      output.style.borderRadius = '8px';
+      output.style.margin = '0';
+      output.style.lineHeight = '1.5';
+      output.textContent = p.output;
+      wrap.append(label, output);
+      content.append(h, desc, wrap);
       detail.style.display = 'block';
     }
 

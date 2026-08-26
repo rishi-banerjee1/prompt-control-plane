@@ -907,31 +907,68 @@
         prevHash = integrity_hash || expected;
       }
       var fails = auditRows.filter(r => !r._ok).length;
-      var stat = (label, n, color) =>
-        `<div class="stat-tile"><span class="n" ${color?'style="color:'+color+'"':''}>${n}</span><div class="l">${label}</div></div>`;
-      document.getElementById('audit-stats').innerHTML =
-        stat('Total', auditRows.length) +
-        stat('Success', auditRows.filter(r => r.outcome==='success').length) +
-        stat('Blocked', auditRows.filter(r => r.outcome==='blocked').length, 'var(--red)') +
-        stat('Errors', auditRows.filter(r => r.outcome==='error').length, 'var(--orange)') +
-        stat('Chain Breaks', fails, fails ? 'var(--red)': 'var(--green)');
+      var stats = document.getElementById('audit-stats');
+      stats.replaceChildren(
+        statTile('Total', auditRows.length),
+        statTile('Success', auditRows.filter(r => r.outcome==='success').length),
+        statTile('Blocked', auditRows.filter(r => r.outcome==='blocked').length, 'var(--red)'),
+        statTile('Errors', auditRows.filter(r => r.outcome==='error').length, 'var(--orange)'),
+        statTile('Chain Breaks', fails, fails ? 'var(--red)': 'var(--green)')
+      );
       renderAuditRows(auditRows);
       document.getElementById('audit-results').style.display = 'block';
     }
+    function statTile(label, n, color) {
+      var tile = document.createElement('div');
+      tile.className = 'stat-tile';
+      var count = document.createElement('span');
+      count.className = 'n';
+      if (color) count.style.color = color;
+      count.textContent = String(n);
+      var text = document.createElement('div');
+      text.className = 'l';
+      text.textContent = label;
+      tile.append(count, text);
+      return tile;
+    }
     function renderAuditRows(rows) {
-      document.getElementById('audit-tbody').innerHTML = rows.map(r => {
-        var ts = r.timestamp ? new Date(r.timestamp).toLocaleString(): ':';
-        var det = r.details ? Object.entries(r.details).slice(0,3).map(([k,v])=>k+': '+v).join('<br>'): ':';
-        var oc = r.outcome === 'success' ? 'outcome-success': r.outcome === 'blocked' ? 'outcome-blocked': 'outcome-error';
-        return `<tr>
-          <td>${r._n}</td>
-          <td style="white-space:nowrap;font-size:0.75rem;">${ts}</td>
-          <td><code style="font-size:0.75rem;">${r.event||':'}</code></td>
-          <td class="${oc}">${r.outcome||':'}</td>
-          <td style="font-size:0.75rem;max-width:200px;">${det}</td>
-          <td>${r._ok ? '<span class="chain-ok">✓ OK</span>': '<span class="chain-fail">✗ BROKEN</span>'}</td>
-        </tr>`;
-      }).join('');
+      var tbody = document.getElementById('audit-tbody');
+      tbody.replaceChildren();
+      rows.forEach(function(r) {
+        var tr = document.createElement('tr');
+        var n = document.createElement('td');
+        n.textContent = String(r._n);
+        var ts = document.createElement('td');
+        ts.style.whiteSpace = 'nowrap';
+        ts.style.fontSize = '0.75rem';
+        ts.textContent = r.timestamp ? new Date(r.timestamp).toLocaleString(): ':';
+        var eventCell = document.createElement('td');
+        var eventCode = document.createElement('code');
+        eventCode.style.fontSize = '0.75rem';
+        eventCode.textContent = r.event || ':';
+        eventCell.appendChild(eventCode);
+        var outcome = document.createElement('td');
+        outcome.className = r.outcome === 'success' ? 'outcome-success': r.outcome === 'blocked' ? 'outcome-blocked': 'outcome-error';
+        outcome.textContent = r.outcome || ':';
+        var details = document.createElement('td');
+        details.style.fontSize = '0.75rem';
+        details.style.maxWidth = '200px';
+        if (r.details) {
+          Object.entries(r.details).slice(0,3).forEach(function(entry, index) {
+            if (index) details.appendChild(document.createElement('br'));
+            details.appendChild(document.createTextNode(entry[0] + ': ' + entry[1]));
+          });
+        } else {
+          details.textContent = ':';
+        }
+        var chain = document.createElement('td');
+        var status = document.createElement('span');
+        status.className = r._ok ? 'chain-ok': 'chain-fail';
+        status.textContent = r._ok ? '✓ OK': '✗ BROKEN';
+        chain.appendChild(status);
+        tr.append(n, ts, eventCell, outcome, details, chain);
+        tbody.appendChild(tr);
+      });
     }
     function filterAudit() {
       var oc = document.getElementById('af-outcome').value;
@@ -987,35 +1024,74 @@
     function renderRules() {
       var list = document.getElementById('rules-list');
       if (!rules.length) {
-        list.innerHTML = '<p style="color:var(--text-muted);font-size:0.875rem;margin:0 0 16px;">No rules yet. Add your first rule above.</p>';
+        var empty = document.createElement('p');
+        empty.style.color = 'var(--text-muted)';
+        empty.style.fontSize = '0.875rem';
+        empty.style.margin = '0 0 16px';
+        empty.textContent = 'No rules yet. Add your first rule above.';
+        list.replaceChildren(empty);
         document.getElementById('rules-export').style.display = 'none';
         return;
       }
-      list.innerHTML = rules.map(r => `
-        <div class="rule-item">
-          <div class="rule-header">
-            <span class="rule-id">${r.id}</span>
-            <div style="display:flex;gap:8px;align-items:center;">
-              <span class="${r.severity==='BLOCKING'?'sev-blocking':'sev-nonblocking'}">${r.severity}</span>
-              <button class="btn btn-secondary btn-sm" onclick="removeRule('${r.id}')">Remove</button>
-            </div>
-          </div>
-          <p style="font-size:0.8rem;color:var(--text-muted);margin:0 0 8px;">${r.description}</p>
-          <div class="rule-meta">
-            ${r.pattern ? `<span>Match: <code>${r.pattern}</code></span>`: ''}
-            ${r.negative_pattern ? `<span>Must include: <code>${r.negative_pattern}</code></span>`: ''}
-            <span>Applies: ${r.applies_to}</span>
-            <span>Dimension: ${r.risk_dimension}</span>
-            <span>Weight: ${r.risk_weight}/25</span>
-          </div>
-        </div>
-      `).join('');
+      list.replaceChildren();
+      rules.forEach(function(r) {
+        var item = document.createElement('div');
+        item.className = 'rule-item';
+        var header = document.createElement('div');
+        header.className = 'rule-header';
+        var id = document.createElement('span');
+        id.className = 'rule-id';
+        id.textContent = r.id;
+        var actions = document.createElement('div');
+        actions.style.display = 'flex';
+        actions.style.gap = '8px';
+        actions.style.alignItems = 'center';
+        var severity = document.createElement('span');
+        severity.className = r.severity === 'BLOCKING' ? 'sev-blocking': 'sev-nonblocking';
+        severity.textContent = r.severity;
+        var remove = document.createElement('button');
+        remove.className = 'btn btn-secondary btn-sm';
+        remove.type = 'button';
+        remove.textContent = 'Remove';
+        remove.addEventListener('click', function() { removeRule(r.id); });
+        actions.append(severity, remove);
+        header.append(id, actions);
+        var desc = document.createElement('p');
+        desc.style.fontSize = '0.8rem';
+        desc.style.color = 'var(--text-muted)';
+        desc.style.margin = '0 0 8px';
+        desc.textContent = r.description;
+        var meta = document.createElement('div');
+        meta.className = 'rule-meta';
+        if (r.pattern) meta.appendChild(metaCode('Match: ', r.pattern));
+        if (r.negative_pattern) meta.appendChild(metaCode('Must include: ', r.negative_pattern));
+        meta.append(
+          metaText('Applies: ' + r.applies_to),
+          metaText('Dimension: ' + r.risk_dimension),
+          metaText('Weight: ' + r.risk_weight + '/25')
+        );
+        item.append(header, desc, meta);
+        list.appendChild(item);
+      });
       var rulesJson = JSON.stringify({ rules }, null, 2);
       var rulesOnly = JSON.stringify(rules, null, 2);
       document.getElementById('rules-json').textContent = rulesJson;
       document.getElementById('rules-deploy-cmd').textContent =
         'Please use the save_custom_rules tool to deploy these governance rules to my Prompt Control Plane:\n\n' + rulesOnly;
       document.getElementById('rules-export').style.display = 'block';
+    }
+    function metaText(text) {
+      var span = document.createElement('span');
+      span.textContent = text;
+      return span;
+    }
+    function metaCode(label, value) {
+      var span = document.createElement('span');
+      span.appendChild(document.createTextNode(label));
+      var code = document.createElement('code');
+      code.textContent = value;
+      span.appendChild(code);
+      return span;
     }
     function downloadRules() {
       var a = document.createElement('a');
@@ -1161,7 +1237,7 @@
         passEl.readOnly = true;
       }
       if (noteEl) {
-        noteEl.innerHTML = '✓ Auto-derived from your enterprise license: no need to remember this separately.';
+        noteEl.textContent = '✓ Auto-derived from your enterprise license: no need to remember this separately.';
       }
     }
 

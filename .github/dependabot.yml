@@ -21,6 +21,26 @@ updates:
           - "minor"
           - "patch"
 
+  # Video explainer dependencies
+  - package-ecosystem: "npm"
+    directory: "/video-explainer"
+    schedule:
+      interval: "weekly"
+      day: "monday"
+    open-pull-requests-limit: 5
+    reviewers:
+      - "rishi-banerjee1"
+    labels:
+      - "dependencies"
+      - "video"
+    commit-message:
+      prefix: "chore(deps):"
+    groups:
+      video-minor-and-patch:
+        update-types:
+          - "minor"
+          - "patch"
+
   # GitHub Actions
   - package-ecosystem: "github-actions"
     directory: "/"

@@ -1,0 +1,12 @@
+# Enterprise control owner for security-sensitive changes.
+* @rishi-banerjee1
+
+# Public release, security, and automation surfaces.
+/.github/ @rishi-banerjee1
+/src/ @rishi-banerjee1
+/bin/ @rishi-banerjee1
+/docs/ @rishi-banerjee1
+/action.yml @rishi-banerjee1
+/package.json @rishi-banerjee1
+/package-lock.json @rishi-banerjee1
+/SECURITY.md @rishi-banerjee1
