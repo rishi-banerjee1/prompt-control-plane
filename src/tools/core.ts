@@ -39,7 +39,7 @@ export function registerCoreTools(
     {
       raw_prompt: z.string().min(1).max(102400).describe('The raw user prompt to optimize'),
       context: z.string().max(102400).optional().describe('Optional context: repo info, file contents, preferences'),
-      target: z.enum(['claude', 'openai', 'generic']).default('claude').describe('Output target: claude (XML), openai (system/user), generic (markdown)'),
+      target: z.enum(['claude', 'openai', 'google', 'perplexity', 'generic']).default('claude').describe('Output/provider target: claude (XML), openai (system/user), google/perplexity/generic (markdown)'),
     },
     async ({ raw_prompt, context, target }) => {
       const ctx = await buildCtx(storage, rateLimiter);
@@ -222,7 +222,7 @@ export function registerCoreTools(
       session_id: z.string().regex(/^[a-zA-Z0-9-]+$/).describe('Session ID from optimize_prompt'),
       answers: z.record(z.string(), z.string()).optional().describe('Answers to blocking questions: { question_id: answer }'),
       edits: z.string().optional().describe('Manual edits or additional context to incorporate'),
-      target: z.enum(['claude', 'openai', 'generic']).optional().describe('Change output target'),
+      target: z.enum(['claude', 'openai', 'google', 'perplexity', 'generic']).optional().describe('Change output/provider target'),
     },
     async ({ session_id, answers, edits, target }) => {
       const ctx = await buildCtx(storage, rateLimiter);
@@ -376,7 +376,7 @@ export function registerCoreTools(
       ]).optional().describe('Optimization profile'),
       budgetSensitivity: z.enum(['low', 'medium', 'high']).optional().describe('Budget sensitivity'),
       latencySensitivity: z.enum(['low', 'medium', 'high']).optional().describe('Latency sensitivity'),
-      target: z.enum(['claude', 'openai', 'generic']).default('claude').describe('Output target'),
+      target: z.enum(['claude', 'openai', 'google', 'perplexity', 'generic']).default('claude').describe('Output/provider target'),
     },
     async ({ prompt, context, profile, budgetSensitivity, latencySensitivity, target }) => {
       const ctx = await buildCtx(storage, rateLimiter);

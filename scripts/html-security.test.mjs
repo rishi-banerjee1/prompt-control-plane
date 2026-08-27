@@ -21,3 +21,9 @@ test('distinguishes external scripts and reports inline event handlers', () => {
   assert.equal(result.eventHandlers[0].name, 'onclick');
   assert.equal(result.scripts[0].hasSrc, true);
 });
+
+test('reports inline style elements and style attributes', () => {
+  const result = inspectHtml('<style>.x{color:red}</style><div style="color:red"></div>');
+  assert.equal(result.styleElements.length, 1);
+  assert.equal(result.styleAttributes.length, 1);
+});

@@ -4,6 +4,8 @@ export function inspectHtml(html) {
   const document = parse(html, { sourceCodeLocationInfo: true });
   const scripts = [];
   const eventHandlers = [];
+  const styleAttributes = [];
+  const styleElements = [];
 
   function visit(node) {
     const attributes = new Map((node.attrs || []).map(attribute => [attribute.name, attribute.value]));
@@ -14,6 +16,12 @@ export function inspectHtml(html) {
       eventHandlers.push({
         name,
         line: location?.attrs?.[name]?.startLine || location?.startLine || 1,
+      });
+    }
+
+    if (attributes.has('style')) {
+      styleAttributes.push({
+        line: location?.attrs?.style?.startLine || location?.startLine || 1,
       });
     }
 
@@ -29,9 +37,15 @@ export function inspectHtml(html) {
       });
     }
 
+    if (node.nodeName === 'style') {
+      styleElements.push({
+        line: location?.startLine || 1,
+      });
+    }
+
     for (const child of node.childNodes || []) visit(child);
   }
 
   visit(document);
-  return { eventHandlers, scripts };
+  return { eventHandlers, scripts, styleAttributes, styleElements };
 }

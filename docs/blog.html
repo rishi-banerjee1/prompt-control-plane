@@ -31,74 +31,9 @@
     }
   }
   </script>
-  <link rel="stylesheet" href="shared.css">
-  <style>
-    .blog-hero {
-      padding: 80px 0 48px;
-      text-align: center;
-    }
-    .blog-hero h1 {
-      font-size: clamp(28px, 4vw, 40px);
-      font-weight: 800;
-      letter-spacing: -0.03em;
-      margin-bottom: 12px;
-    }
-    .blog-hero p {
-      font-size: 16px;
-      color: var(--text-muted);
-      max-width: 500px;
-      margin: 0 auto;
-    }
-
-    .blog-grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-      gap: 24px;
-      padding-bottom: 64px;
-    }
-    .blog-card {
-      background: var(--surface);
-      border: 1px solid var(--border);
-      border-radius: 12px;
-      padding: 28px 24px;
-      display: flex;
-      flex-direction: column;
-      transition: border-color 0.15s;
-    }
-    .blog-card:hover {
-      border-color: var(--accent);
-    }
-    .blog-card .blog-date {
-      font-size: 12px;
-      text-transform: uppercase;
-      letter-spacing: 0.05em;
-      color: var(--text-muted);
-      margin-bottom: 12px;
-    }
-    .blog-card h2 {
-      font-size: 18px;
-      font-weight: 700;
-      margin-bottom: 10px;
-      line-height: 1.3;
-    }
-    .blog-card h2 a {
-      color: var(--text);
-    }
-    .blog-card h2 a:hover {
-      color: var(--accent);
-    }
-    .blog-card .blog-excerpt {
-      font-size: 14px;
-      color: var(--text-muted);
-      line-height: 1.6;
-      flex: 1;
-      margin-bottom: 16px;
-    }
-    .blog-card .blog-read {
-      font-size: 14px;
-      font-weight: 600;
-    }
-  </style>
+  <link rel="stylesheet" href="shared.css?v=20260827">
+  <link rel="stylesheet" href="csp-page-blog.css?v=20260827">
+  <link rel="stylesheet" href="csp-inline.css?v=20260827">
 </head>
 <body>
 
@@ -138,8 +73,8 @@
       <div class="blog-grid">
 
         <!-- Coming soon -->
-        <article class="blog-card" style="text-align: center; padding: 48px 24px;">
-          <h2 style="color: var(--text-muted); font-size: 20px;">Posts coming soon</h2>
+        <article class="blog-card csp-style-025">
+          <h2 class="csp-style-026">Posts coming soon</h2>
           <p class="blog-excerpt">Engineering deep-dives, architecture decisions, and product evolution stories. Check back soon.</p>
         </article>
 
@@ -179,6 +114,6 @@
     </div>
   </footer>
 
-  <script src="shared.js"></script>
+  <script src="shared.js?v=20260827"></script>
 </body>
 </html>

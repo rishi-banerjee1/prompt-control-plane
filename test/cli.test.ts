@@ -253,13 +253,18 @@ describe('4. route', () => {
   });
 
   it('--target changes provider preference', () => {
-    const { stdout: claude } = run(['route', GOOD, '--json', '--target', 'claude']);
-    const { stdout: openai } = run(['route', GOOD, '--json', '--target', 'openai']);
-    const c = parseJson(claude);
-    const o = parseJson(openai);
-    // Both should have primary models, provider may differ
-    assert.ok(c.primary.model);
-    assert.ok(o.primary.model);
+    const expected = {
+      claude: 'anthropic',
+      openai: 'openai',
+      google: 'google',
+      perplexity: 'perplexity',
+    } as const;
+    for (const [target, provider] of Object.entries(expected)) {
+      const { stdout } = run(['route', GOOD, '--json', '--target', target]);
+      const data = parseJson(stdout);
+      assert.equal(data.primary.provider, provider);
+      assert.ok(data.primary.model);
+    }
   });
 
   it('human-readable output works', () => {
@@ -353,12 +358,17 @@ describe('6. cost', () => {
   });
 
   it('--target changes provider coverage', () => {
-    const { stdout: claude } = run(['cost', GOOD, '--json', '--target', 'claude']);
-    const { stdout: openai } = run(['cost', GOOD, '--json', '--target', 'openai']);
-    const c = parseJson(claude);
-    const o = parseJson(openai);
-    assert.ok(c.recommended_model);
-    assert.ok(o.recommended_model);
+    const expectedPrefixes = {
+      claude: 'claude-',
+      openai: 'gpt-',
+      google: 'gemini-',
+      perplexity: 'sonar',
+    } as const;
+    for (const [target, prefix] of Object.entries(expectedPrefixes)) {
+      const { stdout } = run(['cost', GOOD, '--json', '--target', target]);
+      const data = parseJson(stdout);
+      assert.ok(data.recommended_model.startsWith(prefix), `${target} recommended ${data.recommended_model}`);
+    }
   });
 
   it('human-readable output works', () => {

@@ -265,8 +265,8 @@ function parseSubcommandArgs(argv: string[]): SubcommandArgs {
       i++;
       if (i >= argv.length) fatal('--target requires a value', result.json);
       const val = argv[i];
-      if (val !== 'claude' && val !== 'openai' && val !== 'generic') {
-        fatal(`--target must be claude, openai, or generic, got: ${val}`, result.json);
+      if (val !== 'claude' && val !== 'openai' && val !== 'google' && val !== 'perplexity' && val !== 'generic') {
+        fatal(`--target must be claude, openai, google, perplexity, or generic, got: ${val}`, result.json);
       }
       result.target = val as OutputTarget;
     } else if (arg === '--context') {
@@ -1592,7 +1592,7 @@ Options:
   --json                 Structured JSON output with request_id envelope
   --quiet, -q            Suppress non-essential output
   --pretty               Pretty-print JSON output
-  --target <format>      claude | openai | generic (default: claude)
+  --target <target>      claude | openai | google | perplexity | generic (default: claude)
   --context "text"       Additional context for the prompt
   --context-file <path>  Read context from a file
   --file, -f <path>      Read prompt from a file (or glob for check)

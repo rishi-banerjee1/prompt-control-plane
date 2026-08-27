@@ -1,5 +1,5 @@
 // estimator.ts — Token counting, multi-provider cost estimation, and model recommendation.
-// Supports Anthropic, OpenAI, and Google models. Target-aware recommendations.
+// Supports Anthropic, OpenAI, Google, and Perplexity models. Target-aware recommendations.
 
 import type {
   CostEstimate, ModelCost, TaskType, RiskLevel, OutputTarget,
@@ -12,26 +12,37 @@ import { PROFILES, resolveProfile } from './profiles.js';
 // ─── Pricing (per 1M tokens) ─────────────────────────────────────────────────
 
 export const PRICING_DATA = {
-  pricing_version: '2026-03',
-  last_updated: '2026-03-06',
+  pricing_version: '2026-08',
+  last_updated: '2026-08-26',
   providers: {
     anthropic: {
-      haiku:  { in: 0.80,  out: 4.00  },
-      sonnet: { in: 3.00,  out: 15.00 },
-      opus:   { in: 15.00, out: 75.00 },
+      'claude-haiku-4-5':  { in: 1.00,  out: 5.00  },
+      'claude-sonnet-5':   { in: 2.00,  out: 10.00 },
+      'claude-opus-5':     { in: 5.00,  out: 25.00 },
+      'claude-fable-5':    { in: 10.00, out: 50.00 },
     },
     openai: {
+      'gpt-5.6-luna':  { in: 0.10,  out: 0.60  },
+      'gpt-5.6-terra': { in: 1.00,  out: 6.00  },
+      'gpt-5.6-sol':   { in: 2.00,  out: 10.00 },
       'gpt-4o-mini': { in: 0.15,  out: 0.60  },
       'gpt-4o':      { in: 2.50,  out: 10.00 },
       'o1':          { in: 15.00, out: 60.00 },
     },
     google: {
-      'gemini-2.0-flash': { in: 0.10, out: 0.40 },
-      'gemini-2.0-pro':   { in: 1.25, out: 5.00 },
+      'gemini-3.7-flash':      { in: 0.75, out: 3.75  },
+      'gemini-3.6-flash':      { in: 0.75, out: 3.75  },
+      'gemini-3.5-flash':      { in: 1.50, out: 9.00  },
+      'gemini-3.5-flash-lite': { in: 0.30, out: 2.50  },
+      'gemini-3.1-flash-lite': { in: 0.25, out: 1.50  },
+      'gemini-2.5-flash-lite': { in: 0.10, out: 0.40  },
+      'gemini-2.5-flash':      { in: 0.30, out: 2.50  },
+      'gemini-2.5-pro':        { in: 1.25, out: 10.00 },
     },
     perplexity: {
-      'sonar':     { in: 1.00, out: 1.00  },
-      'sonar-pro': { in: 3.00, out: 15.00 },
+      'sonar':               { in: 1.00, out: 1.00  },
+      'sonar-pro':           { in: 3.00, out: 15.00 },
+      'sonar-reasoning-pro': { in: 2.00, out: 8.00  },
     },
   },
 } as const;
@@ -42,22 +53,22 @@ type Provider = keyof typeof PRICING_DATA.providers;
 
 export const TIER_MODELS: Readonly<Record<ModelTier, readonly TierModelEntry[]>> = Object.freeze({
   small: Object.freeze([
-    Object.freeze({ provider: 'anthropic',  model: 'haiku',            defaultTemp: 0.3, maxTokensCap: 2000  }),
-    Object.freeze({ provider: 'openai',     model: 'gpt-4o-mini',     defaultTemp: 0.3, maxTokensCap: 2000  }),
-    Object.freeze({ provider: 'google',     model: 'gemini-2.0-flash', defaultTemp: 0.3, maxTokensCap: 2000  }),
-    Object.freeze({ provider: 'perplexity', model: 'sonar',           defaultTemp: 0.3, maxTokensCap: 2000  }),
+    Object.freeze({ provider: 'anthropic',  model: 'claude-haiku-4-5',      defaultTemp: 0.3, maxTokensCap: 2000  }),
+    Object.freeze({ provider: 'openai',     model: 'gpt-5.6-luna',          defaultTemp: 0.3, maxTokensCap: 2000  }),
+    Object.freeze({ provider: 'google',     model: 'gemini-2.5-flash-lite', defaultTemp: 0.3, maxTokensCap: 2000  }),
+    Object.freeze({ provider: 'perplexity', model: 'sonar',                 defaultTemp: 0.3, maxTokensCap: 2000  }),
   ]),
   mid: Object.freeze([
-    Object.freeze({ provider: 'anthropic',  model: 'sonnet',          defaultTemp: 0.5, maxTokensCap: 4000  }),
-    Object.freeze({ provider: 'openai',     model: 'gpt-4o',         defaultTemp: 0.5, maxTokensCap: 4000  }),
-    Object.freeze({ provider: 'google',     model: 'gemini-2.0-pro',  defaultTemp: 0.5, maxTokensCap: 4000  }),
-    Object.freeze({ provider: 'perplexity', model: 'sonar-pro',      defaultTemp: 0.5, maxTokensCap: 4000  }),
+    Object.freeze({ provider: 'anthropic',  model: 'claude-sonnet-5',  defaultTemp: 0.5, maxTokensCap: 4000  }),
+    Object.freeze({ provider: 'openai',     model: 'gpt-5.6-terra',    defaultTemp: 0.5, maxTokensCap: 4000  }),
+    Object.freeze({ provider: 'google',     model: 'gemini-3.7-flash', defaultTemp: 0.5, maxTokensCap: 4000  }),
+    Object.freeze({ provider: 'perplexity', model: 'sonar-pro',        defaultTemp: 0.5, maxTokensCap: 4000  }),
   ]),
   top: Object.freeze([
-    Object.freeze({ provider: 'anthropic',  model: 'opus',            defaultTemp: 0.3, maxTokensCap: 8000  }),
-    Object.freeze({ provider: 'openai',     model: 'o1',             defaultTemp: 0.3, maxTokensCap: 8000  }),
-    Object.freeze({ provider: 'google',     model: 'gemini-2.0-pro',  defaultTemp: 0.3, maxTokensCap: 8000  }),
-    Object.freeze({ provider: 'perplexity', model: 'sonar-pro',      defaultTemp: 0.3, maxTokensCap: 8000  }),
+    Object.freeze({ provider: 'anthropic',  model: 'claude-opus-5',         defaultTemp: 0.3, maxTokensCap: 8000  }),
+    Object.freeze({ provider: 'openai',     model: 'gpt-5.6-sol',           defaultTemp: 0.3, maxTokensCap: 8000  }),
+    Object.freeze({ provider: 'google',     model: 'gemini-2.5-pro',        defaultTemp: 0.3, maxTokensCap: 8000  }),
+    Object.freeze({ provider: 'perplexity', model: 'sonar-reasoning-pro',   defaultTemp: 0.3, maxTokensCap: 8000  }),
   ]),
 });
 
@@ -67,9 +78,9 @@ export const RESEARCH_INTENT_RE = /\b(?:browse|search\s+the\s+web|look\s+up|with
 
 // ─── Baseline Model for Savings (G2) ────────────────────────────────────────
 
-const BASELINE_MODEL = 'gpt-4o';
-const BASELINE_IN_RATE = 2.50;   // per 1M tokens
-const BASELINE_OUT_RATE = 10.00; // per 1M tokens
+const BASELINE_MODEL = 'gpt-5.6-terra';
+const BASELINE_IN_RATE = 1.00;  // per 1M standard short-context text tokens
+const BASELINE_OUT_RATE = 6.00; // per 1M standard short-context text tokens
 
 // ─── Token Estimation ─────────────────────────────────────────────────────────
 
@@ -156,55 +167,77 @@ function recommendModel(
 ): { model: string; reason: string } {
   // High risk → always top-tier
   if (riskLevel === 'high') {
-    if (target === 'openai') return { model: 'o1', reason: 'High-risk task — maximum capability recommended for safety.' };
-    return { model: 'opus', reason: 'High-risk task — maximum capability recommended for safety.' };
+    if (target === 'openai') return { model: 'gpt-5.6-sol', reason: 'High-risk task — maximum capability recommended for safety.' };
+    if (target === 'google') return { model: 'gemini-2.5-pro', reason: 'High-risk task — maximum capability recommended for safety.' };
+    if (target === 'perplexity') return { model: 'sonar-reasoning-pro', reason: 'High-risk task — maximum reasoning tier recommended for research-grounded workflows.' };
+    return { model: 'claude-opus-5', reason: 'High-risk task — maximum capability recommended for safety.' };
   }
 
   // Target-aware recommendations
   if (target === 'openai') {
     if (taskType === 'question' || taskType === 'data') {
-      return { model: 'gpt-4o-mini', reason: 'Lightweight task — GPT-4o Mini is fast and cost-effective.' };
+      return { model: 'gpt-5.6-luna', reason: 'Lightweight task — GPT-5.6 Luna is fast and cost-effective.' };
     }
     if ((taskType === 'create' || taskType === 'refactor') && inputTokens > 10000) {
-      return { model: 'o1', reason: 'Large-scope creation/refactoring — o1 provides best reasoning.' };
+      return { model: 'gpt-5.6-sol', reason: 'Large-scope creation/refactoring — GPT-5.6 Sol provides best reasoning.' };
     }
-    return { model: 'gpt-4o', reason: 'Balanced task — GPT-4o offers the best quality-to-cost ratio.' };
+    return { model: 'gpt-5.6-terra', reason: 'Balanced task — GPT-5.6 Terra offers the best quality-to-cost ratio.' };
+  }
+
+  if (target === 'google') {
+    if (taskType === 'question' || taskType === 'data') {
+      return { model: 'gemini-2.5-flash-lite', reason: 'Lightweight task — Gemini 2.5 Flash-Lite is fast and cost-effective.' };
+    }
+    if ((taskType === 'create' || taskType === 'refactor') && inputTokens > 10000) {
+      return { model: 'gemini-2.5-pro', reason: 'Large-scope creation/refactoring — Gemini 2.5 Pro provides the top Google tier.' };
+    }
+    return { model: 'gemini-3.7-flash', reason: 'Balanced task — Gemini 3.7 Flash offers the current Google mid-tier route.' };
+  }
+
+  if (target === 'perplexity') {
+    if (taskType === 'question' || taskType === 'data') {
+      return { model: 'sonar', reason: 'Lightweight task — Sonar is the lowest-cost Perplexity route.' };
+    }
+    if (taskType === 'research' || taskType === 'analysis') {
+      return { model: 'sonar-pro', reason: 'Research task — Sonar Pro is optimized for search-grounded analysis.' };
+    }
+    return { model: 'sonar-reasoning-pro', reason: 'Complex task — Sonar Reasoning Pro provides the top Perplexity reasoning route.' };
   }
 
   if (target === 'generic') {
     // Generic target — recommend Anthropic models (best generic markdown compliance)
     if (taskType === 'question' || taskType === 'data') {
-      return { model: 'haiku', reason: 'Lightweight task — Haiku is fast and cost-effective.' };
+      return { model: 'claude-haiku-4-5', reason: 'Lightweight task — Claude Haiku 4.5 is fast and cost-effective.' };
     }
     if (taskType === 'writing' || taskType === 'communication') {
-      return { model: 'sonnet', reason: 'Writing task — Sonnet produces high-quality prose at reasonable cost.' };
+      return { model: 'claude-sonnet-5', reason: 'Writing task — Claude Sonnet 5 produces high-quality prose at reasonable cost.' };
     }
-    return { model: 'sonnet', reason: 'Balanced task — Sonnet offers the best quality-to-cost ratio.' };
+    return { model: 'claude-sonnet-5', reason: 'Balanced task — Claude Sonnet 5 offers the best quality-to-cost ratio.' };
   }
 
   // Claude target (default)
   if (taskType === 'question') {
-    return { model: 'haiku', reason: 'Simple question — Haiku is fast and cost-effective.' };
+    return { model: 'claude-haiku-4-5', reason: 'Simple question — Claude Haiku 4.5 is fast and cost-effective.' };
   }
   if (taskType === 'review' && inputTokens < 5000) {
-    return { model: 'haiku', reason: 'Code review with moderate context — Haiku handles this well.' };
+    return { model: 'claude-haiku-4-5', reason: 'Code review with moderate context — Claude Haiku 4.5 handles this well.' };
   }
   if (taskType === 'data') {
-    return { model: 'haiku', reason: 'Data transformation — Haiku handles structured operations well.' };
+    return { model: 'claude-haiku-4-5', reason: 'Data transformation — Claude Haiku 4.5 handles structured operations well.' };
   }
   if (taskType === 'writing' || taskType === 'communication') {
-    return { model: 'sonnet', reason: 'Writing task — Sonnet produces high-quality prose at reasonable cost.' };
+    return { model: 'claude-sonnet-5', reason: 'Writing task — Claude Sonnet 5 produces high-quality prose at reasonable cost.' };
   }
   if (taskType === 'research' || taskType === 'analysis') {
-    return { model: 'sonnet', reason: 'Research/analysis — Sonnet offers strong reasoning at reasonable cost.' };
+    return { model: 'claude-sonnet-5', reason: 'Research/analysis — Claude Sonnet 5 offers strong reasoning at reasonable cost.' };
   }
   if (taskType === 'planning' && inputTokens > 5000) {
-    return { model: 'opus', reason: 'Complex planning task — Opus provides best strategic reasoning.' };
+    return { model: 'claude-opus-5', reason: 'Complex planning task — Claude Opus 5 provides best strategic reasoning.' };
   }
   if ((taskType === 'create' || taskType === 'refactor') && inputTokens > 10000) {
-    return { model: 'opus', reason: 'Large-scope creation/refactoring — Opus provides best architectural reasoning.' };
+    return { model: 'claude-opus-5', reason: 'Large-scope creation/refactoring — Claude Opus 5 provides best architectural reasoning.' };
   }
-  return { model: 'sonnet', reason: 'Balanced task — Sonnet offers the best quality-to-cost ratio.' };
+  return { model: 'claude-sonnet-5', reason: 'Balanced task — Claude Sonnet 5 offers the best quality-to-cost ratio.' };
 }
 
 // ─── v3 Model Routing (Decision Engine) ─────────────────────────────────────
@@ -325,6 +358,12 @@ function pickPrimaryFromTier(
     case 'claude':
       preferredProvider = 'anthropic';
       break;
+    case 'google':
+      preferredProvider = 'google';
+      break;
+    case 'perplexity':
+      preferredProvider = 'perplexity';
+      break;
     default:
       preferredProvider = 'anthropic'; // generic → default to Anthropic
   }
@@ -385,7 +424,7 @@ function computeConfidence(
 
 /**
  * Compute structured savings vs baseline (G2, G13).
- * Baseline: gpt-4o ($2.50/$10.00 per 1M tokens).
+ * Baseline: gpt-5.6-terra ($1.00/$6.00 per 1M standard short-context text tokens).
  */
 function computeSavings(
   inputTokens: number,
@@ -467,7 +506,7 @@ function generateTradeoffs(
  * @param input - Structured routing input (G16: uses riskScore 0-100, not riskLevel)
  * @param promptText - Optional raw prompt for research intent detection (G15)
  * @param complexityConfidence - Confidence from classifyComplexity (for G3 formula)
- * @param target - Output target for provider preference (default: 'claude')
+ * @param target - Output/provider target for provider preference (default: 'claude')
  */
 export function routeModel(
   input: ModelRoutingInput,
@@ -638,7 +677,7 @@ export function estimateCostForText(
     input_tokens: inputTokens,
     estimated_output_tokens: outputTokens,
     costs,
-    recommended_model: 'sonnet',
-    recommendation_reason: 'Sonnet recommended as default balance of quality and cost.',
+    recommended_model: 'claude-sonnet-5',
+    recommendation_reason: 'Claude Sonnet 5 recommended as default balance of quality and cost.',
   };
 }

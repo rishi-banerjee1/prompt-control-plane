@@ -46,7 +46,7 @@ describe('compilePrompt', () => {
   });
 
   it('includes format_version: 1 in all outputs', () => {
-    for (const target of ['claude', 'openai', 'generic'] as const) {
+    for (const target of ['claude', 'openai', 'google', 'perplexity', 'generic'] as const) {
       const result = compilePrompt(spec, undefined, target);
       assert.equal(result.format_version, 1, `format_version missing for ${target}`);
     }
@@ -54,7 +54,7 @@ describe('compilePrompt', () => {
 
   it('never includes blocking questions in compiled output', () => {
     const vagueSpec = analyzePrompt('make it better');
-    for (const target of ['claude', 'openai', 'generic'] as const) {
+    for (const target of ['claude', 'openai', 'google', 'perplexity', 'generic'] as const) {
       const result = compilePrompt(vagueSpec, undefined, target);
       assert.ok(!result.prompt.includes('blocking_question'), `Blocking questions leaked into ${target} output`);
       assert.ok(!result.prompt.includes('q_vague'), `Question IDs leaked into ${target} output`);
@@ -63,9 +63,18 @@ describe('compilePrompt', () => {
 
   it('includes context when provided', () => {
     const ctx = 'const x = 42; // existing code';
-    for (const target of ['claude', 'openai', 'generic'] as const) {
+    for (const target of ['claude', 'openai', 'google', 'perplexity', 'generic'] as const) {
       const result = compilePrompt(spec, ctx, target);
       assert.ok(result.prompt.includes('const x = 42'), `Context missing in ${target}`);
+    }
+  });
+
+  it('google and perplexity targets compile to generic Markdown', () => {
+    for (const target of ['google', 'perplexity'] as const) {
+      const result = compilePrompt(spec, undefined, target);
+      assert.ok(result.prompt.includes('## Role'), `${target} should use Markdown sections`);
+      assert.ok(!result.prompt.includes('<role>'), `${target} should not use Claude XML`);
+      assert.ok(!result.prompt.includes('[SYSTEM]'), `${target} should not use OpenAI split format`);
     }
   });
 

@@ -39,7 +39,7 @@ function createMockSession(overrides?: Partial<Session>): Session {
       input_tokens: 100,
       estimated_output_tokens: 150,
       costs: [],
-      recommended_model: 'claude-opus',
+      recommended_model: 'claude-opus-5',
       recommendation_reason: 'Best quality for this task',
     },
     answers: {},

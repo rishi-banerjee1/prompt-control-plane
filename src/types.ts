@@ -84,7 +84,7 @@ export interface RiskScore {
 // ─── Savings Comparison (structured numeric, G13) ───────────────────────────
 
 export interface SavingsComparison {
-  baselineModel: string;       // e.g. 'gpt-4o'
+  baselineModel: string;       // e.g. 'gpt-5.6-terra'
   baselineCost: number;        // USD total cost
   recommendedCost: number;     // USD total cost
   savingsPercent: number;      // 0-100
@@ -136,7 +136,7 @@ export interface ModelRecommendation {
 
 // ─── Output Target (multi-LLM) ───────────────────────────────────────────────
 
-export type OutputTarget = 'claude' | 'openai' | 'generic';
+export type OutputTarget = 'claude' | 'openai' | 'google' | 'perplexity' | 'generic';
 
 // ─── Tier System ──────────────────────────────────────────────────────────────
 
@@ -314,7 +314,7 @@ export interface SessionRecord {
   confidence: 'low' | 'medium' | 'high'; // Improvement confidence level
   prompt_hash: string;                   // SHA256 of raw prompt
   prompt_length: number;                 // Character count
-  target: OutputTarget;                  // claude, openai, generic
+  target: OutputTarget;                  // claude, openai, google, perplexity, generic
 }
 
 export interface SessionExport {

@@ -40,159 +40,9 @@
   }
   </script>
 
-  <link rel="stylesheet" href="shared.css">
-
-  <style>
-    /* ─── Page-specific: Hero ──────────────────────────────────────────────── */
-    .plans-hero {
-      padding: 80px 0 64px;
-      text-align: center;
-    }
-    .plans-hero h1 {
-      font-size: clamp(32px, 5vw, 44px);
-      font-weight: 800;
-      letter-spacing: -0.03em;
-      margin-bottom: 16px;
-      line-height: 1.15;
-    }
-    .plans-hero h1 .highlight { color: var(--accent); }
-    .plans-hero .subtitle {
-      font-size: 17px;
-      color: var(--text-muted);
-      max-width: 640px;
-      margin: 0 auto;
-    }
-
-    /* ─── Comparison Table ─────────────────────────────────────────────────── */
-    .comparison-wrapper {
-      overflow-x: auto;
-      -webkit-overflow-scrolling: touch;
-    }
-    .comparison-table {
-      width: 100%;
-      border-collapse: collapse;
-      font-size: 13px;
-      min-width: 640px;
-    }
-    .comparison-table thead th {
-      text-align: center;
-      font-size: 12px;
-      text-transform: uppercase;
-      letter-spacing: 0.05em;
-      color: var(--text-muted);
-      padding: 12px 10px;
-      border-bottom: 2px solid var(--border);
-      font-weight: 700;
-    }
-    .comparison-table thead th:first-child {
-      text-align: left;
-    }
-    .comparison-table tbody td {
-      padding: 10px 10px;
-      border-bottom: 1px solid var(--border);
-      text-align: center;
-      color: var(--text-muted);
-    }
-    .comparison-table tbody td:first-child {
-      text-align: left;
-      color: var(--text);
-      font-weight: 500;
-    }
-    .comparison-table .group-header td {
-      font-weight: 700;
-      font-size: 12px;
-      text-transform: uppercase;
-      letter-spacing: 0.05em;
-      color: var(--accent);
-      padding-top: 20px;
-      border-bottom: 1px solid var(--accent-glow);
-      background: var(--accent-glow);
-    }
-    .check { color: var(--green); font-weight: 700; font-size: 15px; }
-    .dash { color: var(--text-muted); opacity: 0.4; }
-    .enterprise-only { color: var(--accent); font-weight: 600; font-size: 11px; }
-
-    /* ─── Enterprise Deep-Dive ─────────────────────────────────────────────── */
-    .enterprise-feature {
-      background: var(--surface);
-      border: 1px solid var(--border);
-      border-radius: 12px;
-      padding: 28px 24px;
-      margin-bottom: 20px;
-    }
-    .enterprise-feature h3 {
-      font-size: 17px;
-      font-weight: 700;
-      margin-bottom: 8px;
-      display: flex;
-      align-items: center;
-      gap: 10px;
-    }
-    .enterprise-feature h3 .ef-icon {
-      flex-shrink: 0;
-      width: 32px;
-      height: 32px;
-      border-radius: 8px;
-      background: var(--accent-glow);
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-size: 16px;
-    }
-    .enterprise-feature p {
-      font-size: 14px;
-      color: var(--text-muted);
-      line-height: 1.6;
-      margin-bottom: 16px;
-    }
-    .enterprise-feature .ef-label {
-      font-size: 11px;
-      font-weight: 700;
-      text-transform: uppercase;
-      letter-spacing: 0.05em;
-      color: var(--text-muted);
-      margin-bottom: 6px;
-    }
-    .enterprise-feature .ef-code {
-      background: var(--code-bg);
-      border: 1px solid var(--border);
-      border-radius: 8px;
-      padding: 14px 16px;
-      font-family: 'SF Mono', 'Fira Code', 'Cascadia Code', monospace;
-      font-size: 12px;
-      color: var(--green);
-      line-height: 1.7;
-      overflow-x: auto;
-      white-space: pre;
-      margin-bottom: 14px;
-    }
-    .ef-output {
-      color: var(--text-muted) !important;
-    }
-
-    /* ─── CTA ──────────────────────────────────────────────────────────────── */
-    .plans-cta {
-      padding: 64px 0;
-      text-align: center;
-    }
-    .plans-cta h2 {
-      font-size: 28px;
-      font-weight: 700;
-      letter-spacing: -0.02em;
-      margin-bottom: 12px;
-    }
-    .plans-cta p {
-      font-size: 15px;
-      color: var(--text-muted);
-      margin-bottom: 28px;
-    }
-    .cta-row {
-      display: flex;
-      gap: 12px;
-      justify-content: center;
-      flex-wrap: wrap;
-    }
-  </style>
+  <link rel="stylesheet" href="shared.css?v=20260827">
+  <link rel="stylesheet" href="csp-page-plans.css?v=20260827">
+  <link rel="stylesheet" href="csp-inline.css?v=20260827">
 </head>
 <body>
 
@@ -236,7 +86,7 @@
       <div class="pricing-grid">
         <div class="pricing-card">
           <div class="tier">Free</div>
-          <div class="price">₹0 <span style="font-size:14px;color:var(--text-muted);">/ $0</span></div>
+          <div class="price">₹0 <span class="csp-style-104">/ $0</span></div>
           <div class="price-note">forever</div>
           <ul>
             <li>50 optimizations / month</li>
@@ -249,7 +99,7 @@
         </div>
         <div class="pricing-card featured">
           <div class="tier">Pro</div>
-          <div class="price">&#x20b9;499 <span style="font-size:14px;color:var(--text-muted);">/ ~$6</span></div>
+          <div class="price">&#x20b9;499 <span class="csp-style-104">/ ~$6</span></div>
           <div class="price-note">per month</div>
           <ul>
             <li>100 optimizations / month</li>
@@ -262,7 +112,7 @@
         </div>
         <div class="pricing-card">
           <div class="tier">Power</div>
-          <div class="price">&#x20b9;899 <span style="font-size:14px;color:var(--text-muted);">/ ~$11</span></div>
+          <div class="price">&#x20b9;899 <span class="csp-style-104">/ ~$11</span></div>
           <div class="price-note">per month</div>
           <ul>
             <li>Unlimited optimizations</li>
@@ -289,7 +139,7 @@
             <li>Dedicated support</li>
           </ul>
           <a href="contact.html" class="btn btn-secondary">Contact Sales</a>
-          <a href="docs.html#enterprise-features" class="btn btn-secondary" style="margin-top:8px;">See all Enterprise features</a>
+          <a href="docs.html#enterprise-features" class="btn btn-secondary csp-style-019">See all Enterprise features</a>
         </div>
       </div>
     </div>
@@ -307,7 +157,7 @@
         <table class="comparison-table">
           <thead>
             <tr>
-              <th style="width: 40%;">Feature</th>
+              <th class="csp-style-161">Feature</th>
               <th>Free</th>
               <th>Pro</th>
               <th>Power</th>
@@ -588,7 +438,7 @@
 Triggered rules: ungrounded factual claims, autonomous execution without safety constraints
 Recommendation: add source context and safety constraints
 Exit code 3 (CLI) &middot; policy_violation error (MCP)</div>
-        <p style="font-size:12px;color:var(--text-muted);margin-top:8px;margin-bottom:0;"><a href="docs.html#enterprise" style="color:var(--accent);">See full response schema in docs &rarr;</a></p>
+        <p class="csp-style-162"><a href="docs.html#enterprise" class="csp-style-001">See full response schema in docs &rarr;</a></p>
       </div>
 
       <!-- Audit Logging -->
@@ -602,7 +452,7 @@ Exit code 3 (CLI) &middot; policy_violation error (MCP)</div>
 Each entry is SHA-256 chained to the previous: delete or modify any line and the chain breaks
 Events: optimize, approve, delete, purge, configure, license activate
 Outcomes: success, blocked, error</div>
-        <p style="font-size:12px;color:var(--text-muted);margin-top:8px;margin-bottom:0;"><a href="docs.html#enterprise" style="color:var(--accent);">See JSONL format reference in docs &rarr;</a></p>
+        <p class="csp-style-162"><a href="docs.html#enterprise" class="csp-style-001">See JSONL format reference in docs &rarr;</a></p>
       </div>
 
       <!-- Config Lock -->
@@ -620,7 +470,7 @@ Unlock requires the original passphrase via Enterprise Console</div>
       <!-- Web Admin Console -->
       <div class="enterprise-feature">
         <h3><span class="ef-icon">&#x1f5a5;</span> Web-Based Admin Console</h3>
-        <p>A dedicated governance console hosted at <a href="admin.html" style="color:var(--accent);">getpcp.site/admin.html</a>: accessible only with a valid Enterprise license key. Authentication is fully offline (Ed25519 signature verification in the browser), so your key is never transmitted anywhere. The console generates all governance commands for you: policy mode, audit settings, config lock/unlock, custom rules, and session purges: eliminating the need to write commands by hand. Config lock passphrases are automatically derived from your license key, meaning your lock is cryptographically tied to your license: change policy only via the console, change it nowhere else.</p>
+        <p>A dedicated governance console hosted at <a href="admin.html" class="csp-style-001">getpcp.site/admin.html</a>: accessible only with a valid Enterprise license key. Authentication is fully offline (Ed25519 signature verification in the browser), so your key is never transmitted anywhere. The console generates all governance commands for you: policy mode, audit settings, config lock/unlock, custom rules, and session purges: eliminating the need to write commands by hand. Config lock passphrases are automatically derived from your license key, meaning your lock is cryptographically tied to your license: change policy only via the console, change it nowhere else.</p>
         <div class="ef-label">Access</div>
         <div class="ef-code">getpcp.site/admin.html → Enter Enterprise license key → Authenticated</div>
         <div class="ef-label">What you get</div>
@@ -649,7 +499,7 @@ Unlock requires the original passphrase via Enterprise Console</div>
 &rarr; Deploy to any connected AI assistant</div>
         <div class="ef-label">Validate with CLI</div>
         <div class="ef-code">pcp doctor</div>
-        <p style="font-size:12px;color:var(--text-muted);margin-top:8px;margin-bottom:0;"><a href="docs.html#enterprise" style="color:var(--accent);">See full rule schema in docs &rarr;</a></p>
+        <p class="csp-style-162"><a href="docs.html#enterprise" class="csp-style-001">See full rule schema in docs &rarr;</a></p>
       </div>
 
       <!-- Session Retention -->
@@ -675,11 +525,11 @@ Run again without dry-run to execute the purge</div>
       <h2 class="section-title">Built for Enterprise Trust</h2>
       <p class="section-subtitle">Addressing the concerns your security and compliance teams will ask about.</p>
 
-      <div style="display:grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap:24px; margin-top:32px;">
+      <div class="csp-style-163">
 
         <div class="card">
-          <h3 style="margin-top:0;">Security</h3>
-          <ul style="padding-left:1.2rem; line-height:1.8;">
+          <h3 class="csp-style-048">Security</h3>
+          <ul class="csp-style-164">
             <li>Zero LLM calls inside: prompts never leave your machine</li>
             <li>No cloud services, no telemetry, no phone-home</li>
             <li>Runs entirely on localhost via MCP stdio transport</li>
@@ -689,8 +539,8 @@ Run again without dry-run to execute the purge</div>
         </div>
 
         <div class="card">
-          <h3 style="margin-top:0;">Privacy</h3>
-          <ul style="padding-left:1.2rem; line-height:1.8;">
+          <h3 class="csp-style-048">Privacy</h3>
+          <ul class="csp-style-164">
             <li>All data stored locally on your machine</li>
             <li>No user accounts, no email collection, no PII stored</li>
             <li>License keys contain only: tier, dates, license_id</li>
@@ -700,8 +550,8 @@ Run again without dry-run to execute the purge</div>
         </div>
 
         <div class="card">
-          <h3 style="margin-top:0;">Compliance &amp; Governance</h3>
-          <ul style="padding-left:1.2rem; line-height:1.8;">
+          <h3 class="csp-style-048">Compliance &amp; Governance</h3>
+          <ul class="csp-style-164">
             <li>Deterministic: same input produces same output, always</li>
             <li>Hash-chained audit trail with hash-chained JSONL entries</li>
             <li>Policy enforcement blocks non-compliant prompts at approval</li>
@@ -711,8 +561,8 @@ Run again without dry-run to execute the purge</div>
         </div>
 
         <div class="card">
-          <h3 style="margin-top:0;">Deployment</h3>
-          <ul style="padding-left:1.2rem; line-height:1.8;">
+          <h3 class="csp-style-048">Deployment</h3>
+          <ul class="csp-style-164">
             <li>No infrastructure to manage: runs as a local process</li>
             <li>Compatible with Claude Code, Cursor, Windsurf, and any MCP client</li>
             <li>No database, no containers, no cloud accounts required</li>
@@ -811,6 +661,6 @@ Run again without dry-run to execute the purge</div>
     </div>
   </footer>
 
-  <script src="shared.js"></script>
+  <script src="shared.js?v=20260827"></script>
 </body>
 </html>

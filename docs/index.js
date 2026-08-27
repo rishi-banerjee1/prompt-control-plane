@@ -21,7 +21,7 @@ const DEMOS = [
       { cls:'good', text:'\u2713 Score:   90/100  (+29)' },
       { cls:'info', text:'  Task:    refactor' },
       { cls:'info', text:'  Risk:    high (auth domain)' },
-      { cls:'info', text:'  Model:   opus (recommended)' },
+      { cls:'info', text:'  Model:   claude-opus-5 (recommended)' },
       { cls:'good', text:'  Files:   src/auth/middleware.ts' }
     ]
   }

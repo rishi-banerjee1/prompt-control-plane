@@ -23,11 +23,21 @@ function warn(rule, message) {
 }
 
 const csp = headerValue('Content-Security-Policy');
+const accessControlAllowOrigin = headerValue('Access-Control-Allow-Origin');
+if (accessControlAllowOrigin === '*') {
+  fail('DAST-CORS-001', 'Static site must not expose wildcard cross-origin reads');
+}
+
 const requiredHeaders = [
   ['X-Frame-Options', /^DENY$/i],
   ['X-Content-Type-Options', /^nosniff$/i],
   ['Referrer-Policy', /^(strict-origin-when-cross-origin|no-referrer)$/i],
   ['Permissions-Policy', /camera=\(\).*microphone=\(\).*geolocation=\(\)/i],
+  ['Cross-Origin-Opener-Policy', /^same-origin$/i],
+  ['Cross-Origin-Embedder-Policy', /^credentialless$/i],
+  ['Cross-Origin-Resource-Policy', /^same-origin$/i],
+  ['Access-Control-Allow-Origin', /^https:\/\/getpcp\.site(?:,\s*https:\/\/getpcp\.site)*$/i],
+  ['Vary', /(?:^|,\s*)Origin(?:\s*,|$)/i],
   ['Strict-Transport-Security', /max-age=(?:3[1-9]\d{6,}|[4-9]\d{7,}|\d{9,}).*includeSubDomains/i],
   ['Content-Security-Policy', /default-src\s+'self'/i],
 ];
@@ -62,6 +72,12 @@ for (const filename of readdirSync(resolve(process.cwd(), 'docs')).filter((name)
   if (inspection.eventHandlers.length) {
     fail('DAST-CSP-003', `${filename} contains an inline event handler`);
   }
+  if (inspection.styleElements.length) {
+    fail('DAST-CSP-004', `${filename} contains an inline style element`);
+  }
+  if (inspection.styleAttributes.length) {
+    fail('DAST-CSP-004', `${filename} contains inline style attributes`);
+  }
 
   for (const script of inspection.scripts) {
     if (script.hasSrc) continue;
@@ -80,14 +96,37 @@ for (const filename of readdirSync(resolve(process.cwd(), 'docs')).filter((name)
 async function checkLiveSite() {
   const baseUrl = process.env.DAST_BASE_URL;
   if (!baseUrl) return;
-  const response = await fetch(baseUrl, { method: 'GET', redirect: 'manual' });
-  if (!response.ok) fail('DAST-LIVE-001', `GET ${baseUrl} returned HTTP ${response.status}`);
-  for (const [name, expected] of requiredHeaders) {
-    const value = response.headers.get(name) || '';
-    if (!value) fail('DAST-LIVE-001', `Live response missing ${name}`);
-    else if (!expected.test(value)) fail('DAST-LIVE-001', `Live ${name} does not meet baseline: ${value}`);
+  let url;
+  try {
+    url = new URL(baseUrl);
+  } catch {
+    fail('DAST-LIVE-000', `DAST_BASE_URL is not a valid URL: ${baseUrl}`);
+    return;
   }
-  console.log(`Security DAST live target checked: ${baseUrl}`);
+  if (!['https:', 'http:'].includes(url.protocol)) {
+    fail('DAST-LIVE-000', `DAST_BASE_URL must use http or https: ${baseUrl}`);
+    return;
+  }
+
+  try {
+    for (const path of ['/', '/shared.css?v=20260827', '/shared.js?v=20260827']) {
+      const target = new URL(path, url.origin);
+      const response = await fetch(target, {
+        method: 'GET',
+        redirect: 'manual',
+        signal: AbortSignal.timeout(15000),
+      });
+      if (!response.ok) fail('DAST-LIVE-001', `GET ${target.href} returned HTTP ${response.status}`);
+      for (const [name, expected] of requiredHeaders) {
+        const value = response.headers.get(name) || '';
+        if (!value) fail('DAST-LIVE-001', `Live ${target.pathname} missing ${name}`);
+        else if (!expected.test(value)) fail('DAST-LIVE-001', `Live ${target.pathname} ${name} does not meet baseline: ${value}`);
+      }
+    }
+    console.log(`Security DAST live target checked: ${url.href}`);
+  } catch (error) {
+    fail('DAST-LIVE-002', `Live DAST request failed for ${url.href}: ${error instanceof Error ? error.message : 'unknown error'}`);
+  }
 }
 
 await checkLiveSite();

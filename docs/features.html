@@ -40,78 +40,10 @@
   }
   </script>
 
-  <link rel="stylesheet" href="shared.css">
-  <script src="shared.js"></script>
-
-  <style>
-    /* ─── Page-specific: Hero ─────────────────────────────────────────────── */
-    .features-hero {
-      padding: 80px 0 64px;
-      text-align: center;
-    }
-    .features-hero h1 {
-      font-size: 36px;
-      font-weight: 800;
-      letter-spacing: -0.03em;
-      line-height: 1.2;
-      margin-bottom: 16px;
-    }
-    .features-hero .subtitle {
-      font-size: 16px;
-      color: var(--text-muted);
-      max-width: 560px;
-      margin: 0 auto;
-      line-height: 1.6;
-    }
-
-    @media (max-width: 700px) {
-      .features-hero { padding: 56px 0 40px; }
-      .features-hero h1 { font-size: 28px; }
-    }
-
-    /* ─── Page-specific: Comparison table highlight row ────────────────────── */
-    .data-table tr.highlight td {
-      color: var(--text);
-      font-weight: 500;
-      background: var(--accent-glow);
-    }
-    .data-table tr.highlight td:first-child {
-      color: var(--accent);
-      font-weight: 700;
-    }
-
-    /* ─── Page-specific: API code blocks ──────────────────────────────────── */
-    .code-block {
-      background: var(--code-bg);
-      border: 1px solid var(--border);
-      border-radius: 10px;
-      padding: 20px 24px;
-      font-family: 'SF Mono', 'Fira Code', 'Cascadia Code', monospace;
-      font-size: 13px;
-      color: var(--green);
-      overflow-x: auto;
-      line-height: 1.7;
-      white-space: pre;
-      max-width: 600px;
-      margin: 0 auto;
-      text-align: left;
-    }
-    .code-block .comment { color: var(--text-muted); }
-    .code-block .keyword { color: var(--accent); }
-    .code-block .string { color: var(--orange); }
-
-    /* ─── Page-specific: CTA section ──────────────────────────────────────── */
-    .cta-section {
-      padding: 64px 0;
-      text-align: center;
-    }
-    .cta-section h2 {
-      font-size: 28px;
-      font-weight: 700;
-      letter-spacing: -0.02em;
-      margin-bottom: 24px;
-    }
-  </style>
+  <link rel="stylesheet" href="shared.css?v=20260827">
+  <link rel="stylesheet" href="csp-page-features.css?v=20260827">
+  <link rel="stylesheet" href="csp-inline.css?v=20260827">
+  <script src="shared.js?v=20260827"></script>
 </head>
 <body>
 
@@ -181,7 +113,7 @@
         <div class="card">
           <div class="icon">&#x1F4B0;</div>
           <h3>Multi-Provider Cost</h3>
-          <p>Token and cost estimates across 10 models from 4 providers: Anthropic, OpenAI, Google, and Perplexity.</p>
+          <p>Token and cost estimates across 21 costed models from 4 providers: Anthropic, OpenAI, Google, and Perplexity.</p>
         </div>
         <div class="card">
           <div class="icon">&#x1F512;</div>
@@ -195,9 +127,9 @@
         </div>
       </div>
 
-      <div class="card" style="padding:28px;margin-top:32px;margin-bottom:32px;border-left:3px solid var(--accent);">
-        <h3 style="font-size:16px;font-weight:700;margin-bottom:12px;">Why You Can Trust the Output</h3>
-        <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;font-size:13px;">
+      <div class="card csp-style-056">
+        <h3 class="csp-style-057">Why You Can Trust the Output</h3>
+        <div class="csp-style-058">
           <div><strong>Reproducible:</strong> Same prompt always produces the same score, routing, and cost estimate. No randomness.</div>
           <div><strong>Accurate Pricing:</strong> Cost estimates verified against live provider rates across Anthropic, OpenAI, Google, and Perplexity.</div>
           <div><strong>Risk Detection:</strong> Catches scope explosion, missing constraints, hallucination risk, and underspecified prompts before they reach an LLM.</div>
@@ -205,7 +137,7 @@
           <div><strong>Multi-Provider:</strong> Routes to the right model at the right price, with a full decision trail explaining why.</div>
           <div><strong>Auditable:</strong> Every decision is logged with hash-chained integrity. Enterprise teams get cryptographic proof of compliance.</div>
         </div>
-        <p style="margin-top:12px;font-size:12px;color:var(--text-muted);margin-bottom:0;">Fully offline. Zero LLM calls. Extensively tested. Run the suite yourself to verify.</p>
+        <p class="csp-style-059">Fully offline. Zero LLM calls. Extensively tested. Run the suite yourself to verify.</p>
       </div>
     </div>
   </section>
@@ -221,7 +153,7 @@
         <p class="section-subtitle">Every prompt passes through 8 sequential gates. All decisions are deterministic: zero LLM calls, zero randomness.</p>
       </div>
       <div class="flowchart-wrap">
-        <svg viewBox="0 0 960 480" xmlns="http://www.w3.org/2000/svg" style="max-width:860px;width:100%;font-family:-apple-system,system-ui,sans-serif;">
+        <svg viewBox="0 0 960 480" xmlns="http://www.w3.org/2000/svg" class="csp-style-060">
           <defs>
             <marker id="arr" markerWidth="8" markerHeight="6" refX="8" refY="3" orient="auto"><polygon points="0 0,8 3,0 6" fill="var(--accent)"/></marker>
             <marker id="arr-r" markerWidth="8" markerHeight="6" refX="8" refY="3" orient="auto"><polygon points="0 0,8 3,0 6" fill="var(--red)"/></marker>
@@ -469,8 +401,8 @@
         <p class="section-subtitle">Every prompt gets a 0-100 score. Each dimension contributes 20 points. After optimization, every prompt scores 90+.</p>
       </div>
       <div class="scoring-grid">
-        <div class="score-dim" style="border-top:3px solid var(--accent);">
-          <h4 style="color:var(--accent);">Clarity</h4>
+        <div class="score-dim csp-style-061">
+          <h4 class="csp-style-001">Clarity</h4>
           <p>How clearly the intent is stated. Vague terms and short goals lose points.</p>
           <div class="score-dim-items">
             <div class="score-item"><span class="score-item-label">Clear goal (&gt;15 words)</span><span class="score-item-val pos">+15</span></div>
@@ -478,8 +410,8 @@
             <div class="score-item"><span class="score-item-label">Goal too short (&lt;5 words)</span><span class="score-item-val neg">-5</span></div>
           </div>
         </div>
-        <div class="score-dim" style="border-top:3px solid var(--blue);">
-          <h4 style="color:var(--blue);">Specificity</h4>
+        <div class="score-dim csp-style-062">
+          <h4 class="csp-style-063">Specificity</h4>
           <p>File paths, code blocks, audience, tone, and platform all add specificity.</p>
           <div class="score-dim-items">
             <div class="score-item"><span class="score-item-label">File path referenced</span><span class="score-item-val pos">+5</span></div>
@@ -488,8 +420,8 @@
             <div class="score-item"><span class="score-item-label">Tone specified</span><span class="score-item-val pos">+4</span></div>
           </div>
         </div>
-        <div class="score-dim" style="border-top:3px solid var(--green);">
-          <h4 style="color:var(--green);">Completeness</h4>
+        <div class="score-dim csp-style-064">
+          <h4 class="csp-style-065">Completeness</h4>
           <p>Does the prompt define what &ldquo;done&rdquo; looks like? Are success criteria present?</p>
           <div class="score-dim-items">
             <div class="score-item"><span class="score-item-label">2+ success criteria</span><span class="score-item-val pos">+10</span></div>
@@ -498,8 +430,8 @@
             <div class="score-item"><span class="score-item-label">Output format specified</span><span class="score-item-val pos">+2</span></div>
           </div>
         </div>
-        <div class="score-dim" style="border-top:3px solid var(--orange);">
-          <h4 style="color:var(--orange);">Constraints</h4>
+        <div class="score-dim csp-style-066">
+          <h4 class="csp-style-067">Constraints</h4>
           <p>Scope limits, forbidden actions, and time budgets protect against scope explosion.</p>
           <div class="score-dim-items">
             <div class="score-item"><span class="score-item-label">Scope constraints</span><span class="score-item-val pos">+5</span></div>
@@ -508,8 +440,8 @@
             <div class="score-item"><span class="score-item-label">Preservation plan present</span><span class="score-item-val pos">+2</span></div>
           </div>
         </div>
-        <div class="score-dim" style="border-top:3px solid var(--accent);">
-          <h4 style="color:var(--accent);">Efficiency</h4>
+        <div class="score-dim csp-style-061">
+          <h4 class="csp-style-001">Efficiency</h4>
           <p>Token budget and repetition. Concise prompts with no duplication score highest.</p>
           <div class="score-dim-items">
             <div class="score-item"><span class="score-item-label">Start score</span><span class="score-item-val pos">18</span></div>
@@ -521,31 +453,31 @@
       </div>
 
       <!-- Risk Score Meter -->
-      <div class="card" style="margin-top:32px;max-width:560px;margin-left:auto;margin-right:auto;">
-        <h3 style="margin-bottom:16px;font-size:15px;">Risk Score Dimensions (0-100)</h3>
+      <div class="card csp-style-068">
+        <h3 class="csp-style-069">Risk Score Dimensions (0-100)</h3>
         <div class="risk-meter-wrap" id="risk-meters">
           <div class="risk-row">
             <div class="risk-label">Underspec</div>
-            <div class="risk-track"><div class="risk-fill" style="width:0%;background:var(--red)" data-target="65"></div></div>
-            <div class="risk-val" style="color:var(--red)">65</div>
+            <div class="risk-track"><div class="risk-fill csp-style-070" data-target="65"></div></div>
+            <div class="risk-val csp-style-071">65</div>
           </div>
           <div class="risk-row">
             <div class="risk-label">Scope</div>
-            <div class="risk-track"><div class="risk-fill" style="width:0%;background:var(--orange)" data-target="45"></div></div>
-            <div class="risk-val" style="color:var(--orange)">45</div>
+            <div class="risk-track"><div class="risk-fill csp-style-072" data-target="45"></div></div>
+            <div class="risk-val csp-style-073">45</div>
           </div>
           <div class="risk-row">
             <div class="risk-label">Hallucination</div>
-            <div class="risk-track"><div class="risk-fill" style="width:0%;background:var(--blue)" data-target="30"></div></div>
-            <div class="risk-val" style="color:var(--blue)">30</div>
+            <div class="risk-track"><div class="risk-fill csp-style-074" data-target="30"></div></div>
+            <div class="risk-val csp-style-075">30</div>
           </div>
           <div class="risk-row">
             <div class="risk-label">Constraint</div>
-            <div class="risk-track"><div class="risk-fill" style="width:0%;background:var(--accent)" data-target="50"></div></div>
-            <div class="risk-val" style="color:var(--accent)">50</div>
+            <div class="risk-track"><div class="risk-fill csp-style-076" data-target="50"></div></div>
+            <div class="risk-val csp-style-077">50</div>
           </div>
         </div>
-        <p style="font-size:12px;margin-top:14px;color:var(--text-muted);margin-bottom:0;">
+        <p class="csp-style-078">
           Example: &ldquo;Delete all inactive users from production database&rdquo;: high underspec + constraint risk. In enforce mode (threshold=60), this prompt gets blocked.
         </p>
       </div>
@@ -557,51 +489,51 @@
        ════════════════════════════════════════════════════════════════════════ -->
   <section class="section section-alt">
     <div class="container">
-      <span class="badge badge-accent" style="display:block;text-align:center;margin-bottom:16px;">Enterprise</span>
+      <span class="badge badge-accent csp-style-079">Enterprise</span>
       <h2 class="section-title text-center">Governance Controls</h2>
       <p class="section-subtitle text-center">Enterprise-only capabilities that turn scoring into enforcement</p>
 
-      <div class="grid-2" style="margin-top:32px;">
-        <div class="card" style="border-top:3px solid var(--accent);">
+      <div class="grid-2 csp-style-080">
+        <div class="card csp-style-061">
           <h3>&#x1F3DB;&#xFE0F; Enterprise Console</h3>
           <p>A browser-based admin panel for managing your entire governance configuration. Build custom rules with a visual editor, toggle policies, configure audit settings, and deploy changes: all gated by your Enterprise license key.</p>
-          <p style="font-size:12px;color:var(--text-muted);margin-top:8px;"><a href="admin.html" style="color:var(--accent);">Open Enterprise Console &rarr;</a></p>
+          <p class="csp-style-081"><a href="admin.html" class="csp-style-001">Open Enterprise Console &rarr;</a></p>
         </div>
-        <div class="card" style="border-top:3px solid var(--accent);">
+        <div class="card csp-style-061">
           <h3>&#x1F6E1;&#xFE0F; Policy Enforcement</h3>
           <p>Switch between <strong>advisory</strong> and <strong>enforce</strong> mode. In enforce mode, prompts that fail quality rules or exceed risk thresholds are blocked before they reach any LLM. Both built-in and custom rules are enforced.</p>
-          <p style="font-size:12px;color:var(--text-muted);margin-top:8px;">Configure via Enterprise Console &rarr; Advisory warns, Enforce blocks</p>
+          <p class="csp-style-081">Configure via Enterprise Console &rarr; Advisory warns, Enforce blocks</p>
         </div>
-        <div class="card" style="border-top:3px solid var(--accent);">
+        <div class="card csp-style-061">
           <h3>&#x1F512; Config Lock</h3>
           <p>Lock the governance configuration with a passphrase. Once locked, no settings can be changed until unlocked with the original passphrase. Prevents unauthorized changes to quality thresholds, policy mode, and audit settings.</p>
-          <p style="font-size:12px;color:var(--text-muted);margin-top:8px;">Passphrase is SHA-256 hashed, never stored in plaintext</p>
+          <p class="csp-style-081">Passphrase is SHA-256 hashed, never stored in plaintext</p>
         </div>
-        <div class="card" style="border-top:3px solid var(--accent);">
+        <div class="card csp-style-061">
           <h3>&#x1F4DC; Hash-Chained Audit Trail</h3>
           <p>Append-only JSONL audit log with SHA-256 hash chaining. Every optimization, approval, deletion, and configuration change is logged. If any entry is modified or deleted, all subsequent hashes break: integrity violation detected.</p>
-          <p style="font-size:12px;color:var(--text-muted);margin-top:8px;">Local-only, no prompt content stored, privacy-safe</p>
+          <p class="csp-style-081">Local-only, no prompt content stored, privacy-safe</p>
         </div>
-        <div class="card" style="border-top:3px solid var(--accent);">
+        <div class="card csp-style-061">
           <h3>&#x1F4CF; Custom Governance Rules</h3>
           <p>Build up to 25 organization-specific rules in the Enterprise Console with a visual editor. Define match patterns, risk dimensions, severity levels (blocking or non-blocking), and weights. Deploy with one click: rules take effect on the next optimization.</p>
-          <p style="font-size:12px;color:var(--text-muted);margin-top:8px;">Deploy via the Enterprise Console or CLI</p>
+          <p class="csp-style-081">Deploy via the Enterprise Console or CLI</p>
         </div>
-        <div class="card" style="border-top:3px solid var(--accent);">
+        <div class="card csp-style-061">
           <h3>&#x23F1;&#xFE0F; Session Retention</h3>
           <p>Automatic session cleanup with configurable retention policies. Set how long optimization sessions are kept before they're purged. Supports dry-run to preview what would be deleted before committing.</p>
-          <p style="font-size:12px;color:var(--text-muted);margin-top:8px;">Configure retention window via Enterprise Console</p>
+          <p class="csp-style-081">Configure retention window via Enterprise Console</p>
         </div>
-        <div class="card" style="border-top:3px solid var(--accent);">
+        <div class="card csp-style-061">
           <h3>&#x2696;&#xFE0F; Risk Threshold Gating</h3>
           <p>Block prompts that exceed a risk score threshold based on your strictness setting. Relaxed blocks above 40, Standard above 60, Strict above 75. Risk scores are dimensional: scored across hallucination, scope, constraint, and underspec dimensions.</p>
-          <p style="font-size:12px;color:var(--text-muted);margin-top:8px;">Three strictness levels: Relaxed, Standard, Strict: each with progressively tighter thresholds</p>
+          <p class="csp-style-081">Three strictness levels: Relaxed, Standard, Strict: each with progressively tighter thresholds</p>
         </div>
       </div>
 
-      <p style="text-align:center;margin-top:24px;font-size:13px;color:var(--text-muted);">
+      <p class="csp-style-082">
         All governance controls are deterministic, offline, and zero-LLM. Configuration changes are audit-logged when the trail is enabled.
-        <br><a href="plans.html" style="color:var(--accent);">See full plan comparison &rarr;</a>
+        <br><a href="plans.html" class="csp-style-001">See full plan comparison &rarr;</a>
       </p>
     </div>
   </section>
@@ -616,7 +548,7 @@
       <p class="section-subtitle text-center">PCP classifies prompt complexity and risk, then picks the cheapest model that can still handle the task correctly.</p>
 
       <div class="routing-wrap">
-        <svg viewBox="0 0 900 360" xmlns="http://www.w3.org/2000/svg" style="width:100%;max-width:860px;display:block;margin:0 auto;font-family:'Inter',system-ui,sans-serif;">
+        <svg viewBox="0 0 900 360" xmlns="http://www.w3.org/2000/svg" class="csp-style-083">
           <defs>
             <marker id="ra" markerWidth="7" markerHeight="5" refX="7" refY="2.5" orient="auto">
               <polygon points="0 0, 7 2.5, 0 5" fill="var(--accent)"/>
@@ -648,15 +580,15 @@
           <!-- Tiers -->
           <rect x="220" y="60" width="100" height="34" rx="8" fill="var(--bg)" stroke="var(--green)" stroke-width="1.5"/>
           <text x="270" y="78" text-anchor="middle" fill="var(--green)" font-size="12" font-weight="700">small</text>
-          <text x="270" y="90" text-anchor="middle" fill="var(--green)" font-size="10">Haiku &middot; Flash</text>
+          <text x="270" y="90" text-anchor="middle" fill="var(--green)" font-size="10">Haiku 4.5 &middot; Luna</text>
 
           <rect x="220" y="104" width="100" height="34" rx="8" fill="var(--bg)" stroke="var(--accent)" stroke-width="1.5"/>
           <text x="270" y="122" text-anchor="middle" fill="var(--accent)" font-size="12" font-weight="700">mid</text>
-          <text x="270" y="134" text-anchor="middle" fill="var(--accent)" font-size="10">Sonnet &middot; GPT-4o</text>
+          <text x="270" y="134" text-anchor="middle" fill="var(--accent)" font-size="10">Sonnet 5 &middot; Terra</text>
 
           <rect x="220" y="148" width="100" height="34" rx="8" fill="var(--bg)" stroke="var(--blue)" stroke-width="1.5"/>
           <text x="270" y="166" text-anchor="middle" fill="var(--blue)" font-size="12" font-weight="700">top</text>
-          <text x="270" y="178" text-anchor="middle" fill="var(--blue)" font-size="10">Opus &middot; o1</text>
+          <text x="270" y="178" text-anchor="middle" fill="var(--blue)" font-size="10">Opus 5 &middot; Sol</text>
 
           <!-- Step 2 divider -->
           <line x1="390" y1="20" x2="390" y2="240" stroke="var(--border)" stroke-width="1" stroke-dasharray="4,4"/>
@@ -685,19 +617,19 @@
           <text x="750" y="20" text-anchor="middle" fill="var(--text-muted)" font-size="11" font-weight="700">RECOMMENDATION</text>
           <rect x="680" y="60" width="200" height="120" rx="10" fill="var(--bg)" stroke="var(--accent)" stroke-width="1.5"/>
           <text x="780" y="85" text-anchor="middle" fill="var(--accent)" font-size="12" font-weight="600">primary model</text>
-          <text x="780" y="105" text-anchor="middle" fill="var(--text)" font-size="13" font-weight="700">claude-3-5-sonnet</text>
+          <text x="780" y="105" text-anchor="middle" fill="var(--text)" font-size="13" font-weight="700">claude-sonnet-5</text>
           <line x1="700" y1="118" x2="860" y2="118" stroke="var(--border)" stroke-width="1"/>
-          <text x="780" y="136" text-anchor="middle" fill="var(--text-muted)" font-size="11">fallback: gpt-4o</text>
+          <text x="780" y="136" text-anchor="middle" fill="var(--text-muted)" font-size="11">fallback: gpt-5.6-terra</text>
           <text x="780" y="154" text-anchor="middle" fill="var(--text-muted)" font-size="11">confidence: 82%</text>
 
           <!-- Cost table -->
           <rect x="680" y="210" width="200" height="130" rx="10" fill="var(--bg)" stroke="var(--border)"/>
-          <text x="780" y="230" text-anchor="middle" fill="var(--text-muted)" font-size="11" font-weight="700">COST COMPARISON (500 tokens)</text>
-          <text x="695" y="252" fill="var(--green)" font-size="11">Gemini Flash</text><text x="855" y="252" text-anchor="end" fill="var(--green)" font-size="11">$0.00022</text>
-          <text x="695" y="270" fill="var(--text-muted)" font-size="11">GPT-4o Mini</text><text x="855" y="270" text-anchor="end" fill="var(--text-muted)" font-size="11">$0.00038</text>
-          <text x="695" y="288" fill="var(--accent)" font-size="11" font-weight="600">GPT-4o &#x2713; rec</text><text x="855" y="288" text-anchor="end" fill="var(--accent)" font-size="11">$0.00725</text>
-          <text x="695" y="306" fill="var(--text-muted)" font-size="11">Perplexity</text><text x="855" y="306" text-anchor="end" fill="var(--text-muted)" font-size="11">$0.00650</text>
-          <text x="695" y="324" fill="var(--blue)" font-size="11">Claude Sonnet</text><text x="855" y="324" text-anchor="end" fill="var(--blue)" font-size="11">$0.01350</text>
+          <text x="780" y="230" text-anchor="middle" fill="var(--text-muted)" font-size="11" font-weight="700">COST COMPARISON (500 IN / OUT)</text>
+          <text x="695" y="252" fill="var(--green)" font-size="11">Gemini 2.5 Flash-Lite</text><text x="855" y="252" text-anchor="end" fill="var(--green)" font-size="11">$0.00025</text>
+          <text x="695" y="270" fill="var(--text-muted)" font-size="11">GPT-5.6 Luna</text><text x="855" y="270" text-anchor="end" fill="var(--text-muted)" font-size="11">$0.00035</text>
+          <text x="695" y="288" fill="var(--accent)" font-size="11" font-weight="600">GPT-5.6 Terra &#x2713; rec</text><text x="855" y="288" text-anchor="end" fill="var(--accent)" font-size="11">$0.00350</text>
+          <text x="695" y="306" fill="var(--text-muted)" font-size="11">Sonar Pro</text><text x="855" y="306" text-anchor="end" fill="var(--text-muted)" font-size="11">$0.00900</text>
+          <text x="695" y="324" fill="var(--blue)" font-size="11">Claude Sonnet 5</text><text x="855" y="324" text-anchor="end" fill="var(--blue)" font-size="11">$0.00600</text>
 
           <!-- Decision path audit trail -->
           <rect x="10" y="250" width="370" height="100" rx="8" fill="var(--bg)" stroke="var(--green)" stroke-width="1" stroke-dasharray="3,2"/>
@@ -705,7 +637,7 @@
           <text x="20" y="286" fill="var(--text-muted)" font-size="10" font-family="'SF Mono','Fira Code',monospace">Input: analytical + medium risk</text>
           <text x="20" y="300" fill="var(--text-muted)" font-size="10" font-family="'SF Mono','Fira Code',monospace">Step 1: complexity=analytical &rarr; tier=mid</text>
           <text x="20" y="314" fill="var(--text-muted)" font-size="10" font-family="'SF Mono','Fira Code',monospace">Step 2: profile=balanced &rarr; no override</text>
-          <text x="20" y="328" fill="var(--green)" font-size="10" font-family="'SF Mono','Fira Code',monospace">Final: GPT-4o (confidence: 82%)</text>
+          <text x="20" y="328" fill="var(--green)" font-size="10" font-family="'SF Mono','Fira Code',monospace">Final: GPT-5.6 Terra (confidence: 82%)</text>
         </svg>
       </div>
     </div>
@@ -726,7 +658,7 @@
         </div>
         <div class="card">
           <h3>Engineering teams managing LLM spend</h3>
-          <p>Multi-provider cost estimates across 10 models. Know exactly what each prompt will cost before you send it.</p>
+          <p>Multi-provider cost estimates across 21 costed models. Know exactly what each prompt will cost before you send it.</p>
         </div>
         <div class="card">
           <h3>CI/CD pipelines</h3>
@@ -860,7 +792,7 @@ console.log(result.quality_score, result.compiled);</div>
   </footer>
 
   <!-- Risk meter scroll animation -->
-  <script src="features.js"></script>
+  <script src="features.js?v=20260827"></script>
 
 </body>
 </html>

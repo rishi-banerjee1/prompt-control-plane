@@ -267,8 +267,9 @@ Provide these artifacts:
 - `docs/_headers`
 - `cyclonedx-sboms` artifact from the latest `Enterprise Security Gates` run
 - latest GitHub Actions run for this branch
-- latest Cloudflare Pages deployment URL: `https://f28b2373.getpcp.pages.dev`
-- public production domain live DAST target: `https://getpcp.site`
+- Cloudflare Pages production project: `getpcp`
+- public production domain and live DAST target: `https://getpcp.site`
+- built-in `getpcp.pages.dev` hostname: not used as audit evidence; redirect to the custom domain through Cloudflare Bulk Redirects so `getpcp.site` remains the primary public surface
 - GitHub Dependabot and CodeQL alert screenshots after merge/rescan
 
 CI continuity note: the first run for commit `117194d` was affected by a GitHub Actions
@@ -292,8 +293,9 @@ runs so the final evidence set does not rely on startup-failure records.
 2. Schedule independent VAPT for `getpcp.site`, npm package, CLI, GitHub Action, and MCP stdio server.
 3. Add npm release provenance and signed attestations.
 4. Evaluate signed commit enforcement once all maintainers have signing configured.
-5. Confirm GitHub Dependabot and CodeQL alerts are closed after merge.
-6. Add quarterly access review and annual incident-response tabletop evidence outside the repo.
+5. Configure or verify Cloudflare Bulk Redirects for `getpcp.pages.dev` to `https://getpcp.site`.
+6. Confirm GitHub Dependabot and CodeQL alerts remain closed after dependency updates.
+7. Add quarterly access review and annual incident-response tabletop evidence outside the repo.
 
 ## Current Enterprise Readiness Decision
 

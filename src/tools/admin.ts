@@ -34,7 +34,7 @@ export function registerAdminTools(
       threshold: z.number().min(0).max(100).optional().describe('Quality threshold (0-100)'),
       strictness: z.enum(['relaxed', 'standard', 'strict']).optional().describe('Strictness level'),
       auto_compile: z.boolean().optional().describe('Auto-compile prompts'),
-      default_target: z.enum(['claude', 'openai', 'generic']).optional().describe('Default output target'),
+      default_target: z.enum(['claude', 'openai', 'google', 'perplexity', 'generic']).optional().describe('Default output/provider target'),
       ephemeral_mode: z.boolean().optional().describe('Ephemeral mode: sessions in-memory only'),
       max_sessions: z.number().min(1).max(10000).optional().describe('Max session count'),
       max_session_size_kb: z.number().min(1).max(1024).optional().describe('Max session size in KB'),

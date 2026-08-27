@@ -173,12 +173,13 @@ describe('Individual function exports', () => {
     assert.equal(result.format_version, 1);
   });
 
-  it('estimateCost returns estimates for 3 providers', () => {
+  it('estimateCost returns estimates for 4 providers', () => {
     const cost = estimateCost('Hello world, this is a test prompt');
     const providers = new Set(cost.costs.map(c => c.provider));
     assert.ok(providers.has('anthropic'), 'should include anthropic');
     assert.ok(providers.has('openai'), 'should include openai');
     assert.ok(providers.has('google'), 'should include google');
+    assert.ok(providers.has('perplexity'), 'should include perplexity');
   });
 });
 

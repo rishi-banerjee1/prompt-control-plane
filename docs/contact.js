@@ -1,6 +1,15 @@
 var form = document.getElementById('contactForm');
 var submitBtn = document.getElementById('submitBtn');
 var errorBanner = document.getElementById('errorBanner');
+var csrfToken = document.getElementById('csrfToken');
+
+if (csrfToken) {
+  var bytes = new Uint8Array(16);
+  crypto.getRandomValues(bytes);
+  csrfToken.value = Array.from(bytes, function (byte) {
+    return byte.toString(16).padStart(2, '0');
+  }).join('');
+}
 
 form.addEventListener('submit', async function (e) {
   e.preventDefault();

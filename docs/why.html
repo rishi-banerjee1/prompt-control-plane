@@ -34,145 +34,9 @@
   }
   </script>
 
-  <link rel="stylesheet" href="shared.css">
-
-  <style>
-    /* ─── Hero ─────────────────────────────────────────────────────────────── */
-    .why-hero {
-      padding: 80px 0 56px;
-      text-align: center;
-    }
-    .why-hero h1 {
-      font-size: 38px;
-      font-weight: 800;
-      letter-spacing: -0.03em;
-      line-height: 1.2;
-      margin-bottom: 14px;
-    }
-    .why-hero .subtitle {
-      font-size: 17px;
-      color: var(--text-muted);
-      max-width: 560px;
-      margin: 0 auto;
-      line-height: 1.6;
-    }
-    @media (max-width: 700px) {
-      .why-hero { padding: 56px 0 36px; }
-      .why-hero h1 { font-size: 28px; }
-    }
-
-    /* ─── Problem cards ────────────────────────────────────────────────────── */
-    .problem-card {
-      background: var(--surface);
-      border: 1px solid var(--border);
-      border-top: 3px solid var(--orange);
-      border-radius: 12px;
-      padding: 24px;
-    }
-    .problem-card .p-icon { font-size: 24px; margin-bottom: 12px; }
-    .problem-card h3 { font-size: 16px; font-weight: 700; margin-bottom: 8px; }
-    .problem-card p { font-size: 14px; color: var(--text-muted); line-height: 1.7; margin: 0; }
-
-    /* ─── Governance control cards ─────────────────────────────────────────── */
-    .control-card {
-      background: var(--surface);
-      border: 1px solid var(--border);
-      border-top: 3px solid var(--accent);
-      border-radius: 12px;
-      padding: 24px;
-    }
-    .control-card .c-icon { font-size: 24px; margin-bottom: 12px; }
-    .control-card h3 { font-size: 16px; font-weight: 700; margin-bottom: 8px; }
-    .control-card p { font-size: 14px; color: var(--text-muted); line-height: 1.7; margin: 0; }
-
-    /* ─── Approach cards ──────────────────────────────────────────────────── */
-    .approach-card {
-      background: var(--surface);
-      border: 1px solid var(--border);
-      border-radius: 12px;
-      padding: 24px;
-      text-align: center;
-    }
-    .approach-card .a-icon { font-size: 28px; margin-bottom: 12px; }
-    .approach-card h3 { font-size: 16px; font-weight: 700; margin-bottom: 8px; }
-    .approach-card p { font-size: 14px; color: var(--text-muted); line-height: 1.7; margin: 0; }
-
-    /* ─── Tier journey ─────────────────────────────────────────────────────── */
-    .tier-journey {
-      display: flex;
-      flex-direction: column;
-      gap: 16px;
-      max-width: 700px;
-      margin: 0 auto;
-    }
-    .tier-step {
-      background: var(--surface);
-      border: 1px solid var(--border);
-      border-left: 4px solid var(--green);
-      border-radius: 12px;
-      padding: 24px 28px;
-    }
-    .tier-step.pro { border-left-color: var(--blue); }
-    .tier-step.power { border-left-color: var(--accent); }
-    .tier-step.enterprise { border-left-color: var(--accent); }
-    .tier-name {
-      display: inline-block;
-      font-size: 11px;
-      font-weight: 700;
-      text-transform: uppercase;
-      letter-spacing: 0.06em;
-      padding: 3px 10px;
-      border-radius: 20px;
-      margin-bottom: 10px;
-    }
-    .tier-step .tier-name { background: rgba(52, 211, 153, 0.15); color: var(--green); }
-    .tier-step.pro .tier-name { background: rgba(96, 165, 250, 0.15); color: var(--blue); }
-    .tier-step.power .tier-name { background: var(--accent-glow); color: var(--accent); }
-    .tier-step.enterprise .tier-name { background: var(--accent-glow); color: var(--accent); }
-    .tier-step h3 { font-size: 16px; font-weight: 700; margin-bottom: 6px; }
-    .tier-step p { font-size: 14px; color: var(--text-muted); line-height: 1.7; margin: 0; }
-    .tier-step .tier-trigger {
-      display: block;
-      margin-top: 10px;
-      font-size: 13px;
-      color: var(--text-muted);
-      font-style: italic;
-    }
-
-    /* ─── Footer grid ──────────────────────────────────────────────────────── */
-    .footer-grid {
-      display: grid;
-      grid-template-columns: repeat(3, 1fr);
-      gap: 32px;
-      text-align: left;
-      margin-bottom: 24px;
-    }
-    .footer-col h4 {
-      font-size: 13px;
-      font-weight: 600;
-      text-transform: uppercase;
-      letter-spacing: 0.05em;
-      color: var(--text);
-      margin-bottom: 12px;
-    }
-    .footer-col a {
-      display: block;
-      font-size: 13px;
-      color: var(--text-muted);
-      margin-bottom: 6px;
-    }
-    .footer-col a:hover { color: var(--text); }
-    .footer-copy {
-      font-size: 12px;
-      color: var(--text-muted);
-      border-top: 1px solid var(--border);
-      padding-top: 16px;
-      text-align: center;
-    }
-    @media (max-width: 500px) {
-      .footer-grid { grid-template-columns: 1fr; gap: 24px; }
-    }
-  </style>
+  <link rel="stylesheet" href="shared.css?v=20260827">
+  <link rel="stylesheet" href="csp-page-why.css?v=20260827">
+  <link rel="stylesheet" href="csp-inline.css?v=20260827">
 </head>
 <body>
 
@@ -212,7 +76,7 @@
       <h2 class="section-title text-center">What happens without prompt governance</h2>
       <p class="section-subtitle text-center">Every ungoverned prompt is a silent liability.</p>
 
-      <div class="grid-2" style="gap: 16px;">
+      <div class="grid-2 csp-style-165">
         <div class="problem-card">
           <div class="p-icon">📋</div>
           <h3>No audit trail</h3>
@@ -255,7 +119,7 @@
           <div class="flow-num">2</div>
           <div class="flow-content">
             <h3>Compiles and structures</h3>
-            <p>Raw intent is transformed into a structured prompt with role, goal, constraints, workflow, and output format. Three output targets: Claude XML, OpenAI system/user split, or generic Markdown. What was missing gets added; what was already there gets preserved.</p>
+            <p>Raw intent is transformed into a structured prompt with role, goal, constraints, workflow, and output format. Claude uses XML, OpenAI uses a system/user split, and Google, Perplexity, or generic targets use Markdown. What was missing gets added; what was already there gets preserved.</p>
           </div>
         </div>
         <div class="flow-step">
@@ -275,7 +139,7 @@
       <h2 class="section-title text-center">Why this approach</h2>
       <p class="section-subtitle text-center">Three architectural commitments that shape every decision in the engine.</p>
 
-      <div class="grid-3" style="gap: 16px;">
+      <div class="grid-3 csp-style-165">
         <div class="approach-card">
           <div class="a-icon">🚫</div>
           <h3>Zero LLM calls inside</h3>
@@ -301,7 +165,7 @@
       <h2 class="section-title text-center">Governance controls</h2>
       <p class="section-subtitle text-center">The controls that matter when AI governance is a requirement, not a suggestion.</p>
 
-      <div class="grid-2" style="gap: 16px;">
+      <div class="grid-2 csp-style-165">
         <div class="control-card">
           <div class="c-icon">🛡️</div>
           <h3>Policy enforcement</h3>
@@ -365,7 +229,7 @@
     <div class="container text-center">
       <h2 class="section-title">Add the governance layer</h2>
       <p class="section-subtitle">Install in 10 seconds. Free tier included. No credit card, no account, no network dependency.</p>
-      <div style="display:flex;gap:12px;justify-content:center;flex-wrap:wrap;margin-top:24px;">
+      <div class="csp-style-030">
         <a href="./#install" class="btn btn-primary">Get Started Free</a>
         <a href="plans.html" class="btn btn-secondary">See Full Pricing</a>
       </div>
@@ -404,6 +268,6 @@
     </div>
   </footer>
 
-  <script src="shared.js"></script>
+  <script src="shared.js?v=20260827"></script>
 </body>
 </html>

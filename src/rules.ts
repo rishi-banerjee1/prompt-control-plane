@@ -425,7 +425,7 @@ const rules: Rule[] = [
     // ⚠ If you change regexes below, update inlineFingerprints in calculateBuiltInRuleSetHash().
     check(prompt) {
       // Detects prompts requesting large output with a small/fast model mention
-      const mentionsSmallModel = /\b(haiku|gpt[\s-]?4o[\s-]?mini|flash|nano|small\s+model|fast\s+model|cheap\s+model)\b/i.test(prompt);
+      const mentionsSmallModel = /\b(haiku|luna|gpt[\s-]?4o[\s-]?mini|flash(?:[\s-]?lite)?|nano|small\s+model|fast\s+model|cheap\s+model)\b/i.test(prompt);
       const requestsLargeOutput = /\b(comprehensive|exhaustive|detailed\s+analysis|full\s+(report|audit|review)|in[\s-]?depth|thorough|complete\s+(list|overview|breakdown))\b/i.test(prompt);
       const mentionsLargeContext = /\b(entire\s+(codebase|repo|project|file)|all\s+(files|modules|endpoints)|every\s+(file|function|class))\b/i.test(prompt);
 
@@ -537,7 +537,7 @@ export function calculateBuiltInRuleSetHash(): string {
     'hallucination_risk:exact|specific|precise,give\\s+me\\s+the,list\\s+all,based\\s+on|according\\s+to',
     'agent_underspec:autonomous|agent|auto[\\s-]?,limit|budget|max|cap|stop\\s+after',
     'conflicting_constraints:only|exclusively|solely,also|additionally,must\\s+not|never,must|always|ensure',
-    'token_budget_mismatch:haiku|gpt.*mini|flash|nano,comprehensive|exhaustive|detailed\\s+analysis,entire|all|every',
+    'token_budget_mismatch:haiku|luna|gpt.*mini|flash|nano,comprehensive|exhaustive|detailed\\s+analysis,entire|all|every',
   ].join('\n');
 
   const hashInput = `${ruleMetadata}\n---\n${sharedPatterns}\n---\n${inlineFingerprints}`;

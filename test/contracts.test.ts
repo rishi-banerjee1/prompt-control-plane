@@ -96,16 +96,16 @@ describe('Deterministic ordering contract', () => {
 
   it('sortCostEntries: provider asc, model asc', () => {
     const costs: ModelCost[] = [
-      { provider: 'openai', model: 'gpt-4o', input_tokens: 100, estimated_output_tokens: 50, input_cost_usd: 0, output_cost_usd: 0, total_cost_usd: 0 },
-      { provider: 'anthropic', model: 'sonnet', input_tokens: 100, estimated_output_tokens: 50, input_cost_usd: 0, output_cost_usd: 0, total_cost_usd: 0 },
-      { provider: 'anthropic', model: 'haiku', input_tokens: 100, estimated_output_tokens: 50, input_cost_usd: 0, output_cost_usd: 0, total_cost_usd: 0 },
-      { provider: 'google', model: 'gemini-2.0-flash', input_tokens: 100, estimated_output_tokens: 50, input_cost_usd: 0, output_cost_usd: 0, total_cost_usd: 0 },
+      { provider: 'openai', model: 'gpt-5.6-terra', input_tokens: 100, estimated_output_tokens: 50, input_cost_usd: 0, output_cost_usd: 0, total_cost_usd: 0 },
+      { provider: 'anthropic', model: 'claude-sonnet-5', input_tokens: 100, estimated_output_tokens: 50, input_cost_usd: 0, output_cost_usd: 0, total_cost_usd: 0 },
+      { provider: 'anthropic', model: 'claude-haiku-4-5', input_tokens: 100, estimated_output_tokens: 50, input_cost_usd: 0, output_cost_usd: 0, total_cost_usd: 0 },
+      { provider: 'google', model: 'gemini-2.5-flash-lite', input_tokens: 100, estimated_output_tokens: 50, input_cost_usd: 0, output_cost_usd: 0, total_cost_usd: 0 },
     ];
     const sorted = sortCostEntries(costs);
     assert.equal(sorted[0].provider, 'anthropic');
-    assert.equal(sorted[0].model, 'haiku');
+    assert.equal(sorted[0].model, 'claude-haiku-4-5');
     assert.equal(sorted[1].provider, 'anthropic');
-    assert.equal(sorted[1].model, 'sonnet');
+    assert.equal(sorted[1].model, 'claude-sonnet-5');
     assert.equal(sorted[2].provider, 'google');
     assert.equal(sorted[3].provider, 'openai');
   });

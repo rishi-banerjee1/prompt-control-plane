@@ -167,7 +167,7 @@ export interface OptimizeResult {
  *
  * @param prompt  - The raw prompt to optimize.
  * @param context - Optional context string (code, docs, etc.).
- * @param target  - Target LLM format: 'claude' (XML), 'openai' (System/User), 'generic' (Markdown).
+ * @param target  - Target platform/provider: 'claude' (XML), 'openai' (System/User), or 'google'/'perplexity'/'generic' (Markdown).
  */
 export function optimize(
   prompt: string,

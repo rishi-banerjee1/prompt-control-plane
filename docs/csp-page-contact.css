@@ -1,0 +1,146 @@
+/* Extracted page styles from contact.html. */
+/* ─── Page-Specific: Value Props ──────────────────────────────────────── */
+    .value-props {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 16px;
+      margin-bottom: 48px;
+    }
+    .prop {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      padding: 20px;
+      text-align: center;
+    }
+    .prop-value {
+      font-size: 22px;
+      font-weight: 700;
+      color: var(--text);
+      margin-bottom: 4px;
+    }
+    .prop-label {
+      font-size: 13px;
+      color: var(--text-muted);
+    }
+
+    /* ─── Page-Specific: Form ─────────────────────────────────────────────── */
+    .form-card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 36px;
+    }
+    .form-card h2 {
+      font-size: 20px;
+      font-weight: 600;
+      margin-bottom: 24px;
+    }
+
+    .form-row {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 16px;
+    }
+
+    .form-group {
+      margin-bottom: 20px;
+    }
+
+    label {
+      display: block;
+      font-size: 13px;
+      font-weight: 500;
+      color: var(--text-muted);
+      margin-bottom: 6px;
+      text-transform: uppercase;
+      letter-spacing: 0.04em;
+    }
+
+    input, textarea, select {
+      width: 100%;
+      padding: 12px 14px;
+      background: var(--input-bg);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      color: var(--text);
+      font-size: 15px;
+      font-family: inherit;
+      transition: border-color 0.2s, box-shadow 0.2s;
+    }
+    input::placeholder, textarea::placeholder {
+      color: var(--text-muted);
+      opacity: 0.6;
+    }
+    select {
+      appearance: none;
+      background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 12 12'%3E%3Cpath fill='%238888a0' d='M6 8L1 3h10z'/%3E%3C/svg%3E");
+      background-repeat: no-repeat;
+      background-position: right 14px center;
+      padding-right: 36px;
+    }
+    select option {
+      background: var(--surface);
+      color: var(--text);
+    }
+    input:focus, textarea:focus, select:focus {
+      outline: none;
+      border-color: var(--accent);
+      box-shadow: 0 0 0 3px var(--accent-glow);
+    }
+
+    textarea {
+      resize: vertical;
+      min-height: 100px;
+    }
+
+    .submit-btn {
+      width: 100%;
+      padding: 14px;
+      background: var(--accent);
+      color: white;
+      border: none;
+      border-radius: 8px;
+      font-size: 16px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: background 0.2s, transform 0.1s;
+      margin-top: 4px;
+    }
+    .submit-btn:hover {
+      background: var(--accent-hover);
+    }
+    .submit-btn:active {
+      transform: translateY(1px);
+    }
+    .submit-btn:disabled {
+      opacity: 0.6;
+      cursor: not-allowed;
+    }
+
+    .error-banner {
+      display: none;
+      padding: 12px 16px;
+      background: rgba(239, 68, 68, 0.1);
+      border: 1px solid rgba(239, 68, 68, 0.25);
+      border-radius: 8px;
+      color: var(--red);
+      font-size: 14px;
+      margin-top: 16px;
+      text-align: center;
+    }
+
+    /* ─── Page-Specific: Footer Note ──────────────────────────────────────── */
+    .footer-note {
+      text-align: center;
+      margin-top: 32px;
+      color: var(--text-muted);
+      font-size: 13px;
+    }
+
+    /* ─── Responsive ──────────────────────────────────────────────────────── */
+    @media (max-width: 600px) {
+      .form-row { grid-template-columns: 1fr; }
+      .value-props { grid-template-columns: 1fr; }
+      .form-card { padding: 24px; }
+    }

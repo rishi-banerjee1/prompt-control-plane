@@ -1,0 +1,192 @@
+/* Extracted page styles from security.html. */
+/* ─── Page-specific: Hero ─────────────────────────────────────────────── */
+    .security-hero {
+      padding: 80px 0 48px;
+      text-align: center;
+    }
+    .security-hero h1 {
+      font-size: 36px;
+      font-weight: 800;
+      letter-spacing: -0.03em;
+      line-height: 1.2;
+      margin-bottom: 12px;
+    }
+    .security-hero .subtitle {
+      font-size: 16px;
+      color: var(--text-muted);
+      max-width: 480px;
+      margin: 0 auto;
+      line-height: 1.6;
+    }
+
+    @media (max-width: 700px) {
+      .security-hero { padding: 56px 0 32px; }
+      .security-hero h1 { font-size: 28px; }
+    }
+
+    /* ─── Page-specific: Content cards ────────────────────────────────────── */
+    .sec-card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 28px;
+      margin-bottom: 20px;
+    }
+    .sec-card h2 {
+      font-size: 18px;
+      font-weight: 700;
+      margin-bottom: 16px;
+      letter-spacing: -0.01em;
+    }
+    .sec-card p {
+      font-size: 14px;
+      color: var(--text-muted);
+      line-height: 1.7;
+      margin-bottom: 12px;
+    }
+    .sec-card p:last-child {
+      margin-bottom: 0;
+    }
+    .sec-card code {
+      font-size: 13px;
+      color: var(--green);
+      background: var(--code-bg);
+      padding: 2px 6px;
+      border-radius: 4px;
+    }
+    .sec-card a {
+      color: var(--accent);
+    }
+    .sec-card a:hover {
+      color: var(--accent-hover);
+    }
+
+    /* ─── Page-specific: Property grid ────────────────────────────────────── */
+    .prop-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 12px;
+      margin-top: 16px;
+    }
+    .prop-item {
+      background: var(--code-bg);
+      border-radius: 8px;
+      padding: 14px 16px;
+    }
+    .prop-item .label {
+      font-size: 11px;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      color: var(--text-muted);
+      margin-bottom: 4px;
+    }
+    .prop-item .value {
+      font-size: 14px;
+      color: var(--green);
+      font-weight: 500;
+    }
+
+    @media (max-width: 500px) {
+      .prop-grid { grid-template-columns: 1fr; }
+    }
+
+    /* ─── Page-specific: Summary banner ───────────────────────────────────── */
+    .summary-banner {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-left: 3px solid var(--accent);
+      border-radius: 12px;
+      padding: 28px;
+      margin-bottom: 20px;
+    }
+    .summary-banner h2 {
+      font-size: 18px;
+      font-weight: 700;
+      margin-bottom: 16px;
+    }
+    .summary-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 16px;
+    }
+    .summary-item {
+      text-align: center;
+    }
+    .summary-item .num {
+      font-size: 24px;
+      font-weight: 800;
+      color: var(--accent);
+      margin-bottom: 4px;
+    }
+    .summary-item .desc {
+      font-size: 13px;
+      color: var(--text-muted);
+    }
+
+    @media (max-width: 500px) {
+      .summary-grid { grid-template-columns: 1fr; gap: 12px; }
+    }
+
+    /* ─── Page-specific: Disclosure box ───────────────────────────────────── */
+    .disclosure-box {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-left: 3px solid var(--green);
+      border-radius: 12px;
+      padding: 28px;
+      margin-bottom: 20px;
+    }
+    .disclosure-box h2 {
+      font-size: 18px;
+      font-weight: 700;
+      margin-bottom: 12px;
+    }
+    .disclosure-box p {
+      font-size: 14px;
+      color: var(--text-muted);
+      line-height: 1.7;
+      margin-bottom: 12px;
+    }
+    .disclosure-box p:last-child {
+      margin-bottom: 0;
+    }
+    .disclosure-box a {
+      color: var(--accent);
+    }
+    .disclosure-box a:hover {
+      color: var(--accent-hover);
+    }
+
+    /* ─── Page-specific: Footer grid ──────────────────────────────────────── */
+    .footer-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 32px;
+      text-align: left;
+      margin-bottom: 24px;
+    }
+    .footer-col h4 {
+      font-size: 13px;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      color: var(--text);
+      margin-bottom: 12px;
+    }
+    .footer-col a {
+      display: block;
+      font-size: 13px;
+      color: var(--text-muted);
+      margin-bottom: 6px;
+    }
+    .footer-col a:hover { color: var(--text); }
+    .footer-copy {
+      font-size: 12px;
+      color: var(--text-muted);
+      border-top: 1px solid var(--border);
+      padding-top: 16px;
+      text-align: center;
+    }
+    @media (max-width: 500px) {
+      .footer-grid { grid-template-columns: 1fr; gap: 24px; }
+    }

@@ -3,12 +3,23 @@
   X-Content-Type-Options: nosniff
   Referrer-Policy: strict-origin-when-cross-origin
   Permissions-Policy: camera=(), microphone=(), geolocation=()
-  Content-Security-Policy: default-src 'self'; script-src 'self' https://static.cloudflareinsights.com 'sha256-LJkGmC1oAQOnJ9dn8nIOd+nXxmKgMqrcFwVYZhfZee4=' 'sha256-PwPy/2KJA2vJz4e3Biy6cnBzsSAfYqk99zx0KtkTTXQ=' 'sha256-Dq+WwO15izzMUdQdPcqIBf/BiN2yiNeS/1HouPlAbGg=' 'sha256-DU8CMzcbyMXmAuVhK5BaRGfF3GHhqMd+kYnUQtTT/Lk=' 'sha256-HMZIQRD/PDLxblNYFWk0S+JvC8gxHpyQCk7uX40ig6Q=' 'sha256-ZfKR5C0PrbjG6PJ0TaMDOBSgZKptmC2SzGfuTGFpq90=' 'sha256-1gPBjvDs4BwJdpX1+tdQ184CLqS7iJIcCUnfxI3qmzo=' 'sha256-Max0XrUVyw3QkkP2BV7eFfclpTToWCfO7tv2bMGkw08=' 'sha256-9CaJ7Yjgz3bQcPSqHFEidU07P4lIIfH+DcssR1ceA+c=' 'sha256-QKqbSXXPJg8SNlrZTgBej7u/8W3ID+G4L+afCxEXAA0=' 'sha256-VR7Mopkx3C+qtmvt/ef7Lr7zEp7Oq7kkTiwUwYm1aCA=' 'sha256-rw4txBA46TG/jgLlpgf5EJ0vGwkw/8oVvKMviWKO0uY='; style-src 'self' 'unsafe-inline'; img-src 'self' https://img.shields.io https://contrib.rocks data:; connect-src 'self' https://cloudflareinsights.com; font-src 'self'; object-src 'none'; base-uri 'self'; form-action 'self' https://formspree.io; frame-ancestors 'none'
+  Cross-Origin-Opener-Policy: same-origin
+  Cross-Origin-Embedder-Policy: credentialless
+  Cross-Origin-Resource-Policy: same-origin
+  Access-Control-Allow-Origin: https://getpcp.site
+  Vary: Origin
+  Content-Security-Policy: default-src 'self'; script-src 'self' https://static.cloudflareinsights.com 'sha256-LJkGmC1oAQOnJ9dn8nIOd+nXxmKgMqrcFwVYZhfZee4=' 'sha256-PwPy/2KJA2vJz4e3Biy6cnBzsSAfYqk99zx0KtkTTXQ=' 'sha256-Dq+WwO15izzMUdQdPcqIBf/BiN2yiNeS/1HouPlAbGg=' 'sha256-DU8CMzcbyMXmAuVhK5BaRGfF3GHhqMd+kYnUQtTT/Lk=' 'sha256-HMZIQRD/PDLxblNYFWk0S+JvC8gxHpyQCk7uX40ig6Q=' 'sha256-ZfKR5C0PrbjG6PJ0TaMDOBSgZKptmC2SzGfuTGFpq90=' 'sha256-1gPBjvDs4BwJdpX1+tdQ184CLqS7iJIcCUnfxI3qmzo=' 'sha256-Max0XrUVyw3QkkP2BV7eFfclpTToWCfO7tv2bMGkw08=' 'sha256-9CaJ7Yjgz3bQcPSqHFEidU07P4lIIfH+DcssR1ceA+c=' 'sha256-QKqbSXXPJg8SNlrZTgBej7u/8W3ID+G4L+afCxEXAA0=' 'sha256-VR7Mopkx3C+qtmvt/ef7Lr7zEp7Oq7kkTiwUwYm1aCA=' 'sha256-rw4txBA46TG/jgLlpgf5EJ0vGwkw/8oVvKMviWKO0uY=' 'sha256-KbeAN0nxIPv5bMMujm7nftLuLsHlmfA7qetfqjo7hgc='; style-src 'self'; img-src 'self' https://img.shields.io https://contrib.rocks data:; connect-src 'self' https://cloudflareinsights.com; font-src 'self'; object-src 'none'; base-uri 'self'; form-action 'self' https://formspree.io; frame-ancestors 'none'
   Strict-Transport-Security: max-age=31536000; includeSubDomains
   X-XSS-Protection: 0
   Cache-Control: public, max-age=3600
 
 /shared.css
+  Cache-Control: public, max-age=86400
+
+/csp-inline.css
+  Cache-Control: public, max-age=86400
+
+/csp-page-*.css
   Cache-Control: public, max-age=86400
 
 /shared.js

@@ -188,7 +188,7 @@ export function registerAnalysisTools(
     'Estimate token count and cost across providers for any prompt text. No session needed.',
     {
       prompt_text: z.string().min(1).max(102400).describe('The prompt text to estimate cost for'),
-      target: z.enum(['claude', 'openai', 'generic']).default('claude').describe('Target platform for model recommendations'),
+      target: z.enum(['claude', 'openai', 'google', 'perplexity', 'generic']).default('claude').describe('Target platform for model recommendations'),
     },
     async ({ prompt_text, target }) => {
       const ctx = await buildCtx(storage, rateLimiter);
@@ -354,7 +354,7 @@ export function registerAnalysisTools(
       ]).optional().describe('Optimization profile'),
       budgetSensitivity: z.enum(['low', 'medium', 'high']).optional().describe('Budget sensitivity (default: from profile)'),
       latencySensitivity: z.enum(['low', 'medium', 'high']).optional().describe('Latency sensitivity (default: from profile)'),
-      target: z.enum(['claude', 'openai', 'generic']).default('claude').describe('Output target for provider preference'),
+      target: z.enum(['claude', 'openai', 'google', 'perplexity', 'generic']).default('claude').describe('Output/provider target for provider preference'),
     },
     async ({ prompt, context, taskType, complexity, profile, budgetSensitivity, latencySensitivity, target }) => {
       const ctx = await buildCtx(storage, rateLimiter);

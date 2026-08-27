@@ -1,0 +1,173 @@
+/* Extracted page styles from index.html. */
+/* -- Hero ---------------------------------------- */
+    .hero {
+      padding: 80px 0 64px;
+      text-align: center;
+    }
+    .hero h1 {
+      font-size: clamp(32px, 5vw, 48px);
+      font-weight: 800;
+      line-height: 1.1;
+      letter-spacing: -0.03em;
+      margin-bottom: 20px;
+    }
+    .hero h1 .highlight { color: var(--accent); }
+    .hero .subtitle {
+      font-size: 18px;
+      color: var(--text-muted);
+      max-width: 600px;
+      margin: 0 auto 12px;
+    }
+    .hero .sub-subtitle {
+      font-size: 15px;
+      color: var(--text-muted);
+      margin-bottom: 36px;
+    }
+    .cta-row {
+      display: flex;
+      gap: 12px;
+      justify-content: center;
+      flex-wrap: wrap;
+    }
+
+    /* -- Hero Demo ----------------------------------- */
+    .hero-demo {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+      margin-top: 48px;
+      text-align: left;
+    }
+    .demo-panel {
+      flex: 1;
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      overflow: hidden;
+    }
+    .demo-header {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      padding: 10px 14px;
+      border-bottom: 1px solid var(--border);
+      background: rgba(255,255,255,0.02);
+    }
+    .demo-dot { width: 10px; height: 10px; border-radius: 50%; }
+    .demo-dot.red { background: #ff5f57; }
+    .demo-dot.yellow { background: #febc2e; }
+    .demo-dot.green { background: #28c840; }
+    .demo-label { margin-left: 8px; font-size: 12px; color: var(--text-muted); font-weight: 500; }
+    .demo-body {
+      padding: 16px;
+      font-family: 'SF Mono', 'Fira Code', 'Cascadia Code', monospace;
+      font-size: 13px;
+      line-height: 1.7;
+      min-height: 160px;
+    }
+    .demo-body.compiled { color: var(--text); }
+    .demo-dim { color: var(--text-muted); }
+    .demo-cursor {
+      display: inline-block;
+      animation: blink 1s step-end infinite;
+      color: var(--accent);
+      font-weight: bold;
+    }
+    @keyframes blink { 50% { opacity: 0; } }
+    .demo-score {
+      margin-top: 12px;
+      padding: 4px 10px;
+      border-radius: 6px;
+      display: inline-block;
+      font-size: 13px;
+      font-weight: 600;
+    }
+    .demo-score.bad { background: rgba(239,68,68,0.15); color: #f87171; }
+    .demo-score.good { background: rgba(52,211,153,0.15); color: #34d399; }
+    .demo-issues { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 10px; }
+    .demo-tag {
+      padding: 2px 8px;
+      border-radius: 4px;
+      font-size: 11px;
+      background: rgba(251,146,60,0.12);
+      color: var(--orange);
+    }
+    .xml-tag { color: var(--accent); }
+    .indent { padding-left: 16px; color: var(--text-muted); }
+    .demo-arrow {
+      font-size: 28px;
+      color: var(--accent);
+      flex-shrink: 0;
+      font-weight: bold;
+    }
+    @media (max-width: 640px) {
+      .hero-demo { flex-direction: column; }
+      .demo-arrow { transform: rotate(90deg); }
+    }
+
+    /* -- Providers Strip ------------------------------ */
+    .providers-strip {
+      padding: 32px 0;
+      text-align: center;
+      border-bottom: 1px solid var(--border);
+    }
+    .providers-strip .strip-text {
+      font-size: 14px;
+      color: var(--text-muted);
+      margin-bottom: 8px;
+    }
+    .providers-strip .strip-text strong {
+      color: var(--text);
+    }
+    .providers-strip .provider-names {
+      font-size: 15px;
+      font-weight: 600;
+      color: var(--text);
+      letter-spacing: 0.02em;
+    }
+    .providers-strip .strip-link {
+      display: block;
+      margin-top: 8px;
+      font-size: 13px;
+    }
+
+    /* -- Flow Steps ----------------------------------- */
+    .flow-step {
+      display: flex;
+      gap: 16px;
+      padding: 20px 0;
+      border-bottom: 1px solid var(--border);
+    }
+    .flow-step:last-child { border-bottom: none; }
+    .flow-num {
+      flex-shrink: 0;
+      width: 32px;
+      height: 32px;
+      border-radius: 50%;
+      background: var(--accent-glow);
+      color: var(--accent);
+      font-weight: 700;
+      font-size: 14px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin-top: 2px;
+    }
+    .flow-content h3 {
+      font-size: 15px;
+      font-weight: 600;
+      margin-bottom: 4px;
+    }
+    .flow-content p {
+      font-size: 13px;
+      color: var(--text-muted);
+      line-height: 1.5;
+    }
+    @media (max-width: 640px) {
+      .flow-step { gap: 12px; }
+    }
+
+    /* -- Proof Grid responsive --------------------- */
+    @media (max-width: 768px) {
+      .proof-grid { grid-template-columns: 1fr !important; }
+    }

@@ -38,7 +38,7 @@ pcp demo
 |---------|-------------|
 | `pcp check "prompt"` | Quick quality score + top issues |
 | `pcp score "prompt"` | Full 5-dimension quality breakdown |
-| `pcp cost "prompt"` | Cost estimate across 10 models |
+| `pcp cost "prompt"` | Cost estimate across 21 costed models |
 | `pcp benchmark` | Run 15-prompt regression suite |
 
 Free tier gives you 50 optimizations/month to try it out.
@@ -130,7 +130,7 @@ jobs:
 
 - **Prompts run without any quality check.** "Make the code better" gives Claude no constraints, no success criteria, and no target: leading to unpredictable results and wasted compute.
 - **No structure scoring, no ambiguity detection.** Even experienced engineers skip success criteria, constraints, and workflow steps. This linter flags structural gaps before you send.
-- **Cost is invisible until after you've spent it.** Most users have no idea how many tokens their prompt will consume. The linter shows cost breakdowns across 10 models from Anthropic, OpenAI, Google, and Perplexity before you commit. Cost estimates are approximate: validate for billing-critical workflows.
+- **Cost is invisible until after you've spent it.** Most users have no idea how many tokens their prompt will consume. The linter shows cost breakdowns across 21 costed models from Anthropic, OpenAI, Google, and Perplexity before you commit. Cost estimates are approximate: validate for billing-critical workflows.
 - **Simple tasks run on expensive models.** Without routing intelligence, every prompt goes to the same model. The decision engine classifies complexity and routes simple tasks to cheaper models automatically: reducing LLM spend without changing your prompts.
 - **Context bloat is the hidden cost multiplier.** Sending 500 lines of code when 50 are relevant burns tokens on irrelevant context. The smart compressor runs 5 heuristics (license strip, comment collapse, duplicate collapse, stub collapse, aggressive truncation) with zone protection for code blocks and tables: standard mode is safe, aggressive mode is opt-in.
 - **Human-in-the-loop approval.** The MCP asks blocking questions when your prompt is ambiguous, requires you to answer them before proceeding, and only finalizes the compiled prompt after you explicitly approve. No prompt runs without your sign-off: the gate is enforced in code, not convention.
@@ -180,21 +180,21 @@ Real results from the deterministic pipeline. PCP scores the **input** prompt qu
 
 | Prompt | Type | Score | Confidence | Model | Blocked? |
 |--------|------|-------|------------|-------|----------|
-| `"make the code better"` | other | 50 | high | sonnet | N/A |
-| `"fix the login bug"` | debug | 53 | medium | sonnet | 3 BQs |
-| Multi-task (4 tasks in 1 prompt) | refactor | 53 | medium | sonnet | 3 BQs |
-| Well-specified refactor (auth middleware) | refactor | 68 | medium | sonnet | N/A |
-| Precise code change (retry logic) | code_change | 63 | medium | sonnet | N/A |
-| Create REST API server | create | 58 | medium | sonnet | 1 BQ |
-| LinkedIn post (technical topic) | writing | 61 | medium | sonnet | N/A |
-| Blog post (GraphQL migration) | writing | 65 | medium | sonnet | N/A |
-| Email to engineering team | writing | 61 | medium | sonnet | N/A |
-| Slack announcement | writing | 61 | medium | sonnet | N/A |
-| Technical summary (RFC → guide) | writing | 65 | medium | sonnet | N/A |
-| Research (Redis and Memcached) | research | 58 | medium | sonnet | N/A |
-| Framework comparison (React and Vue) | research | 58 | medium | sonnet | N/A |
-| Migration roadmap (REST → GraphQL) | planning | 58 | medium | sonnet | N/A |
-| Data transformation (CSV grouping) | data | 58 | medium | sonnet | N/A |
+| `"make the code better"` | other | 50 | high | claude-sonnet-5 | N/A |
+| `"fix the login bug"` | debug | 53 | medium | claude-sonnet-5 | 3 BQs |
+| Multi-task (4 tasks in 1 prompt) | refactor | 53 | medium | claude-sonnet-5 | 3 BQs |
+| Well-specified refactor (auth middleware) | refactor | 68 | medium | claude-sonnet-5 | N/A |
+| Precise code change (retry logic) | code_change | 63 | medium | claude-sonnet-5 | N/A |
+| Create REST API server | create | 58 | medium | claude-sonnet-5 | 1 BQ |
+| LinkedIn post (technical topic) | writing | 61 | medium | claude-sonnet-5 | N/A |
+| Blog post (GraphQL migration) | writing | 65 | medium | claude-sonnet-5 | N/A |
+| Email to engineering team | writing | 61 | medium | claude-sonnet-5 | N/A |
+| Slack announcement | writing | 61 | medium | claude-sonnet-5 | N/A |
+| Technical summary (RFC → guide) | writing | 65 | medium | claude-sonnet-5 | N/A |
+| Research (Redis and Memcached) | research | 58 | medium | claude-sonnet-5 | N/A |
+| Framework comparison (React and Vue) | research | 58 | medium | claude-sonnet-5 | N/A |
+| Migration roadmap (REST → GraphQL) | planning | 58 | medium | claude-sonnet-5 | N/A |
+| Data transformation (CSV grouping) | data | 58 | medium | claude-haiku-4-5 | N/A |
 
 **Score** = input prompt quality (0-100). **Confidence** = how much improvement to expect (high = prompt is weak, lots of room; low = prompt is already strong). Compiled output gets a structural checklist (e.g. 7/9 elements present), not an inflated numeric score. Vague prompts get blocked with targeted questions. Well-specified prompts get compiled with safety constraints, workflow steps, and model routing: all deterministically, with zero LLM calls.
 
@@ -238,7 +238,7 @@ Raw: "Refactor auth middleware in
 Quality:  68/100  Confidence: medium
 State:    COMPILED
 Risk:     high (auth domain)
-Model:    opus (recommended)
+Model:    claude-opus-5 (recommended)
 
 Detected Inputs:
   📄 src/auth/middleware.ts
@@ -311,7 +311,7 @@ Raw: "Write a Slack post for my
 
 Quality:  70/100  Confidence: medium
 Task:     writing
-Model:    sonnet (recommended)
+Model:    claude-sonnet-5 (recommended)
 
 Detected Context:
   👥 Audience: colleagues
@@ -339,7 +339,7 @@ Raw: "Create a roadmap for migrating
 
 Quality:  58/100  Confidence: medium
 Task:     planning
-Model:    sonnet (recommended)
+Model:    claude-sonnet-5 (recommended)
 
 Assumptions Surfaced:
   💡 Output format inferred from context
@@ -512,7 +512,7 @@ The `optimize()` function runs the exact same pipeline as the `optimize_prompt` 
 | `scorePrompt(intent, context?)` | Intent → `QualityScore` (0-100) |
 | `compilePrompt(intent, context?, target?)` | Intent → compiled prompt string |
 | `generateChecklist(compiledPrompt)` | Compiled prompt → structural coverage |
-| `estimateCost(text, taskType, riskLevel, target?)` | Text → `CostEstimate` (10 models) |
+| `estimateCost(text, taskType, riskLevel, target?)` | Text → `CostEstimate` (21 costed models) |
 | `compressContext(context, intent)` | Strip irrelevant context, report savings |
 | `validateLicenseKey(key)` | Ed25519 offline license validation |
 
@@ -657,15 +657,15 @@ Input: "Build a REST API with authentication, rate limiting,
     Profile:      quality_first
 
 → Model Recommendation:
-    Primary:      claude opus (anthropic)
-    Fallback:     o1 (openai)
+    Primary:      claude-opus-5 (anthropic)
+    Fallback:     gpt-5.6-sol (openai)
     Confidence:   60/100
     Est. Cost:    $0.045
 
 → Decision Path:
     complexity=multi_step → risk_score=45 → tier=top
-    → profile=quality_first → selected=anthropic/opus
-    → fallback=openai/o1 → baseline=gpt-4o
+    → profile=quality_first → selected=anthropic/claude-opus-5
+    → fallback=openai/gpt-5.6-sol → baseline=gpt-5.6-terra
 
 → Quality Score: 52/100
 ```
@@ -680,8 +680,8 @@ The `route_model` tool recommends the optimal model using a 2-step deterministic
 
 | Complexity | Default Tier | Escalation |
 |-----------|-------------|------------|
-| `simple_factual` | small (Haiku, GPT-4o-mini, Flash) | N/A |
-| `analytical` | mid (Sonnet, GPT-4o, Gemini Pro) | N/A |
+| `simple_factual` | small (Claude Haiku 4.5, GPT-5.6 Luna, Gemini 2.5 Flash-Lite, Sonar) | N/A |
+| `analytical` | mid (Claude Sonnet 5, GPT-5.6 Terra, Gemini 3.7 Flash, Sonar Pro) | N/A |
 | `multi_step` | mid | → top if risk ≥ 40 |
 | `creative` | mid (temp 0.8-1.0) | N/A |
 | `long_context` | mid (200K+ windows) | N/A |
@@ -690,9 +690,9 @@ The `route_model` tool recommends the optimal model using a 2-step deterministic
 **Step 2: Apply overrides:**
 - `budgetSensitivity=high` → downgrade one tier
 - `latencySensitivity=high` → prefer smaller models within tier
-- Research intent detected → recommend Perplexity (Sonar / Sonar Pro)
+- Research intent detected → recommend Perplexity (Sonar / Sonar Pro / Sonar Reasoning Pro)
 
-Perplexity is included in **pricing and routing recommendations only**: it is not a compile/output target. Perplexity-routed prompts use `generic` (Markdown) format.
+Google and Perplexity are first-class provider targets for cost and routing. Their compiled prompt output uses `generic` Markdown because PCP only emits native provider envelopes for Claude XML and OpenAI system/user prompts.
 
 Every decision is recorded in `decision_path` for full auditability. All tool outputs include `schema_version: 1` for forward-compatible versioning.
 
@@ -848,7 +848,7 @@ Raw prompt: "make the code better"
 Quality Score:  50/100  Confidence: high
 State:          ANALYZING
 Risk Level:     medium
-Model Rec:      sonnet
+Model Rec:      claude-sonnet-5
 
 ── Quality Breakdown (Before) ──
        Clarity: ███████████████░░░░░ 15/20
@@ -890,7 +890,7 @@ Quality Score:  68/100  Confidence: medium
 State:          COMPILED
 Risk Level:     high (auth domain detected)
 Task Type:      refactor
-Model Rec:      opus
+Model Rec:      claude-opus-5
 Reason:         High-risk task: max capability recommended.
 
 ── Detected Inputs ──
@@ -910,9 +910,9 @@ Reason:         High-risk task: max capability recommended.
   ✓ Added: uncertainty policy
 
 ── Cost Estimate ──
-   haiku: $0.001810
-  sonnet: $0.006789
-    opus: $0.033945
+  claude-haiku-4-5: $0.000518
+  claude-sonnet-5:  $0.001036
+  claude-opus-5:    $0.002590
 ```
 
 </details>
@@ -956,12 +956,12 @@ Output tokens:   ~83 (estimated)
 ┌────────┬───────────┬────────────┬────────────┐
 │ Model  │ Input     │ Output     │ Total      │
 ├────────┼───────────┼────────────┼────────────┤
-│  haiku │ $0.000082 │ $0.000332  │ $0.000414  │
-│ sonnet │ $0.000309 │ $0.001245  │ $0.001554  │
-│   opus │ $0.001545 │ $0.006225  │ $0.007770  │
+│ claude-haiku-4-5 │ $0.000103 │ $0.000415  │ $0.000518  │
+│ claude-sonnet-5  │ $0.000206 │ $0.000830  │ $0.001036  │
+│ claude-opus-5    │ $0.000515 │ $0.002075  │ $0.002590  │
 └────────┴───────────┴────────────┴────────────┘
 
-Recommended:  sonnet
+Recommended:  claude-sonnet-5
 Reason:       Best quality-to-cost ratio for this task.
 ```
 
@@ -1010,7 +1010,7 @@ Saved:       ~228 tokens (57%)
   Blocking: 0 question(s)
   Risk:     high
   Task:     debug
-  Model:    opus (recommended)
+  Model:    claude-opus-5 (recommended)
 
   Detected: src/components/LoginForm.tsx
   Constraint: Don't modify other auth components
@@ -1018,7 +1018,7 @@ Saved:       ~228 tokens (57%)
 ── Step 4: Approved! ──
   Status:      APPROVED
   Confidence:  medium (refined from 70/100 after user clarification)
-  Model:       opus (recommended)
+  Model:       claude-opus-5 (recommended)
   Reason:      High-risk task: max capability recommended.
 ```
 
@@ -1037,7 +1037,7 @@ Quality Score:  70/100  Confidence: medium
 State:          COMPILED
 Task Type:      writing
 Risk Level:     low
-Model Rec:      sonnet
+Model Rec:      claude-sonnet-5
 Reason:         Writing task: Sonnet produces high-quality
                 prose at a reasonable cost.
 
@@ -1066,9 +1066,9 @@ Reason:         Writing task: Sonnet produces high-quality
   ✓ Surfaced: 1 assumption for review
 
 ── Cost Estimate ──
-   haiku: $0.002430
-  sonnet: $0.009111
-    opus: $0.045555
+  claude-haiku-4-5: $0.003038
+  claude-sonnet-5:  $0.006075
+  claude-opus-5:    $0.015188
 ```
 
 </details>
@@ -1086,7 +1086,7 @@ Quality Score:  61/100  Confidence: medium
 State:          COMPILED
 Task Type:      research
 Risk Level:     low
-Model Rec:      sonnet
+Model Rec:      claude-sonnet-5
 Reason:         Research/analysis: Sonnet offers strong
                 reasoning at a reasonable cost.
 
@@ -1108,9 +1108,9 @@ Reason:         Research/analysis: Sonnet offers strong
   ✓ Added: uncertainty policy
 
 ── Cost Estimate ──
-   haiku: $0.002596
-  sonnet: $0.009735
-    opus: $0.048675
+  claude-haiku-4-5: $0.003245
+  claude-sonnet-5:  $0.006490
+  claude-opus-5:    $0.016225
 ```
 
 </details>
@@ -1128,7 +1128,7 @@ Quality Score:  58/100  Confidence: medium
 State:          COMPILED
 Task Type:      planning
 Risk Level:     low
-Model Rec:      sonnet
+Model Rec:      claude-sonnet-5
 Reason:         Balanced task: Sonnet offers the best
                 quality-to-cost ratio.
 
@@ -1156,9 +1156,9 @@ Reason:         Balanced task: Sonnet offers the best
   ✓ Surfaced: 3 assumptions for review
 
 ── Cost Estimate ──
-   haiku: $0.002715
-  sonnet: $0.010182
-    opus: $0.050910
+  claude-haiku-4-5: $0.003394
+  claude-sonnet-5:  $0.006788
+  claude-opus-5:    $0.016970
 ```
 
 </details>

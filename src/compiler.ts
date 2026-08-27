@@ -140,7 +140,7 @@ function enrichGoal(spec: IntentSpec): { enrichedGoal: string; changes: string[]
 /** Compile an IntentSpec into a prompt. Target controls output format:
  * - claude (default): XML-tagged
  * - openai: { system, user } message split
- * - generic: Markdown with ## headers
+ * - google, perplexity, generic: Markdown with ## headers
  * Returns the prompt string(s) and a list of changes made. */
 export function compilePrompt(
   spec: IntentSpec,
@@ -148,7 +148,7 @@ export function compilePrompt(
   target: OutputTarget = 'claude',
 ): { prompt: string; changes: string[]; format_version: 1 } {
   if (target === 'openai') return compileOpenAI(spec, context);
-  if (target === 'generic') return compileGeneric(spec, context);
+  if (target === 'generic' || target === 'google' || target === 'perplexity') return compileGeneric(spec, context);
   return compileClaude(spec, context);
 }
 

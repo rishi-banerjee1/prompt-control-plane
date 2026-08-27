@@ -1,0 +1,30 @@
+/* Extracted page styles from 404.html. */
+.error-page {
+      padding: 120px 0 80px;
+      text-align: center;
+    }
+    .error-code {
+      font-size: 96px;
+      font-weight: 800;
+      letter-spacing: -0.04em;
+      color: var(--accent);
+      line-height: 1;
+      margin-bottom: 16px;
+    }
+    .error-page h1 {
+      font-size: 28px;
+      font-weight: 700;
+      margin-bottom: 12px;
+    }
+    .error-page p {
+      font-size: 16px;
+      color: var(--text-muted);
+      max-width: 480px;
+      margin: 0 auto 32px;
+    }
+    .error-links {
+      display: flex;
+      gap: 12px;
+      justify-content: center;
+      flex-wrap: wrap;
+    }

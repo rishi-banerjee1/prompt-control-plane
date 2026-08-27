@@ -99,7 +99,7 @@ describe('Rule: conflicting_constraints', () => {
 
 describe('Rule: token_budget_mismatch', () => {
   it('triggers when small model + large output requested', () => {
-    const results = runRules('Using haiku, provide a comprehensive detailed analysis of the entire codebase');
+    const results = runRules('Using claude-haiku-4-5, provide a comprehensive detailed analysis of the entire codebase');
     const rule = results.find(r => r.rule_name === 'token_budget_mismatch');
     assert.ok(rule?.triggered, 'Should detect budget mismatch');
   });
@@ -111,7 +111,7 @@ describe('Rule: token_budget_mismatch', () => {
   });
 
   it('does not trigger with small model + small output', () => {
-    const results = runRules('Using haiku, fix the typo in README.md');
+    const results = runRules('Using gpt-5.6-luna, fix the typo in README.md');
     const rule = results.find(r => r.rule_name === 'token_budget_mismatch');
     assert.ok(!rule || !rule.triggered, 'Small task + small model = no trigger');
   });
@@ -123,7 +123,7 @@ describe('Rule: token_budget_mismatch', () => {
   });
 
   it('provides an assumption when triggered', () => {
-    const results = runRules('Use gpt-4o-mini for a thorough full audit of all modules');
+    const results = runRules('Use gemini-2.5-flash-lite for a thorough full audit of all modules');
     const rule = results.find(r => r.rule_name === 'token_budget_mismatch');
     if (rule?.triggered) {
       assert.ok(rule.assumption, 'Should provide assumption about truncation');

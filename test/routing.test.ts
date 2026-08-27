@@ -8,6 +8,7 @@ import {
   TIER_MODELS,
   RESEARCH_INTENT_RE,
   PRICING_DATA,
+  estimateCost,
   estimateTokens,
 } from '../src/estimator.js';
 import { RISK_ESCALATION_THRESHOLD } from '../src/rules.js';
@@ -17,6 +18,61 @@ import type {
   ModelTier,
   TierModelEntry,
 } from '../src/types.js';
+
+const EXPECTED_PRICING_MODELS = {
+  anthropic: ['claude-fable-5', 'claude-haiku-4-5', 'claude-opus-5', 'claude-sonnet-5'],
+  openai: ['gpt-4o', 'gpt-4o-mini', 'gpt-5.6-luna', 'gpt-5.6-sol', 'gpt-5.6-terra', 'o1'],
+  google: [
+    'gemini-2.5-flash',
+    'gemini-2.5-flash-lite',
+    'gemini-2.5-pro',
+    'gemini-3.1-flash-lite',
+    'gemini-3.5-flash',
+    'gemini-3.5-flash-lite',
+    'gemini-3.6-flash',
+    'gemini-3.7-flash',
+  ],
+  perplexity: ['sonar', 'sonar-pro', 'sonar-reasoning-pro'],
+} as const;
+
+const EXPECTED_ROUTED_MODELS = [
+  'claude-haiku-4-5',
+  'claude-sonnet-5',
+  'claude-opus-5',
+  'gpt-5.6-luna',
+  'gpt-5.6-terra',
+  'gpt-5.6-sol',
+  'gemini-2.5-flash-lite',
+  'gemini-3.7-flash',
+  'gemini-2.5-pro',
+  'sonar',
+  'sonar-pro',
+  'sonar-reasoning-pro',
+] as const;
+
+const EXPECTED_PRICING_RATES = {
+  anthropic: {
+    'claude-haiku-4-5': { in: 1.00, out: 5.00 },
+    'claude-sonnet-5': { in: 2.00, out: 10.00 },
+    'claude-opus-5': { in: 5.00, out: 25.00 },
+    'claude-fable-5': { in: 10.00, out: 50.00 },
+  },
+  openai: {
+    'gpt-5.6-luna': { in: 0.10, out: 0.60 },
+    'gpt-5.6-terra': { in: 1.00, out: 6.00 },
+    'gpt-5.6-sol': { in: 2.00, out: 10.00 },
+  },
+  google: {
+    'gemini-3.7-flash': { in: 0.75, out: 3.75 },
+    'gemini-2.5-flash-lite': { in: 0.10, out: 0.40 },
+    'gemini-2.5-pro': { in: 1.25, out: 10.00 },
+  },
+  perplexity: {
+    'sonar': { in: 1.00, out: 1.00 },
+    'sonar-pro': { in: 3.00, out: 15.00 },
+    'sonar-reasoning-pro': { in: 2.00, out: 8.00 },
+  },
+} as const;
 
 // ─── Helper: minimal routing input ──────────────────────────────────────────
 
@@ -95,6 +151,7 @@ describe('PRICING_DATA: Perplexity', () => {
     const pp = PRICING_DATA.providers.perplexity;
     assert.ok('sonar' in pp, 'sonar must be in perplexity');
     assert.ok('sonar-pro' in pp, 'sonar-pro must be in perplexity');
+    assert.ok('sonar-reasoning-pro' in pp, 'sonar-reasoning-pro must be in perplexity');
   });
 
   it('all pricing values are per 1M tokens (G10: positive numbers)', () => {
@@ -108,6 +165,43 @@ describe('PRICING_DATA: Perplexity', () => {
           (pricing as { out: number }).out > 0,
           `${provName}/${modelName}: output rate must be positive`,
         );
+      }
+    }
+  });
+});
+
+describe('Current model support catalog', () => {
+  it('PRICING_DATA contains every claimed model and no unreviewed extras', () => {
+    for (const [provider, expectedModels] of Object.entries(EXPECTED_PRICING_MODELS)) {
+      const actualModels = Object.keys(
+        (PRICING_DATA.providers as Record<string, Record<string, unknown>>)[provider],
+      ).sort();
+      assert.deepEqual(actualModels, [...expectedModels].sort(), `${provider} model catalog drifted`);
+    }
+  });
+
+  it('estimateCost emits cost rows for every claimed model', () => {
+    const estimate = estimateCost('Review this module for correctness.', 'review', 'medium', 'claude');
+    const actual = estimate.costs.map(c => `${c.provider}/${c.model}`).sort();
+    const expected = Object.entries(EXPECTED_PRICING_MODELS)
+      .flatMap(([provider, models]) => models.map(model => `${provider}/${model}`))
+      .sort();
+    assert.deepEqual(actual, expected);
+  });
+
+  it('routing defaults use current non-retired model IDs', () => {
+    const routedModels: string[] = Object.values(TIER_MODELS).flatMap(entries => entries.map(e => e.model)).sort();
+    const legacyOpenAiModels: string[] = ['gpt-4o', 'gpt-4o-mini', 'o1'];
+    assert.deepEqual(routedModels, [...EXPECTED_ROUTED_MODELS].sort());
+    assert.ok(!routedModels.some(model => model.includes('gemini-2.0')), 'Gemini 2.0 models are retired');
+    assert.ok(!routedModels.some(model => legacyOpenAiModels.includes(model)), 'legacy OpenAI models should not be default routed');
+  });
+
+  it('locks source-backed current model pricing rates', () => {
+    for (const [provider, models] of Object.entries(EXPECTED_PRICING_RATES)) {
+      const providerPricing = (PRICING_DATA.providers as Record<string, Record<string, { in: number; out: number }>>)[provider];
+      for (const [model, expectedRate] of Object.entries(models)) {
+        assert.deepEqual(providerPricing[model], expectedRate, `${provider}/${model} pricing drifted`);
       }
     }
   });
@@ -221,6 +315,18 @@ describe('routeModel: target-aware provider selection', () => {
   it('openai target → openai provider', () => {
     const result = routeModel(makeInput(), undefined, 60, 'openai');
     assert.equal(result.primary.provider, 'openai');
+  });
+
+  it('google target → google provider', () => {
+    const result = routeModel(makeInput(), undefined, 60, 'google');
+    assert.equal(result.primary.provider, 'google');
+    assert.equal(result.primary.model, 'gemini-3.7-flash');
+  });
+
+  it('perplexity target → perplexity provider', () => {
+    const result = routeModel(makeInput(), undefined, 60, 'perplexity');
+    assert.equal(result.primary.provider, 'perplexity');
+    assert.equal(result.primary.model, 'sonar-pro');
   });
 
   it('generic target → anthropic provider (default)', () => {
@@ -433,14 +539,14 @@ describe('routeModel: savings_vs_default (G2, G13)', () => {
     assert.ok('savingsPercent' in result.savings_vs_default);
   });
 
-  it('baseline model is gpt-4o', () => {
+  it('baseline model is gpt-5.6-terra', () => {
     const result = routeModel(makeInput());
-    assert.equal(result.savings_vs_default.baselineModel, 'gpt-4o');
+    assert.equal(result.savings_vs_default.baselineModel, 'gpt-5.6-terra');
   });
 
-  it('decision_path includes baseline_model=gpt-4o', () => {
+  it('decision_path includes baseline_model=gpt-5.6-terra', () => {
     const result = routeModel(makeInput());
-    assert.ok(result.decision_path.includes('baseline_model=gpt-4o'));
+    assert.ok(result.decision_path.includes('baseline_model=gpt-5.6-terra'));
   });
 
   it('savingsPercent is an integer (can be negative for pricier models)', () => {
@@ -456,7 +562,7 @@ describe('routeModel: savings_vs_default (G2, G13)', () => {
       contextTokens: 1000,
     }));
     assert.ok(result.savings_vs_default.savingsPercent > 0,
-      'Small tier should be cheaper than gpt-4o baseline');
+      'Small tier should be cheaper than gpt-5.6-terra baseline');
   });
 
   it('savings_summary contains percentage or same cost', () => {
@@ -504,7 +610,7 @@ describe('routeModel: decision_path audit trail', () => {
 
   it('decision_path contains baseline_model', () => {
     const result = routeModel(makeInput());
-    assert.ok(result.decision_path.includes('baseline_model=gpt-4o'));
+    assert.ok(result.decision_path.includes('baseline_model=gpt-5.6-terra'));
   });
 });
 

@@ -44,7 +44,7 @@ function makeSession(overrides: Partial<Session> = {}): Session {
       input_tokens: 100,
       estimated_output_tokens: 50,
       costs: [],
-      recommended_model: 'sonnet',
+      recommended_model: 'claude-sonnet-5',
       recommendation_reason: 'test',
     },
     answers: {},

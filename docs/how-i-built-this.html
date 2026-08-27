@@ -43,570 +43,9 @@
   }
   </script>
 
-  <link rel="stylesheet" href="shared.css">
-  <style>
-    /* -- Docs-style layout with sidebar TOC ---------- */
-    .article-layout {
-      display: grid;
-      grid-template-columns: 220px 1fr;
-      gap: 48px;
-      max-width: 1000px;
-      margin: 0 auto;
-      padding: 0 24px;
-      align-items: start;
-    }
-
-    /* -- Sidebar TOC --------------------------------- */
-    .article-sidebar {
-      position: sticky;
-      top: 80px;
-      max-height: calc(100vh - 100px);
-      overflow-y: auto;
-      padding: 16px 0;
-    }
-    .article-sidebar .toc-title {
-      font-size: 11px;
-      text-transform: uppercase;
-      letter-spacing: 0.08em;
-      color: var(--text-muted);
-      margin-bottom: 12px;
-      font-weight: 700;
-    }
-    .article-sidebar ul {
-      list-style: none;
-      padding: 0;
-      margin: 0;
-    }
-    .article-sidebar li {
-      margin-bottom: 2px;
-    }
-    .article-sidebar a {
-      display: block;
-      padding: 5px 12px;
-      font-size: 13px;
-      color: var(--text-muted);
-      border-radius: 6px;
-      transition: all 0.15s;
-      border-left: 2px solid transparent;
-    }
-    .article-sidebar a:hover {
-      color: var(--text);
-      background: var(--accent-glow);
-    }
-    .article-sidebar a.active {
-      color: var(--accent);
-      border-left-color: var(--accent);
-      background: var(--accent-glow);
-      font-weight: 600;
-    }
-
-    /* Mobile TOC toggle */
-    .toc-mobile-toggle {
-      display: none;
-      width: 100%;
-      padding: 12px 16px;
-      background: var(--surface);
-      border: 1px solid var(--border);
-      border-radius: 8px;
-      color: var(--text);
-      font-size: 14px;
-      font-weight: 600;
-      cursor: pointer;
-      margin-bottom: 24px;
-      text-align: left;
-    }
-    .toc-mobile-toggle::after {
-      content: '\25BC';
-      float: right;
-      font-size: 10px;
-      color: var(--text-muted);
-    }
-    .toc-mobile-toggle.open::after {
-      content: '\25B2';
-    }
-
-    @media (max-width: 860px) {
-      .article-layout {
-        grid-template-columns: 1fr;
-        gap: 0;
-      }
-      .article-sidebar {
-        position: static;
-        max-height: none;
-        display: none;
-        margin-bottom: 32px;
-        background: var(--surface);
-        border: 1px solid var(--border);
-        border-radius: 8px;
-        padding: 16px;
-      }
-      .article-sidebar.open {
-        display: block;
-      }
-      .toc-mobile-toggle {
-        display: block;
-      }
-    }
-
-    /* -- Article container (for hero, still centered) -- */
-    .article-container {
-      max-width: 720px;
-      margin: 0 auto;
-      padding: 0 24px;
-    }
-
-    /* -- Hero --------------------------------------- */
-    .article-hero {
-      padding: 80px 0 48px;
-      border-bottom: 1px solid var(--border);
-    }
-    .article-hero h1 {
-      font-size: clamp(28px, 5vw, 42px);
-      font-weight: 800;
-      line-height: 1.15;
-      letter-spacing: -0.03em;
-      margin-bottom: 24px;
-    }
-    .article-hero h1 .highlight { color: var(--accent); }
-    .article-meta {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 16px;
-      align-items: center;
-      font-size: 14px;
-      color: var(--text-muted);
-      margin-bottom: 32px;
-    }
-    .article-meta .separator {
-      width: 4px;
-      height: 4px;
-      border-radius: 50%;
-      background: var(--text-muted);
-      opacity: 0.5;
-    }
-    .hero-tldr {
-      background: var(--surface);
-      border: 1px solid var(--border);
-      border-left: 3px solid var(--accent);
-      border-radius: 8px;
-      padding: 20px 24px;
-      font-size: 16px;
-      line-height: 1.7;
-      color: var(--text-muted);
-    }
-    .hero-tldr strong { color: var(--text); font-weight: 600; }
-
-    /* (inline TOC removed; using sidebar TOC instead) */
-
-    /* -- Article main wrapper ----------------------- */
-    .article-main {
-      min-width: 0; /* prevent grid blowout */
-      max-width: 720px;
-    }
-
-    /* -- Article body ------------------------------- */
-    .article-body {
-      padding: 16px 0 64px;
-    }
-    .article-body h2 {
-      font-size: 26px;
-      font-weight: 700;
-      letter-spacing: -0.02em;
-      margin: 56px 0 16px;
-      padding-left: 16px;
-      border-left: 3px solid var(--accent);
-    }
-    .article-body h3 {
-      font-size: 20px;
-      font-weight: 600;
-      margin: 36px 0 12px;
-      color: var(--text);
-    }
-    .article-body p {
-      font-size: 17px;
-      line-height: 1.8;
-      color: var(--text-muted);
-      margin-bottom: 20px;
-    }
-    .article-body p strong { color: var(--text); font-weight: 600; }
-    .article-body ul, .article-body ol {
-      margin: 0 0 20px 24px;
-      font-size: 17px;
-      line-height: 1.8;
-      color: var(--text-muted);
-    }
-    .article-body li {
-      margin-bottom: 8px;
-    }
-    .article-body li strong { color: var(--text); }
-    .article-body hr {
-      border: none;
-      border-top: 1px solid var(--border);
-      margin: 48px 0;
-    }
-
-    /* -- TL;DR callout ------------------------------ */
-    .tldr {
-      background: var(--surface);
-      border: 1px solid var(--border);
-      border-left: 3px solid var(--accent);
-      border-radius: 8px;
-      padding: 16px 20px;
-      margin: 24px 0 28px;
-      font-size: 15px;
-      line-height: 1.7;
-      color: var(--text-muted);
-    }
-    .tldr-label {
-      font-family: 'SF Mono', 'Fira Code', 'Cascadia Code', monospace;
-      font-size: 11px;
-      text-transform: uppercase;
-      letter-spacing: 0.08em;
-      color: var(--accent);
-      font-weight: 700;
-      margin-bottom: 6px;
-    }
-
-    /* -- Code blocks -------------------------------- */
-    .code-block {
-      background: var(--surface);
-      border: 1px solid var(--border);
-      border-radius: 12px;
-      overflow: hidden;
-      margin: 20px 0 28px;
-    }
-    .code-header {
-      display: flex;
-      align-items: center;
-      gap: 6px;
-      padding: 10px 14px;
-      border-bottom: 1px solid var(--border);
-      background: rgba(255,255,255,0.02);
-    }
-    .code-dot { width: 10px; height: 10px; border-radius: 50%; }
-    .code-dot.red { background: #ff5f57; }
-    .code-dot.yellow { background: #febc2e; }
-    .code-dot.green { background: #28c840; }
-    .code-label { margin-left: 8px; font-size: 12px; color: var(--text-muted); font-weight: 500; }
-    .code-body {
-      padding: 16px 20px;
-      font-family: 'SF Mono', 'Fira Code', 'Cascadia Code', monospace;
-      font-size: 13px;
-      line-height: 1.7;
-      color: var(--green);
-      overflow-x: auto;
-      white-space: pre;
-    }
-
-    /* -- Tables ------------------------------------- */
-    .article-table {
-      width: 100%;
-      border-collapse: collapse;
-      font-size: 14px;
-      margin: 20px 0 28px;
-    }
-    .article-table th {
-      text-align: left;
-      font-size: 12px;
-      text-transform: uppercase;
-      letter-spacing: 0.05em;
-      color: var(--text-muted);
-      padding: 10px 14px;
-      border-bottom: 1px solid var(--border);
-      background: var(--surface);
-    }
-    .article-table td {
-      padding: 12px 14px;
-      border-bottom: 1px solid var(--border);
-      color: var(--text-muted);
-      line-height: 1.5;
-    }
-    .article-table tr:hover td {
-      background: var(--accent-glow);
-    }
-    .article-table td:first-child {
-      color: var(--text);
-      font-weight: 500;
-    }
-    .article-table td strong { color: var(--text); }
-    .tag-published { background: rgba(52, 211, 153, 0.1); color: var(--green); }
-    .tag-submitted { background: rgba(251, 146, 60, 0.1); color: var(--orange); }
-
-    /* -- Hardest problems cards ---------------------- */
-    .problem-card {
-      background: var(--surface);
-      border: 1px solid var(--border);
-      border-radius: 12px;
-      padding: 28px;
-      margin: 20px 0;
-    }
-    .problem-card .problem-number {
-      display: inline-flex;
-      align-items: center;
-      justify-content: center;
-      width: 32px;
-      height: 32px;
-      border-radius: 8px;
-      background: rgba(124, 92, 252, 0.12);
-      color: var(--accent);
-      font-weight: 700;
-      font-size: 14px;
-      margin-bottom: 12px;
-    }
-    .problem-card h4 {
-      font-size: 18px;
-      font-weight: 600;
-      margin-bottom: 12px;
-      color: var(--text);
-    }
-    .problem-card p {
-      font-size: 15px;
-      line-height: 1.7;
-      color: var(--text-muted);
-      margin-bottom: 12px;
-    }
-    .problem-card p:last-child { margin-bottom: 0; }
-    .problem-card ul {
-      margin: 8px 0 12px 20px;
-      font-size: 15px;
-      line-height: 1.7;
-      color: var(--text-muted);
-    }
-    .problem-card strong { color: var(--text); }
-
-    /* -- Timeline ----------------------------------- */
-    .timeline-section {
-      padding: 16px 0;
-    }
-    .timeline-day {
-      margin-bottom: 48px;
-    }
-    .timeline-day-header {
-      font-size: 20px;
-      font-weight: 700;
-      color: var(--text);
-      margin-bottom: 8px;
-      padding-bottom: 12px;
-      border-bottom: 1px solid var(--border);
-    }
-    .timeline-day-summary {
-      font-size: 14px;
-      color: var(--text-muted);
-      margin-bottom: 24px;
-      font-style: italic;
-    }
-    .timeline {
-      position: relative;
-      padding-left: 40px;
-    }
-    .timeline::before {
-      content: '';
-      position: absolute;
-      left: 11px;
-      top: 8px;
-      bottom: 8px;
-      width: 2px;
-      background: var(--border);
-    }
-    .timeline-item {
-      position: relative;
-      margin-bottom: 20px;
-      display: flex;
-      gap: 16px;
-      align-items: flex-start;
-    }
-    .timeline-dot {
-      position: absolute;
-      left: -33px;
-      top: 6px;
-      width: 12px;
-      height: 12px;
-      border-radius: 50%;
-      border: 2px solid var(--bg);
-      flex-shrink: 0;
-    }
-    .timeline-dot.feature { background: var(--green); box-shadow: 0 0 8px rgba(52, 211, 153, 0.3); }
-    .timeline-dot.docs { background: var(--blue); box-shadow: 0 0 8px rgba(96, 165, 250, 0.3); }
-    .timeline-dot.fix { background: var(--orange); box-shadow: 0 0 8px rgba(251, 146, 60, 0.3); }
-    .timeline-dot.ship { background: var(--accent); box-shadow: 0 0 8px rgba(124, 92, 252, 0.3); }
-    .timeline-dot.sleep { background: var(--text-muted); box-shadow: 0 0 8px rgba(136, 136, 160, 0.2); }
-
-    .timeline-time {
-      font-family: 'SF Mono', 'Fira Code', 'Cascadia Code', monospace;
-      font-size: 13px;
-      color: var(--accent);
-      white-space: nowrap;
-      min-width: 60px;
-      padding-top: 1px;
-    }
-    .timeline-content {
-      font-size: 15px;
-      color: var(--text-muted);
-      line-height: 1.6;
-    }
-    .timeline-content strong { color: var(--text); }
-    .timeline-sleep {
-      position: relative;
-      margin: 16px 0;
-      padding: 12px 0 12px 0;
-      text-align: center;
-    }
-    .timeline-sleep-inner {
-      display: inline-block;
-      background: var(--surface);
-      border: 1px solid var(--border);
-      border-radius: 20px;
-      padding: 6px 20px;
-      font-size: 13px;
-      color: var(--text-muted);
-      letter-spacing: 0.02em;
-    }
-
-    .timeline-math {
-      background: var(--surface);
-      border: 1px solid var(--border);
-      border-radius: 12px;
-      padding: 24px 28px;
-      margin-top: 40px;
-    }
-    .timeline-math h4 {
-      font-size: 16px;
-      font-weight: 700;
-      margin-bottom: 16px;
-      color: var(--text);
-    }
-
-    /* -- Metrics grid ------------------------------- */
-    .metrics-grid {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 16px;
-      margin: 28px 0;
-    }
-    @media (max-width: 540px) {
-      .metrics-grid { grid-template-columns: 1fr; }
-    }
-    .metric-card {
-      background: var(--surface);
-      border: 1px solid var(--border);
-      border-radius: 12px;
-      padding: 24px;
-    }
-    .metric-value {
-      font-size: 32px;
-      font-weight: 800;
-      letter-spacing: -0.03em;
-      color: var(--text);
-      margin-bottom: 4px;
-    }
-    .metric-value .accent { color: var(--accent); }
-    .metric-value .green { color: var(--green); }
-    .metric-value .orange { color: var(--orange); }
-    .metric-label {
-      font-size: 14px;
-      color: var(--text-muted);
-    }
-
-    /* -- Blockquote --------------------------------- */
-    .article-body blockquote {
-      border-left: 3px solid var(--border);
-      padding: 4px 0 4px 20px;
-      margin: 20px 0 24px;
-      font-size: 16px;
-      color: var(--text-muted);
-      font-style: italic;
-    }
-
-    /* -- Lesson box --------------------------------- */
-    .lesson {
-      background: rgba(52, 211, 153, 0.05);
-      border: 1px solid rgba(52, 211, 153, 0.15);
-      border-radius: 8px;
-      padding: 14px 18px;
-      margin: 12px 0 20px;
-      font-size: 15px;
-      line-height: 1.6;
-      color: var(--text-muted);
-    }
-    .lesson strong { color: var(--green); }
-
-    /* -- Share section ------------------------------- */
-    .share-section {
-      background: var(--surface);
-      border: 1px solid var(--border);
-      border-radius: 12px;
-      padding: 32px;
-      margin: 48px 0;
-      text-align: center;
-    }
-    .share-section h3 {
-      font-size: 20px;
-      font-weight: 700;
-      margin-bottom: 8px;
-    }
-    .share-section p {
-      font-size: 14px;
-      color: var(--text-muted);
-      margin-bottom: 20px;
-    }
-    .share-url-box {
-      display: flex;
-      gap: 0;
-      max-width: 520px;
-      margin: 0 auto;
-      border-radius: 8px;
-      overflow: hidden;
-      border: 1px solid var(--border);
-    }
-    .share-url-input {
-      flex: 1;
-      background: var(--bg);
-      border: none;
-      padding: 12px 16px;
-      font-family: 'SF Mono', 'Fira Code', 'Cascadia Code', monospace;
-      font-size: 13px;
-      color: var(--text-muted);
-      outline: none;
-    }
-    .share-copy-btn {
-      background: var(--accent);
-      color: #fff;
-      border: none;
-      padding: 12px 20px;
-      font-size: 14px;
-      font-weight: 600;
-      cursor: pointer;
-      transition: background 0.15s;
-      white-space: nowrap;
-    }
-    .share-copy-btn:hover { background: var(--accent-hover); }
-    .share-copy-btn.copied { background: var(--green); }
-
-    /* -- Closing line ------------------------------- */
-    .closing-line {
-      font-size: 15px;
-      color: var(--text-muted);
-      font-style: italic;
-      text-align: center;
-      padding: 32px 0 0;
-      border-top: 1px solid var(--border);
-      margin-top: 48px;
-    }
-
-    /* -- Responsive --------------------------------- */
-    @media (max-width: 640px) {
-      .article-hero { padding: 48px 0 32px; }
-      .article-hero h1 { font-size: 26px; }
-      .article-body h2 { font-size: 22px; }
-      .article-body p { font-size: 16px; }
-      .problem-card { padding: 20px; }
-      .timeline { padding-left: 32px; }
-      .timeline-time { min-width: 50px; font-size: 12px; }
-      .metric-value { font-size: 26px; }
-      .share-url-box { flex-direction: column; }
-      .share-url-input { text-align: center; }
-    }
-  </style>
+  <link rel="stylesheet" href="shared.css?v=20260827">
+  <link rel="stylesheet" href="csp-page-how-i-built-this.css?v=20260827">
+  <link rel="stylesheet" href="csp-inline.css?v=20260827">
 </head>
 <body>
 
@@ -766,7 +205,7 @@
         <li><strong>Score</strong>: Rate the prompt 0-100 across multiple quality dimensions, each with weighted penalties for specific weaknesses</li>
         <li><strong>Compile</strong>: Restructure it with a role definition, success criteria, safety constraints, workflow steps, and uncertainty policies</li>
         <li><strong>Checklist</strong>: 9-point structural coverage check (does it have a goal? constraints? inputs? outputs?)</li>
-        <li><strong>Cost Estimate</strong>: Exact token counts and dollar costs across 10 models from 4 providers</li>
+        <li><strong>Cost Estimate</strong>: Exact token counts and dollar costs across 21 costed models from 4 providers</li>
       </ol>
 
       <p>And then the <strong>approval gate</strong>: the user always reviews the compiled prompt before it&rsquo;s used. If the MCP detects ambiguity, it surfaces up to 3 blocking questions that must be answered before the prompt can be approved. <code>approve_prompt</code> hard-fails if unanswered questions remain: no prompt ships without explicit user sign-off.</p>
@@ -1175,34 +614,34 @@
         <div class="timeline-day">
           <div class="timeline-day-header">Day 4: Mar 1: v4.0.2 Release (Cloudflare Migration)</div>
           <div class="timeline-day-summary">Migrated hosting, expanded website, shipped trust signals</div>
-          <p style="margin: 12px 0 0; font-size: 0.9rem; color: var(--text-muted);"><strong>What happened:</strong> GitHub Pages → Cloudflare Pages for global edge delivery. Website expanded from 5 pages to 11+ (blog, privacy, terms, security). Added Shields.io badges, three-column footer redesign, zero-downtime migration. See <a href="#v4-update">v4.0.2 details</a> below.</p>
+          <p class="csp-style-084"><strong>What happened:</strong> GitHub Pages → Cloudflare Pages for global edge delivery. Website expanded from 5 pages to 11+ (blog, privacy, terms, security). Added Shields.io badges, three-column footer redesign, zero-downtime migration. See <a href="#v4-update">v4.0.2 details</a> below.</p>
         </div>
 
         <!-- Day 5 -->
         <div class="timeline-day">
           <div class="timeline-day-header">Day 5: Mar 2: v4.0.3 Release (Privacy & Contact Infrastructure)</div>
           <div class="timeline-day-summary">Privacy-first contact infrastructure, security hardening</div>
-          <p style="margin: 12px 0 0; font-size: 0.9rem; color: var(--text-muted);"><strong>What happened:</strong> Replaced all exposed email addresses with privacy-first contact form (Formspree integration). Broadened from enterprise-only to general audience. Hardened legal pages (privacy.html, terms.html, security.html) by removing internal references and operational details. See <a href="#v4-update">v4.0.3 details</a> below.</p>
+          <p class="csp-style-084"><strong>What happened:</strong> Replaced all exposed email addresses with privacy-first contact form (Formspree integration). Broadened from enterprise-only to general audience. Hardened legal pages (privacy.html, terms.html, security.html) by removing internal references and operational details. See <a href="#v4-update">v4.0.3 details</a> below.</p>
         </div>
 
         <!-- Day 6 -->
         <div class="timeline-day">
           <div class="timeline-day-header">Day 6: Mar 3: v4.1.0 Release (Enterprise Console Integration)</div>
           <div class="timeline-day-summary">Tool 20, Enterprise Console, terminology refresh, 20-tool platform</div>
-          <p style="margin: 12px 0 0; font-size: 0.9rem; color: var(--text-muted);"><strong>What happened:</strong> Shipped <strong>Tool 20: save_custom_rules</strong>, enabling Enterprise Console → MCP integration. Build rules visually, click "Copy &amp; Deploy" to paste into any MCP-connected AI assistant. Content filter applied across 15+ public docs: stripped internal paths, function names, type names, test counts. Terminology refresh: "tamper-evident" → "hash-chained" for clarity. See <a href="#v4-update">v4.1.0 details</a> below.</p>
+          <p class="csp-style-084"><strong>What happened:</strong> Shipped <strong>Tool 20: save_custom_rules</strong>, enabling Enterprise Console → MCP integration. Build rules visually, click "Copy &amp; Deploy" to paste into any MCP-connected AI assistant. Content filter applied across 15+ public docs: stripped internal paths, function names, type names, test counts. Terminology refresh: "tamper-evident" → "hash-chained" for clarity. See <a href="#v4-update">v4.1.0 details</a> below.</p>
         </div>
 
         <!-- Day 7 -->
         <div class="timeline-day">
           <div class="timeline-day-header">Day 7: Mar 3 (cont.): v5.0.0 Release (Full CLI Suite + Auto-Check Hooks)</div>
           <div class="timeline-day-summary">15 CLI subcommands, auto-check hooks, custom domain, 832 tests</div>
-          <p style="margin: 12px 0 0; font-size: 0.9rem; color: var(--text-muted);"><strong>What happened:</strong> Built the <strong><code>pcp</code> CLI</strong> with 11 subcommands (preflight, optimize, check, score, classify, route, cost, compress, config, doctor, hook). Added <strong>auto-check hooks</strong> that intercept prompts before they reach the LLM: install with <code>pcp hook install</code>. Consistent JSON envelope across all output (<code>request_id</code>, <code>schema_version</code>, <code>policy_mode</code>). Policy enforcement via exit code 3. Migrated to custom domain <strong>getpcp.site</strong>. Restructured all install docs CLI-first. 797 tests passing on Day 7 (832 today). See <a href="#v5-update">v5.0.0 details</a> below.</p>
+          <p class="csp-style-084"><strong>What happened:</strong> Built the <strong><code>pcp</code> CLI</strong> with 11 subcommands (preflight, optimize, check, score, classify, route, cost, compress, config, doctor, hook). Added <strong>auto-check hooks</strong> that intercept prompts before they reach the LLM: install with <code>pcp hook install</code>. Consistent JSON envelope across all output (<code>request_id</code>, <code>schema_version</code>, <code>policy_mode</code>). Policy enforcement via exit code 3. Migrated to custom domain <strong>getpcp.site</strong>. Restructured all install docs CLI-first. 797 tests passing on Day 7 (832 today). See <a href="#v5-update">v5.0.0 details</a> below.</p>
         </div>
 
         <!-- The Math -->
         <div class="timeline-math">
           <h4>The Math</h4>
-          <table class="article-table" style="margin-bottom: 0;">
+          <table class="article-table csp-style-085">
             <thead>
               <tr><th>Metric</th><th>Value</th></tr>
             </thead>
@@ -1218,7 +657,7 @@
           </table>
         </div>
 
-        <p style="margin-top: 28px;">Seven days from first keystroke to a full CLI suite with auto-check hooks. One AI pair programmer. Zero infrastructure cost.</p>
+        <p class="csp-style-086">Seven days from first keystroke to a full CLI suite with auto-check hooks. One AI pair programmer. Zero infrastructure cost.</p>
 
       </div>
 
@@ -1263,10 +702,10 @@
         </div>
         <div class="metric-card">
           <div class="metric-value">3</div>
-          <div class="metric-label">Output targets (Claude, OpenAI, Generic)</div>
+          <div class="metric-label">Output/provider targets</div>
         </div>
         <div class="metric-card">
-          <div class="metric-value">11</div>
+          <div class="metric-value">21</div>
           <div class="metric-label">Cost models across 4 providers</div>
         </div>
         <div class="metric-card">
@@ -1298,7 +737,7 @@
         <p>Since the initial 49-hour build, the product went through a rapid evolution across multiple releases. Each one expanded the surface area without adding a single LLM call. Here is the arc through v4:</p>
 
         <h3>v3.0: The Decision Engine</h3>
-        <p>Added a pre-LLM decision layer. Before a prompt even gets optimized, the engine now classifies its reasoning complexity (6 types), suggests an optimization profile (5 presets), and routes it to the optimal model across 4 providers and 10 models. Every routing decision produces a full <code>decision_path</code> audit trail showing exactly why a model was chosen. Risk scoring with dimensional weights (hallucination, ambiguity, scope, constraint) drives the routing logic. All still deterministic.</p>
+        <p>Added a pre-LLM decision layer. Before a prompt even gets optimized, the engine now classifies its reasoning complexity (6 types), suggests an optimization profile (5 presets), and routes it to the optimal model across 4 providers with a 21-model cost catalog. Every routing decision produces a full <code>decision_path</code> audit trail showing exactly why a model was chosen. Risk scoring with dimensional weights (hallucination, ambiguity, scope, constraint) drives the routing logic. All still deterministic.</p>
 
         <h3>v3.1: Smart Compression + Tool Pruning</h3>
         <p>Built a 5-stage heuristic compression pipeline (H1 through H5) that strips license headers, collapses consecutive comments, deduplicates identical lines, stubs empty function bodies, and truncates middle sections when aggressive mode is on. A zone scanner protects structured content (code blocks, tables, lists, JSON, YAML) from being mangled. Added a tool pruning engine that scores MCP tools by relevance to the current task and marks low-value tools for removal, saving context tokens. Four new ambiguity detection rules brought the total to 14.</p>
@@ -1493,8 +932,8 @@ pcp hook uninstall</div>
     </div>
   </footer>
 
-  <script src="shared.js"></script>
-  <script src="how-i-built-this.js"></script>
+  <script src="shared.js?v=20260827"></script>
+  <script src="how-i-built-this.js?v=20260827"></script>
 
 </body>
 </html>

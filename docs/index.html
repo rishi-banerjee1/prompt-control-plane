@@ -44,183 +44,11 @@
   }
   </script>
 
-  <link rel="stylesheet" href="shared.css">
+  <link rel="stylesheet" href="shared.css?v=20260827">
+  <link rel="stylesheet" href="csp-page-index.css?v=20260827">
+  <link rel="stylesheet" href="csp-inline.css?v=20260827">
 
   <!-- Page-specific styles (hero demo, flow steps, providers strip) -->
-  <style>
-    /* -- Hero ---------------------------------------- */
-    .hero {
-      padding: 80px 0 64px;
-      text-align: center;
-    }
-    .hero h1 {
-      font-size: clamp(32px, 5vw, 48px);
-      font-weight: 800;
-      line-height: 1.1;
-      letter-spacing: -0.03em;
-      margin-bottom: 20px;
-    }
-    .hero h1 .highlight { color: var(--accent); }
-    .hero .subtitle {
-      font-size: 18px;
-      color: var(--text-muted);
-      max-width: 600px;
-      margin: 0 auto 12px;
-    }
-    .hero .sub-subtitle {
-      font-size: 15px;
-      color: var(--text-muted);
-      margin-bottom: 36px;
-    }
-    .cta-row {
-      display: flex;
-      gap: 12px;
-      justify-content: center;
-      flex-wrap: wrap;
-    }
-
-    /* -- Hero Demo ----------------------------------- */
-    .hero-demo {
-      display: flex;
-      align-items: center;
-      gap: 16px;
-      margin-top: 48px;
-      text-align: left;
-    }
-    .demo-panel {
-      flex: 1;
-      background: var(--surface);
-      border: 1px solid var(--border);
-      border-radius: 12px;
-      overflow: hidden;
-    }
-    .demo-header {
-      display: flex;
-      align-items: center;
-      gap: 6px;
-      padding: 10px 14px;
-      border-bottom: 1px solid var(--border);
-      background: rgba(255,255,255,0.02);
-    }
-    .demo-dot { width: 10px; height: 10px; border-radius: 50%; }
-    .demo-dot.red { background: #ff5f57; }
-    .demo-dot.yellow { background: #febc2e; }
-    .demo-dot.green { background: #28c840; }
-    .demo-label { margin-left: 8px; font-size: 12px; color: var(--text-muted); font-weight: 500; }
-    .demo-body {
-      padding: 16px;
-      font-family: 'SF Mono', 'Fira Code', 'Cascadia Code', monospace;
-      font-size: 13px;
-      line-height: 1.7;
-      min-height: 160px;
-    }
-    .demo-body.compiled { color: var(--text); }
-    .demo-dim { color: var(--text-muted); }
-    .demo-cursor {
-      display: inline-block;
-      animation: blink 1s step-end infinite;
-      color: var(--accent);
-      font-weight: bold;
-    }
-    @keyframes blink { 50% { opacity: 0; } }
-    .demo-score {
-      margin-top: 12px;
-      padding: 4px 10px;
-      border-radius: 6px;
-      display: inline-block;
-      font-size: 13px;
-      font-weight: 600;
-    }
-    .demo-score.bad { background: rgba(239,68,68,0.15); color: #f87171; }
-    .demo-score.good { background: rgba(52,211,153,0.15); color: #34d399; }
-    .demo-issues { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 10px; }
-    .demo-tag {
-      padding: 2px 8px;
-      border-radius: 4px;
-      font-size: 11px;
-      background: rgba(251,146,60,0.12);
-      color: var(--orange);
-    }
-    .xml-tag { color: var(--accent); }
-    .indent { padding-left: 16px; color: var(--text-muted); }
-    .demo-arrow {
-      font-size: 28px;
-      color: var(--accent);
-      flex-shrink: 0;
-      font-weight: bold;
-    }
-    @media (max-width: 640px) {
-      .hero-demo { flex-direction: column; }
-      .demo-arrow { transform: rotate(90deg); }
-    }
-
-    /* -- Providers Strip ------------------------------ */
-    .providers-strip {
-      padding: 32px 0;
-      text-align: center;
-      border-bottom: 1px solid var(--border);
-    }
-    .providers-strip .strip-text {
-      font-size: 14px;
-      color: var(--text-muted);
-      margin-bottom: 8px;
-    }
-    .providers-strip .strip-text strong {
-      color: var(--text);
-    }
-    .providers-strip .provider-names {
-      font-size: 15px;
-      font-weight: 600;
-      color: var(--text);
-      letter-spacing: 0.02em;
-    }
-    .providers-strip .strip-link {
-      display: block;
-      margin-top: 8px;
-      font-size: 13px;
-    }
-
-    /* -- Flow Steps ----------------------------------- */
-    .flow-step {
-      display: flex;
-      gap: 16px;
-      padding: 20px 0;
-      border-bottom: 1px solid var(--border);
-    }
-    .flow-step:last-child { border-bottom: none; }
-    .flow-num {
-      flex-shrink: 0;
-      width: 32px;
-      height: 32px;
-      border-radius: 50%;
-      background: var(--accent-glow);
-      color: var(--accent);
-      font-weight: 700;
-      font-size: 14px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      margin-top: 2px;
-    }
-    .flow-content h3 {
-      font-size: 15px;
-      font-weight: 600;
-      margin-bottom: 4px;
-    }
-    .flow-content p {
-      font-size: 13px;
-      color: var(--text-muted);
-      line-height: 1.5;
-    }
-    @media (max-width: 640px) {
-      .flow-step { gap: 12px; }
-    }
-
-    /* -- Proof Grid responsive --------------------- */
-    @media (max-width: 768px) {
-      .proof-grid { grid-template-columns: 1fr !important; }
-    }
-  </style>
 </head>
 <body>
 
@@ -254,7 +82,7 @@
         Lint, score, and improve prompts before they hit production: deterministic, offline, zero LLM calls.
       </p>
       <p class="sub-subtitle">The prompt quality engine for developers. 20 MCP tools. 15 CLI commands. Works with any LLM.</p>
-      <div class="badge-strip" style="display:flex;gap:8px;justify-content:center;flex-wrap:wrap;margin-bottom:24px;">
+      <div class="badge-strip csp-style-087">
         <a href="https://www.npmjs.com/package/pcp-engine"><img src="https://img.shields.io/npm/v/pcp-engine?style=flat-square&color=6366f1" alt="npm version"></a>
         <a href="https://www.npmjs.com/package/pcp-engine"><img src="https://img.shields.io/npm/dm/pcp-engine?style=flat-square&color=6366f1" alt="npm downloads"></a>
         <a href="https://github.com/rishi-banerjee1/prompt-control-plane/releases"><img src="https://img.shields.io/github/v/tag/rishi-banerjee1/prompt-control-plane?style=flat-square&color=6366f1&label=release" alt="GitHub release"></a>
@@ -266,7 +94,7 @@
       </div>
 
       <!-- Live Demo Block -->
-      <div class="demo-block" style="margin-top:40px;max-width:720px;margin-left:auto;margin-right:auto;">
+      <div class="demo-block csp-style-088">
         <div class="demo-bar">
           <span class="demo-dot demo-dot-r"></span>
           <span class="demo-dot demo-dot-y"></span>
@@ -276,12 +104,12 @@
         <div class="demo-body">
           <div class="demo-panel">
             <div class="demo-label">Raw Prompt</div>
-            <div id="demo-input" class="demo-prompt cursor-blink" style="min-height:70px;"></div>
+            <div id="demo-input" class="demo-prompt cursor-blink csp-style-089"></div>
           </div>
           <div class="demo-divider"></div>
           <div class="demo-panel">
             <div class="demo-label">PCP Analysis</div>
-            <div class="demo-result" id="demo-output" style="min-height:70px;"></div>
+            <div class="demo-result csp-style-089" id="demo-output"></div>
           </div>
         </div>
       </div>
@@ -292,7 +120,7 @@
   <!-- Supported Providers Strip -->
   <section class="providers-strip">
     <div class="container">
-      <p class="strip-text">Routes across <strong>4 providers</strong> &middot; <strong>10 models</strong></p>
+      <p class="strip-text">Routes across <strong>4 providers</strong> &middot; <strong>21 costed models</strong></p>
       <p class="provider-names">Anthropic &middot; OpenAI &middot; Google &middot; Perplexity</p>
       <a href="models.html" class="strip-link">See all supported models &rarr;</a>
     </div>
@@ -307,27 +135,27 @@
         <p class="section-subtitle">Every prompt goes straight to the model with no quality check, no cost estimate, and no governance. Here&rsquo;s what that costs you.</p>
       </div>
       <div class="grid-auto">
-        <div class="card" style="border-left:3px solid var(--red);">
+        <div class="card csp-style-090">
           <div class="problem-icon">&#x1F32B;&#xFE0F;</div>
           <h3>Vague prompts waste tokens</h3>
           <p>&ldquo;Make the code better&rdquo; gives the model no constraints, no target, and no success criteria: leading to unpredictable results that cost 3&times; what they should.</p>
         </div>
-        <div class="card" style="border-left:3px solid var(--orange);">
+        <div class="card csp-style-091">
           <div class="problem-icon">&#x1F4B8;</div>
           <h3>Cost is invisible until after</h3>
-          <p>Most teams have no idea how many tokens their prompts consume across Haiku, Sonnet, Opus, GPT-4o, and Gemini: until the bill arrives.</p>
+          <p>Most teams have no idea how many tokens their prompts consume across Claude, GPT-5.6, Gemini, and Sonar models: until the bill arrives.</p>
         </div>
-        <div class="card" style="border-left:3px solid var(--orange);">
+        <div class="card csp-style-091">
           <div class="problem-icon">&#x1F3B2;</div>
           <h3>Wrong model every time</h3>
           <p>Without routing logic, every prompt hits the same expensive model. A simple factual question doesn&rsquo;t need Opus. PCP routes it to Gemini Flash instead: 94% cheaper.</p>
         </div>
-        <div class="card" style="border-left:3px solid var(--accent);">
+        <div class="card csp-style-092">
           <div class="problem-icon">&#x1F6AB;</div>
           <h3>No governance or sign-off gate</h3>
           <p>Claude starts working immediately on whatever you type. There&rsquo;s no review step, no policy check, and no way to enforce prompt standards across a team.</p>
         </div>
-        <div class="card" style="border-left:3px solid var(--blue);">
+        <div class="card csp-style-093">
           <div class="problem-icon">&#x1F4DC;</div>
           <h3>No audit trail</h3>
           <p>Enterprise compliance needs to know what prompts ran, when, at what risk score, and what policy decision was made. There&rsquo;s no log of any of that today.</p>
@@ -367,7 +195,7 @@
           <div class="flow-num">4</div>
           <div class="flow-content">
             <h3>Know the cost before you run</h3>
-            <p>Estimates token count and cost across 10 models from Anthropic, OpenAI, Google, and Perplexity.</p>
+            <p>Estimates token count and cost across 21 costed models from Anthropic, OpenAI, Google, and Perplexity.</p>
           </div>
         </div>
         <div class="flow-step">
@@ -393,7 +221,7 @@
         <video
           controls
           preload="metadata"
-          style="width:100%;border-radius:12px;background:#07080f;"
+          class="csp-style-094"
         >
           <source src="pcp-v532.mp4" type="video/mp4">
           Your browser does not support video. <a href="pcp-v532.mp4">Download the video</a>.
@@ -406,38 +234,38 @@
   <section class="section section-alt" id="enterprise-controls">
     <div class="container">
       <h2 class="section-title">Enterprise Controls</h2>
-      <p class="section-subtitle">The governance layer you need before approving AI in production. All managed through a license-gated <a href="admin.html" style="color:var(--accent);font-weight:600;">Enterprise Console</a>.</p>
+      <p class="section-subtitle">The governance layer you need before approving AI in production. All managed through a license-gated <a href="admin.html" class="csp-style-037">Enterprise Console</a>.</p>
       <div>
         <div class="flow-step">
-          <div class="flow-num" style="background: var(--accent);">&#x1f5a5;</div>
+          <div class="flow-num csp-style-095">&#x1f5a5;</div>
           <div class="flow-content">
             <h3>Enterprise Console</h3>
             <p>A web-based governance control panel, accessible only with a valid Enterprise license key. Configure policy, inspect audit logs, build custom rules, and manage session retention: all from one authenticated place. License verification is fully offline.</p>
           </div>
         </div>
         <div class="flow-step">
-          <div class="flow-num" style="background: var(--accent);">&#x1f512;</div>
+          <div class="flow-num csp-style-095">&#x1f512;</div>
           <div class="flow-content">
             <h3>Policy-Locked Configuration</h3>
             <p>Lock your governance config with a passphrase derived from your enterprise license. No one can change policy, strictness, or audit settings without authenticating through the console. Every attempt: successful or blocked: is audit-logged.</p>
           </div>
         </div>
         <div class="flow-step">
-          <div class="flow-num" style="background: var(--accent);">&#x1f6e1;</div>
+          <div class="flow-num csp-style-095">&#x1f6e1;</div>
           <div class="flow-content">
             <h3>Policy Enforcement</h3>
             <p>Switch from advisory to enforce mode. BLOCKING rules (built-in + custom) gate every prompt. Risk threshold gating blocks high-risk approvals. Deterministic: same input, same verdict, every time.</p>
           </div>
         </div>
         <div class="flow-step">
-          <div class="flow-num" style="background: var(--accent);">&#x1f4dc;</div>
+          <div class="flow-num csp-style-095">&#x1f4dc;</div>
           <div class="flow-content">
             <h3>Hash-Chained Audit Trail</h3>
             <p>Every action generates a JSONL audit entry with SHA-256 hash chaining. If any line is deleted or modified, the chain breaks. Local-only, opt-in, never stores prompt content. Explore and verify your audit logs visually in the Enterprise Console.</p>
           </div>
         </div>
         <div class="flow-step">
-          <div class="flow-num" style="background: var(--accent);">&#x1f5d1;</div>
+          <div class="flow-num csp-style-095">&#x1f5d1;</div>
           <div class="flow-content">
             <h3>Data Lifecycle Management</h3>
             <p>Delete individual sessions or bulk-purge by age policy. Dry-run mode previews what would be removed. A configurable retention window protects your newest sessions. Purge only touches session files: config, audit, and license are never deleted.</p>
@@ -453,7 +281,7 @@
       <div class="text-center mb-32">
         <div class="badge badge-green">Benchmarks</div>
         <h2 class="section-title">Real results on real prompts</h2>
-        <p class="section-subtitle">Every prompt reaches 90/100 after optimization. Average improvement: <strong style="color:var(--green);">+32 points</strong>. Deterministic: same prompt, same result, every time.</p>
+        <p class="section-subtitle">Every prompt reaches 90/100 after optimization. Average improvement: <strong class="csp-style-065">+32 points</strong>. Deterministic: same prompt, same result, every time.</p>
       </div>
       <div class="bench-table-wrap">
         <table class="bench-table">
@@ -473,115 +301,115 @@
               <td class="prompt-cell">&ldquo;make the code better&rdquo;</td>
               <td><span class="bench-type bench-type-other">other</span></td>
               <td class="score-before">48</td><td class="score-after">90</td><td class="bench-delta">+42</td>
-              <td><span class="model-pill sonnet">sonnet</span></td>
+              <td><span class="model-pill sonnet">claude-sonnet-5</span></td>
               <td>N/A</td>
             </tr>
             <tr>
               <td class="prompt-cell">&ldquo;fix the login bug&rdquo;</td>
               <td><span class="bench-type bench-type-debug">debug</span></td>
               <td class="score-before">51</td><td class="score-after">90</td><td class="bench-delta">+39</td>
-              <td><span class="model-pill opus">opus</span></td>
+              <td><span class="model-pill opus">claude-opus-5</span></td>
               <td><span class="blocked-pill">&#x26A0; 3 BQs</span></td>
             </tr>
             <tr>
               <td class="prompt-cell">Multi-task (4 in 1)</td>
               <td><span class="bench-type bench-type-refactor">refactor</span></td>
               <td class="score-before">51</td><td class="score-after">90</td><td class="bench-delta">+39</td>
-              <td><span class="model-pill opus">opus</span></td>
+              <td><span class="model-pill opus">claude-opus-5</span></td>
               <td><span class="blocked-pill">&#x26A0; 3 BQs</span></td>
             </tr>
             <tr>
               <td class="prompt-cell">Auth middleware (well-specified)</td>
               <td><span class="bench-type bench-type-refactor">refactor</span></td>
               <td class="score-before">76</td><td class="score-after">90</td><td class="bench-delta">+14</td>
-              <td><span class="model-pill opus">opus</span></td>
+              <td><span class="model-pill opus">claude-opus-5</span></td>
               <td>N/A</td>
             </tr>
             <tr>
               <td class="prompt-cell">Retry logic (precise)</td>
               <td><span class="bench-type bench-type-code">code</span></td>
               <td class="score-before">61</td><td class="score-after">90</td><td class="bench-delta">+29</td>
-              <td><span class="model-pill sonnet">sonnet</span></td>
+              <td><span class="model-pill sonnet">claude-sonnet-5</span></td>
               <td>N/A</td>
             </tr>
             <tr>
               <td class="prompt-cell">Create REST API server</td>
               <td><span class="bench-type bench-type-create">create</span></td>
               <td class="score-before">51</td><td class="score-after">90</td><td class="bench-delta">+39</td>
-              <td><span class="model-pill opus">opus</span></td>
+              <td><span class="model-pill opus">claude-opus-5</span></td>
               <td><span class="blocked-pill">&#x26A0; 2 BQs</span></td>
             </tr>
             <tr>
               <td class="prompt-cell">LinkedIn post (technical)</td>
               <td><span class="bench-type bench-type-writing">writing</span></td>
               <td class="score-before">59</td><td class="score-after">90</td><td class="bench-delta">+31</td>
-              <td><span class="model-pill sonnet">sonnet</span></td>
+              <td><span class="model-pill sonnet">claude-sonnet-5</span></td>
               <td>N/A</td>
             </tr>
             <tr>
               <td class="prompt-cell">Redis and Memcached research</td>
               <td><span class="bench-type bench-type-research">research</span></td>
               <td class="score-before">56</td><td class="score-after">90</td><td class="bench-delta">+34</td>
-              <td><span class="model-pill sonnet">sonnet</span></td>
+              <td><span class="model-pill sonnet">claude-sonnet-5</span></td>
               <td>N/A</td>
             </tr>
             <tr>
               <td class="prompt-cell">Data transformation (CSV)</td>
               <td><span class="bench-type bench-type-data">data</span></td>
               <td class="score-before">56</td><td class="score-after">90</td><td class="bench-delta">+34</td>
-              <td><span class="model-pill haiku">haiku</span></td>
+              <td><span class="model-pill haiku">claude-haiku-4-5</span></td>
               <td>N/A</td>
             </tr>
           </tbody>
         </table>
       </div>
-      <p style="text-align:center;margin-top:14px;font-size:12px;color:var(--text-muted);">
+      <p class="csp-style-096">
         BQ = Blocking Question. Prompts in ANALYZING state require refinement before compilation completes. All results are deterministic.
       </p>
     </div>
   </section>
 
   <!-- Verified -->
-  <div class="section" style="padding-top:48px;padding-bottom:48px;">
+  <div class="section csp-style-097">
     <div class="container">
       <div class="text-center mb-32">
         <div class="badge badge-accent">Verified</div>
         <h2 class="section-title">Why teams trust it</h2>
         <p class="section-subtitle">Every result is reproducible, every decision is auditable, and nothing leaves your machine.</p>
       </div>
-      <div class="proof-grid" style="display:grid;grid-template-columns:repeat(3,1fr);gap:20px;">
-        <div class="card" style="padding:24px;text-align:center;">
-          <div style="font-size:36px;font-weight:800;color:var(--accent);margin-bottom:4px;">100%</div>
-          <div style="font-size:14px;font-weight:600;margin-bottom:6px;">Reproducible</div>
-          <div style="font-size:12px;color:var(--text-muted);">Same prompt, same result. Every time. No randomness, no drift, no surprises between runs.</div>
+      <div class="proof-grid csp-style-098">
+        <div class="card csp-style-099">
+          <div class="csp-style-100">100%</div>
+          <div class="csp-style-101">Reproducible</div>
+          <div class="csp-style-102">Same prompt, same result. Every time. No randomness, no drift, no surprises between runs.</div>
         </div>
-        <div class="card" style="padding:24px;text-align:center;">
-          <div style="font-size:36px;font-weight:800;color:var(--accent);margin-bottom:4px;">0</div>
-          <div style="font-size:14px;font-weight:600;margin-bottom:6px;">External Calls</div>
-          <div style="font-size:12px;color:var(--text-muted);">Runs entirely on your machine. No data sent anywhere. No API keys needed. No network dependency.</div>
+        <div class="card csp-style-099">
+          <div class="csp-style-100">0</div>
+          <div class="csp-style-101">External Calls</div>
+          <div class="csp-style-102">Runs entirely on your machine. No data sent anywhere. No API keys needed. No network dependency.</div>
         </div>
-        <div class="card" style="padding:24px;text-align:center;">
-          <div style="font-size:36px;font-weight:800;color:var(--accent);margin-bottom:4px;">4</div>
-          <div style="font-size:14px;font-weight:600;margin-bottom:6px;">Providers Covered</div>
-          <div style="font-size:12px;color:var(--text-muted);">Accurate cost estimates across Anthropic, OpenAI, Google, and Perplexity: always up to date.</div>
+        <div class="card csp-style-099">
+          <div class="csp-style-100">4</div>
+          <div class="csp-style-101">Providers Covered</div>
+          <div class="csp-style-102">Accurate cost estimates across Anthropic, OpenAI, Google, and Perplexity: always up to date.</div>
         </div>
-        <div class="card" style="padding:24px;text-align:center;">
-          <div style="font-size:36px;font-weight:800;color:var(--accent);margin-bottom:4px;">&lt;1s</div>
-          <div style="font-size:14px;font-weight:600;margin-bottom:6px;">Response Time</div>
-          <div style="font-size:12px;color:var(--text-muted);">No LLM in the loop means instant feedback. Score, route, and estimate cost in milliseconds.</div>
+        <div class="card csp-style-099">
+          <div class="csp-style-100">&lt;1s</div>
+          <div class="csp-style-101">Response Time</div>
+          <div class="csp-style-102">No LLM in the loop means instant feedback. Score, route, and estimate cost in milliseconds.</div>
         </div>
-        <div class="card" style="padding:24px;text-align:center;">
-          <div style="font-size:36px;font-weight:800;color:var(--accent);margin-bottom:4px;">20</div>
-          <div style="font-size:14px;font-weight:600;margin-bottom:6px;">Tools, One Install</div>
-          <div style="font-size:12px;color:var(--text-muted);">Scoring, routing, compression, policy enforcement, audit logging, session management: all included.</div>
+        <div class="card csp-style-099">
+          <div class="csp-style-100">20</div>
+          <div class="csp-style-101">Tools, One Install</div>
+          <div class="csp-style-102">Scoring, routing, compression, policy enforcement, audit logging, session management: all included.</div>
         </div>
-        <div class="card" style="padding:24px;text-align:center;">
-          <div style="font-size:36px;font-weight:800;color:var(--accent);margin-bottom:4px;">&infin;</div>
-          <div style="font-size:14px;font-weight:600;margin-bottom:6px;">Audit Trail</div>
-          <div style="font-size:12px;color:var(--text-muted);">Hash-chained log of every decision. Cryptographically chained. Know who changed what and when.</div>
+        <div class="card csp-style-099">
+          <div class="csp-style-100">&infin;</div>
+          <div class="csp-style-101">Audit Trail</div>
+          <div class="csp-style-102">Hash-chained log of every decision. Cryptographically chained. Know who changed what and when.</div>
         </div>
       </div>
-      <p style="text-align:center;margin-top:20px;font-size:13px;color:var(--text-muted);">Extensively tested. Fully open for inspection. Run the suite yourself to verify.</p>
+      <p class="csp-style-103">Extensively tested. Fully open for inspection. Run the suite yourself to verify.</p>
     </div>
   </div>
 
@@ -594,7 +422,7 @@
       <div class="pricing-grid">
         <div class="pricing-card">
           <div class="tier">Free</div>
-          <div class="price">&#x20b9;0 <span style="font-size:14px;color:var(--text-muted);">/ $0</span></div>
+          <div class="price">&#x20b9;0 <span class="csp-style-104">/ $0</span></div>
           <div class="price-note">forever</div>
           <ul>
             <li>50 optimizations / month</li>
@@ -607,7 +435,7 @@
         </div>
         <div class="pricing-card featured">
           <div class="tier">Pro</div>
-          <div class="price">&#x20b9;499 <span style="font-size:14px;color:var(--text-muted);">/ ~$6</span></div>
+          <div class="price">&#x20b9;499 <span class="csp-style-104">/ ~$6</span></div>
           <div class="price-note">per month</div>
           <ul>
             <li>100 optimizations / month</li>
@@ -620,7 +448,7 @@
         </div>
         <div class="pricing-card">
           <div class="tier">Power</div>
-          <div class="price">&#x20b9;899 <span style="font-size:14px;color:var(--text-muted);">/ ~$11</span></div>
+          <div class="price">&#x20b9;899 <span class="csp-style-104">/ ~$11</span></div>
           <div class="price-note">per month</div>
           <ul>
             <li>Unlimited optimizations</li>
@@ -658,76 +486,76 @@
         <p class="section-subtitle">Run the same scoring, routing, and policy enforcement from your terminal or CI pipeline. <strong>No MCP needed.</strong></p>
       </div>
 
-      <div style="display:grid;grid-template-columns:1fr 1fr;gap:24px;margin-top:32px;">
-        <div class="card" style="padding:20px;">
-          <h3 style="margin-top:0;font-size:15px;">Pre-flight: the lead command</h3>
-          <p style="font-size:13px;color:var(--text-muted);margin-bottom:12px;">Classify, score, route, and enforce policy in one call. The single command that covers 90% of use cases.</p>
-          <div style="background:var(--code-bg);border:1px solid var(--border);border-radius:8px;padding:12px 14px;font-family:'SF Mono','Fira Code',monospace;font-size:12px;color:var(--green);line-height:1.7;overflow-x:auto;">$ pcp preflight "Review auth module security" --json<br><br><span style="color:var(--text-muted);">task_type: review &middot; risk: medium &middot; model: opus</span><br><span style="color:var(--text-muted);">score: 62/100 &middot; policy: advisory</span></div>
+      <div class="csp-style-105">
+        <div class="card csp-style-106">
+          <h3 class="csp-style-107">Pre-flight: the lead command</h3>
+          <p class="csp-style-108">Classify, score, route, and enforce policy in one call. The single command that covers 90% of use cases.</p>
+          <div class="csp-style-109">$ pcp preflight "Review auth module security" --json<br><br><span class="csp-style-002">task_type: review &middot; risk: medium &middot; model: claude-opus-5</span><br><span class="csp-style-002">score: 62/100 &middot; policy: advisory</span></div>
         </div>
-        <div class="card" style="padding:20px;">
-          <h3 style="margin-top:0;font-size:15px;">All 15 subcommands</h3>
-          <div style="font-size:13px;line-height:1.9;color:var(--text-muted);">
-            <code style="color:var(--accent);font-size:12px;">pcp preflight</code>: full pre-flight analysis<br>
-            <code style="color:var(--accent);font-size:12px;">pcp optimize</code>: optimization pipeline<br>
-            <code style="color:var(--accent);font-size:12px;">pcp check</code>: quick quality check<br>
-            <code style="color:var(--accent);font-size:12px;">pcp score</code>: detailed scoring breakdown<br>
-            <code style="color:var(--accent);font-size:12px;">pcp classify</code>: task classification<br>
-            <code style="color:var(--accent);font-size:12px;">pcp route</code>: model routing<br>
-            <code style="color:var(--accent);font-size:12px;">pcp cost</code>: cost estimation<br>
-            <code style="color:var(--accent);font-size:12px;">pcp compress</code>: context compression<br>
-            <code style="color:var(--accent);font-size:12px;">pcp config</code>: show governance config<br>
-            <code style="color:var(--accent);font-size:12px;">pcp doctor</code>: validate environment<br>
-            <code style="color:var(--accent);font-size:12px;">pcp hook</code>: manage auto-check hooks<br>
-            <code style="color:var(--accent);font-size:12px;">pcp benchmark</code>: regression testing<br>
-            <code style="color:var(--accent);font-size:12px;">pcp demo</code>: interactive demo<br>
-            <code style="color:var(--accent);font-size:12px;">pcp report</code>: quality report<br>
-            <code style="color:var(--accent);font-size:12px;">pcp badge</code>: README quality badge
+        <div class="card csp-style-106">
+          <h3 class="csp-style-107">All 15 subcommands</h3>
+          <div class="csp-style-110">
+            <code class="csp-style-111">pcp preflight</code>: full pre-flight analysis<br>
+            <code class="csp-style-111">pcp optimize</code>: optimization pipeline<br>
+            <code class="csp-style-111">pcp check</code>: quick quality check<br>
+            <code class="csp-style-111">pcp score</code>: detailed scoring breakdown<br>
+            <code class="csp-style-111">pcp classify</code>: task classification<br>
+            <code class="csp-style-111">pcp route</code>: model routing<br>
+            <code class="csp-style-111">pcp cost</code>: cost estimation<br>
+            <code class="csp-style-111">pcp compress</code>: context compression<br>
+            <code class="csp-style-111">pcp config</code>: show governance config<br>
+            <code class="csp-style-111">pcp doctor</code>: validate environment<br>
+            <code class="csp-style-111">pcp hook</code>: manage auto-check hooks<br>
+            <code class="csp-style-111">pcp benchmark</code>: regression testing<br>
+            <code class="csp-style-111">pcp demo</code>: interactive demo<br>
+            <code class="csp-style-111">pcp report</code>: quality report<br>
+            <code class="csp-style-111">pcp badge</code>: README quality badge
           </div>
         </div>
       </div>
 
       <!-- Auto-Check Hooks -->
-      <div style="margin-top:24px;">
-        <div class="card" style="padding:20px;">
-          <h3 style="margin-top:0;font-size:15px;">Auto-Check Hooks: hands-free quality gates</h3>
-          <p style="font-size:13px;color:var(--text-muted);margin-bottom:12px;">Install a hook that silently checks every prompt before it reaches the LLM. Works with Claude Code, Cursor, Windsurf, and any MCP client that supports <code>UserPromptSubmit</code> hooks.</p>
-          <div style="background:var(--code-bg);border:1px solid var(--border);border-radius:8px;padding:12px 14px;font-family:'SF Mono','Fira Code',monospace;font-size:12px;color:var(--green);line-height:1.7;overflow-x:auto;">$ pcp hook install --threshold 70<br><span style="color:var(--text-muted);">PCP hook installed for this project.</span><br><span style="color:var(--text-muted);">Every prompt will be auto-checked before it reaches the LLM.</span></div>
+      <div class="csp-style-112">
+        <div class="card csp-style-106">
+          <h3 class="csp-style-107">Auto-Check Hooks: hands-free quality gates</h3>
+          <p class="csp-style-108">Install a hook that silently checks every prompt before it reaches the LLM. Works with Claude Code, Cursor, Windsurf, and any MCP client that supports <code>UserPromptSubmit</code> hooks.</p>
+          <div class="csp-style-109">$ pcp hook install --threshold 70<br><span class="csp-style-002">PCP hook installed for this project.</span><br><span class="csp-style-002">Every prompt will be auto-checked before it reaches the LLM.</span></div>
         </div>
       </div>
 
       <!-- Console → CLI governance flow -->
-      <div style="margin-top:40px;text-align:center;">
-        <h3 style="font-size:15px;font-weight:700;margin-bottom:20px;">Enterprise Console writes config: CLI enforces it</h3>
-        <div style="display:flex;align-items:center;justify-content:center;gap:16px;flex-wrap:wrap;">
-          <div style="background:var(--surface);border:2px solid var(--accent);border-radius:12px;padding:16px 24px;text-align:center;min-width:180px;">
-            <div style="font-size:22px;margin-bottom:4px;">&#x1F5A5;</div>
-            <div style="font-size:14px;font-weight:700;">Enterprise Console</div>
-            <div style="font-size:11px;color:var(--text-muted);margin-top:4px;">Governance authority</div>
-            <div style="font-size:11px;color:var(--text-muted);">Writes config, locks policy</div>
+      <div class="csp-style-113">
+        <h3 class="csp-style-114">Enterprise Console writes config: CLI enforces it</h3>
+        <div class="csp-style-115">
+          <div class="csp-style-116">
+            <div class="csp-style-117">&#x1F5A5;</div>
+            <div class="csp-style-118">Enterprise Console</div>
+            <div class="csp-style-119">Governance authority</div>
+            <div class="csp-style-120">Writes config, locks policy</div>
           </div>
-          <div style="font-size:28px;color:var(--accent);font-weight:bold;">&rarr;</div>
-          <div style="background:var(--surface);border:2px solid var(--green);border-radius:12px;padding:16px 24px;text-align:center;min-width:180px;">
-            <div style="font-size:22px;margin-bottom:4px;">&#x2328;</div>
-            <div style="font-size:14px;font-weight:700;">CLI (<code style="font-size:12px;">pcp</code>)</div>
-            <div style="font-size:11px;color:var(--text-muted);margin-top:4px;">Developer workflows</div>
-            <div style="font-size:11px;color:var(--text-muted);">Reads config, respects enforce</div>
+          <div class="csp-style-121">&rarr;</div>
+          <div class="csp-style-122">
+            <div class="csp-style-117">&#x2328;</div>
+            <div class="csp-style-118">CLI (<code class="csp-style-123">pcp</code>)</div>
+            <div class="csp-style-119">Developer workflows</div>
+            <div class="csp-style-120">Reads config, respects enforce</div>
           </div>
-          <div style="font-size:28px;color:var(--accent);font-weight:bold;">&rarr;</div>
-          <div style="background:var(--surface);border:2px solid var(--blue);border-radius:12px;padding:16px 24px;text-align:center;min-width:160px;">
-            <div style="font-size:22px;margin-bottom:4px;">&#x1F916;</div>
-            <div style="font-size:14px;font-weight:700;">MCP</div>
-            <div style="font-size:11px;color:var(--text-muted);margin-top:4px;">AI integration</div>
-            <div style="font-size:11px;color:var(--text-muted);">Same policy gates as CLI</div>
+          <div class="csp-style-121">&rarr;</div>
+          <div class="csp-style-124">
+            <div class="csp-style-117">&#x1F916;</div>
+            <div class="csp-style-118">MCP</div>
+            <div class="csp-style-119">AI integration</div>
+            <div class="csp-style-120">Same policy gates as CLI</div>
           </div>
-          <div style="font-size:28px;color:var(--accent);font-weight:bold;">&rarr;</div>
-          <div style="background:var(--surface);border:2px solid var(--yellow, #eab308);border-radius:12px;padding:16px 24px;text-align:center;min-width:160px;">
-            <div style="font-size:22px;margin-bottom:4px;">&#x26A1;</div>
-            <div style="font-size:14px;font-weight:700;">Hooks</div>
-            <div style="font-size:11px;color:var(--text-muted);margin-top:4px;">Auto-check prompts</div>
-            <div style="font-size:11px;color:var(--text-muted);">Hands-free quality gate</div>
+          <div class="csp-style-121">&rarr;</div>
+          <div class="csp-style-125">
+            <div class="csp-style-117">&#x26A1;</div>
+            <div class="csp-style-118">Hooks</div>
+            <div class="csp-style-119">Auto-check prompts</div>
+            <div class="csp-style-120">Hands-free quality gate</div>
           </div>
         </div>
-        <p style="font-size:12px;color:var(--text-muted);margin-top:16px;">All interfaces read the same governance config. Policy enforcement applies identically across Console, CLI, MCP, and Hooks.</p>
+        <p class="csp-style-126">All interfaces read the same governance config. Policy enforcement applies identically across Console, CLI, MCP, and Hooks.</p>
       </div>
     </div>
   </section>
@@ -737,7 +565,7 @@
     <div class="container text-center">
       <h2 class="section-title">Install in 10 seconds</h2>
       <p class="section-subtitle">Works with any codebase: Python, Java, Go, Rust, or any language.</p>
-      <div class="install" style="margin-top: 0;">
+      <div class="install csp-style-127">
         <div class="install-label">npm global (recommended)</div>
         <code>npm install -g pcp-engine && pcp preflight "Your prompt"</code>
       </div>
@@ -760,12 +588,12 @@
     <div class="container">
       <h2 class="section-title">Contributors</h2>
       <p class="section-subtitle">PCP is built by the community. Every merged PR earns a credit here.</p>
-      <div style="text-align:center;margin-top:24px;">
+      <div class="csp-style-128">
         <a href="https://github.com/rishi-banerjee1/prompt-control-plane/graphs/contributors">
           <img src="https://contrib.rocks/image?repo=rishi-banerjee1/prompt-control-plane" alt="Contributors" />
         </a>
       </div>
-      <p style="text-align:center;margin-top:16px;color:var(--text-muted);font-size:14px;">
+      <p class="csp-style-129">
         Want to contribute? Check the <a href="https://github.com/rishi-banerjee1/prompt-control-plane/blob/main/CONTRIBUTING.md">contribution guide</a>.
       </p>
     </div>
@@ -803,9 +631,9 @@
     </div>
   </footer>
 
-  <script src="shared.js"></script>
+  <script src="shared.js?v=20260827"></script>
 
   <!-- Live Demo Animation -->
-  <script src="index.js"></script>
+  <script src="index.js?v=20260827"></script>
 </body>
 </html>

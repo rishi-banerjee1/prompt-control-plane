@@ -547,7 +547,7 @@ describe('E2E: classify_task pipeline', () => {
 // ═══════════════════════════════════════════════════════════════════════════════
 
 describe('E2E: route_model pipeline', () => {
-  it('routes simple question to small tier (Anthropic/haiku for claude target)', () => {
+  it('routes simple question to small tier (Anthropic/Claude Haiku 4.5 for claude target)', () => {
     const prompt = 'What is a closure in JavaScript?';
     const taskType = detectTaskType(prompt);
     const complexity = classifyComplexity(prompt);
@@ -566,7 +566,7 @@ describe('E2E: route_model pipeline', () => {
 
     const rec = routeModel(input, prompt, complexity.confidence, 'claude');
     assert.equal(rec.primary.provider, 'anthropic');
-    assert.equal(rec.primary.model, 'haiku');
+    assert.equal(rec.primary.model, 'claude-haiku-4-5');
     assert.ok(rec.decision_path.includes('default_tier=small'));
   });
 
@@ -582,7 +582,7 @@ describe('E2E: route_model pipeline', () => {
 
     const rec = routeModel(input, undefined, 60, 'claude');
     assert.equal(rec.primary.provider, 'anthropic');
-    assert.equal(rec.primary.model, 'opus');
+    assert.equal(rec.primary.model, 'claude-opus-5');
     assert.ok(rec.decision_path.includes('default_tier=top'));
   });
 
@@ -620,7 +620,7 @@ describe('E2E: route_model pipeline', () => {
     assert.ok(rec.decision_path.some(e => e.startsWith('risk_score=')));
     assert.ok(rec.decision_path.some(e => e.startsWith('selected=')));
     assert.ok(rec.decision_path.some(e => e.startsWith('fallback=')));
-    assert.ok(rec.decision_path.includes('baseline_model=gpt-4o'));
+    assert.ok(rec.decision_path.includes('baseline_model=gpt-5.6-terra'));
   });
 
   it('fallback differs from primary provider', () => {
