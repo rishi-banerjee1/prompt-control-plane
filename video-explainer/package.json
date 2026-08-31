@@ -11,14 +11,14 @@
   "author": "Rishi Banerjee",
   "license": "ISC",
   "dependencies": {
-    "@remotion/cli": "4.0.515",
-    "@remotion/player": "4.0.515",
+    "@remotion/cli": "4.0.518",
+    "@remotion/player": "4.0.518",
     "react": "19.2.8",
     "react-dom": "19.2.8",
-    "remotion": "4.0.515"
+    "remotion": "4.0.518"
   },
   "devDependencies": {
-    "@remotion/bundler": "4.0.515",
+    "@remotion/bundler": "4.0.518",
     "@types/react": "^19.2.18",
     "typescript": "^5.9.3"
   }
