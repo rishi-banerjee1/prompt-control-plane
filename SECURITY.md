@@ -83,6 +83,7 @@ All data is stored locally at `~/.prompt-control-plane/`:
 - **Dependabot** enabled for root npm, video explainer npm, and GitHub Actions dependencies
 - **CodeQL security-extended** runs on pull requests, main pushes, and a weekly schedule
 - **CODEOWNERS** maps repository ownership for security-sensitive surfaces
+- **Branch protection** requires Node tests, Enterprise Security Gates, CodeQL, Dependency Review, and PR review gates on `main`; repository admins retain an explicit solo-maintainer pass-through after checks are green
 - **All third-party GitHub Actions are pinned to immutable commit SHAs** with readable version comments
 - **CycloneDX 1.5 SBOMs** for the root and video explainer dependency trees are generated on every CI run and retained as evidence for 90 days
 - **No postinstall scripts** — the package runs no code during installation
@@ -99,6 +100,8 @@ This gate runs:
 - `npm audit --audit-level=moderate --prefix video-explainer`
 - deterministic SAST checks for browser parsing sinks, code execution sinks, wildcard `postMessage`, and high-confidence secrets
 - deterministic DAST-style checks for Cloudflare Pages security headers and CSP baselines
+
+For the enterprise audit-readiness playbook, lessons learned, and repeatable pre-review checklist, see [`ENTERPRISE_SECURITY_LEARNINGS.md`](ENTERPRISE_SECURITY_LEARNINGS.md).
 
 Live header verification can be run against production:
 

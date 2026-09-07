@@ -178,6 +178,7 @@
       <div class="sec-card">
         <h2>Supply Chain</h2>
         <p>Prompt Control Plane has a minimal dependency footprint. The three runtime dependencies are the MCP SDK (<code>@modelcontextprotocol/sdk</code>), <code>zod</code>, and <code>fast-glob</code>. All business logic: scoring, compilation, routing, compression, policy enforcement, and audit logging: is implemented with zero external dependencies.</p>
+        <p>Repository changes are gated by branch protection on <code>main</code>: Node tests, Enterprise Security Gates, CodeQL, Dependency Review, and PR review gates. Repository admins retain an explicit solo-maintainer pass-through for already-green PRs without disabling the required checks.</p>
         <p>Source maps are stripped from the published npm tarball to prevent exposure of internal implementation details. All business logic is compiled from TypeScript to standard JavaScript. There is no use of <code>eval()</code>, no dynamic imports, and no runtime code generation.</p>
         <p>The npm package ships only compiled output, entry point scripts, the README, and the LICENSE file. Test files, source TypeScript, configuration files, and development tooling are excluded from the published package.</p>
       </div>

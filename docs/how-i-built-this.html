@@ -423,7 +423,7 @@
 
       <h3>Cloudflare Pages Deployment: Git Push ≠ Live</h3>
 
-      <p>Migrated hosting from GitHub Pages to Cloudflare Pages for v4.0.2. GitHub Pages auto-deploys on push; Cloudflare Pages does not. Every change to <code>docs/</code> requires a manual <code>wrangler pages deploy docs/ --project-name prompt-control-plane</code> step. I learned this the hard way after pushing docs updates and waiting 30 minutes wondering why the live site hadn&rsquo;t changed.</p>
+      <p>Migrated hosting from GitHub Pages to Cloudflare Pages for v4.0.2. GitHub Pages auto-deploys on push; Cloudflare Pages does not. Every change to <code>docs/</code> requires a manual <code>wrangler pages deploy docs/ --project-name getpcp</code> step. I learned this the hard way after pushing docs updates and waiting 30 minutes wondering why the live site hadn&rsquo;t changed.</p>
 
       <div class="lesson">
         <strong>Lesson learned:</strong> Multi-step deployments need explicit handoff steps. Document them, add them to CI, or automate them away. Git push creates a dangerous illusion of "done," especially when your docs site is the product&rsquo;s only interface to the world.

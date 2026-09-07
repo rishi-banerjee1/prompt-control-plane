@@ -158,7 +158,8 @@ Fix:
 - Added CODEOWNERS for repository ownership.
 - Pinned all third-party GitHub Actions to immutable commit SHAs.
 - Added CI-generated CycloneDX SBOM evidence for root and nested dependency trees with 90-day retention.
-- Applied GitHub branch protection to `main` with tests, CodeQL, dependency review, and enterprise security gates required.
+- Applied GitHub branch protection to `main` with tests, CodeQL, dependency review, enterprise security gates, and PR review gates required.
+- Kept an explicit admin pass-through for the solo-maintainer case after required checks are green.
 - Kept CodeQL `security-extended` workflow.
 
 Control impact:
@@ -212,7 +213,7 @@ Recommended next step:
 - Merge the remediation PR after checks pass.
 - Confirm Dependabot alert #50 and CodeQL alert #25 auto-close.
 
-Operational note: branch protection now correctly blocks self-approval. If the repository has only one maintainer, add a second trusted reviewer before merge rather than weakening the control.
+Operational note: branch protection now keeps required checks and review gates, while allowing repository admins to use a narrow pass-through for already-green solo-maintainer merges. Add a second trusted reviewer when the repo grows beyond a single maintainer.
 
 ### RISK-004: Compliance claims require organizational controls
 
@@ -285,6 +286,7 @@ runs so the final evidence set does not rely on startup-failure records.
 - Enterprise controls include policy enforcement, config locking, local audit trail, and custom deterministic rules.
 - CI now gates all development on tests, build, SCA, SAST, DAST-style headers/CSP checks, CodeQL, and PR dependency review.
 - Known high security alerts are fixed in the remediation branch and require merge/rescan to close in GitHub.
+- Solo-maintainer admin pass-through is available only after required checks are green.
 - Formal ISO/SOC compliance is not claimed from code alone; this repo supplies engineering evidence for the audit.
 
 ## Next 30-Day Hardening Plan
