@@ -55,20 +55,19 @@ No exploitative penetration test was performed against third-party infrastructur
 
 Open issues: none observed.
 
-Open PRs observed:
+Open PRs observed after the security remediation merge:
 
-- #40 `chore(deps): bump @types/node from 25.3.5 to 26.2.0`
-- #39 `chore(ci): bump actions/setup-node from 6 to 7`
-- #38 `chore(deps): bump typescript from 5.9.3 to 7.0.2`
-- #36 `chore(ci): bump actions/checkout from 6 to 7`
-- #35 `chore: remediate dependency audit`
+- #55 `chore(deps): bump @types/node from 25.3.5 to 26.4.1`
+- #54 `chore(deps): bump zod from 4.4.3 to 4.5.4 in the minor-and-patch group across 1 directory`
+- #49 `chore(deps): bump the video-minor-and-patch group in /video-explainer with 4 updates`
 
-Open security alerts observed on `main` before this remediation branch is merged:
+Security alert state after the security remediation merge:
 
-- Dependabot alert #50: high severity `nanoid <3.3.18` in `video-explainer/package-lock.json`.
-- CodeQL alert #25: high security severity warning for bad HTML filtering regexp in `test/languageRules.test.ts`.
-
-Both alerts are addressed by this branch but remain open in GitHub until merged into `main` and rescanned.
+- Root dependency tree resolves patched `fast-uri@3.1.6` and `qs@6.16.0`.
+- Nested `video-explainer` dependency tree resolves patched `fast-uri@3.1.6` and `browserslist@4.28.7`.
+- Local and CI npm audits pass with zero vulnerabilities.
+- Code scanning open alerts: none observed.
+- GitHub Dependabot alerts may remain visible briefly until the dependency graph rescan catches up with `main`.
 
 Branch protection applied to `main`:
 
@@ -201,17 +200,17 @@ Recommended evidence:
 - findings with severity, exploitability, reproduction, and remediation
 - retest evidence
 
-### RISK-003: GitHub alerts close only after merge and rescan
+### RISK-003: GitHub Dependabot UI can lag after merge
 
 Severity: Medium
 Status: Operational dependency
 
-The Dependabot and CodeQL alerts are visible against `main`. This branch fixes them, but GitHub will not mark them fixed until the remediation is merged into `main` and scanners run on the new commit.
+The remediation is merged into `main`, local audits are clean, CI security gates are green, and CodeQL reports no open alerts. GitHub Dependabot can still show stale open alerts until the dependency graph rescan processes the merged lockfiles.
 
 Recommended next step:
 
-- Merge the remediation PR after checks pass.
-- Confirm Dependabot alert #50 and CodeQL alert #25 auto-close.
+- Recheck Dependabot alerts after the dependency graph rescan.
+- Confirm alerts #51 through #61 auto-close or are no longer reported against `main`.
 
 Operational note: branch protection now keeps required checks and review gates, while allowing repository admins to use a narrow pass-through for already-green solo-maintainer merges. Add a second trusted reviewer when the repo grows beyond a single maintainer.
 
@@ -267,7 +266,7 @@ Provide these artifacts:
 - `.github/CODEOWNERS`
 - `docs/_headers`
 - `cyclonedx-sboms` artifact from the latest `Enterprise Security Gates` run
-- latest GitHub Actions run for this branch
+- latest GitHub Actions run for `main`
 - Cloudflare Pages production project: `getpcp`
 - public production domain and live DAST target: `https://getpcp.site`
 - built-in `getpcp.pages.dev` hostname: not used as audit evidence; redirect to the custom domain through Cloudflare Bulk Redirects so `getpcp.site` remains the primary public surface
@@ -285,7 +284,7 @@ runs so the final evidence set does not rely on startup-failure records.
 - Prompts are not logged by default.
 - Enterprise controls include policy enforcement, config locking, local audit trail, and custom deterministic rules.
 - CI now gates all development on tests, build, SCA, SAST, DAST-style headers/CSP checks, CodeQL, and PR dependency review.
-- Known high security alerts are fixed in the remediation branch and require merge/rescan to close in GitHub.
+- Known high security alerts are fixed in `main`; Dependabot may take a dependency graph rescan cycle to stop showing stale alerts.
 - Solo-maintainer admin pass-through is available only after required checks are green.
 - Formal ISO/SOC compliance is not claimed from code alone; this repo supplies engineering evidence for the audit.
 
