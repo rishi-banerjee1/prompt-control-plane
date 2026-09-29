@@ -14,10 +14,14 @@
 - **Fixed:** npm audit alerts in root package by refreshing vulnerable transitives: `hono`, `@hono/node-server`, `fast-uri`, `qs`, `ip-address`, and `express-rate-limit`
 - **Fixed:** September 2026 transitive audit alerts in root and video explainer lockfiles by refreshing `fast-uri`, `qs`, and `browserslist` to patched versions
 - **Fixed:** video explainer audit alerts by updating the Remotion toolchain and vulnerable `ws`, `postcss`, `esbuild`, `fast-uri`, and `browserslist` transitives
+- **Fixed:** September 29, 2026 Dependabot alerts by refreshing `fast-uri` and `ip-address` to patched transitive versions in the root and video explainer lockfiles
+- **Updated:** Remotion video explainer patch group to 4.0.529 and verified the full 9000-frame render path
+- **Updated:** pinned CodeQL `init`, `autobuild`, and `analyze` actions together to v4.38.2 after split Dependabot PRs failed individually
 
 ### Changed
-- Dependency: @modelcontextprotocol/sdk upgraded from ^1.25.2 to ^1.29.0
-- Test count: 832 → 842
+- Dependency: @modelcontextprotocol/sdk upgraded from ^1.25.2 to ^1.30.1
+- Dependency: @types/node upgraded to ^26.6.3 (dev)
+- Test count: 832 → 851
 
 ## [5.3.3] - 2026-03-06
 
