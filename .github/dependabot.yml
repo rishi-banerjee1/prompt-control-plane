@@ -16,6 +16,9 @@ updates:
       prefix: "chore(deps):"
     # Group minor/patch updates to reduce PR noise
     groups:
+      security-updates:
+        applies-to: security-updates
+        patterns: ["*"]
       minor-and-patch:
         update-types:
           - "minor"
@@ -36,6 +39,9 @@ updates:
     commit-message:
       prefix: "chore(deps):"
     groups:
+      video-security-updates:
+        applies-to: security-updates
+        patterns: ["*"]
       video-minor-and-patch:
         update-types:
           - "minor"
@@ -44,6 +50,9 @@ updates:
   # GitHub Actions
   - package-ecosystem: "github-actions"
     directory: "/"
+    groups:
+      codeql:
+        patterns: ["github/codeql-action/*"]
     schedule:
       interval: "weekly"
       day: "monday"
