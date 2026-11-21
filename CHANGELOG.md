@@ -1,5 +1,12 @@
 # Changelog
 
+## Unreleased
+
+- Patched vulnerable MCP SDK, Hono, Zod, proxy-addr, body-parser, ip-address, and fast-uri dependencies.
+- Updated the matched Remotion toolchain to 4.0.545 and refreshed video transitive dependencies.
+- Updated immutable setup-node, upload-artifact, and CodeQL action pins.
+- Grouped dependency security updates and CodeQL workflow updates for coordinated verification.
+
 ## [5.3.4] - 2026-06-18
 
 ### Security
