@@ -29,7 +29,7 @@ See [`action.yml`](action.yml) for every input and output.
 
 ## Use PCP as an MCP server
 
-The MCP server exposes deterministic analysis, policy, compilation, and audit tools. Search the [GitHub MCP Registry](https://github.com/mcp?query=pcp-engine) for its listing; GitHub onboarding is still pending.
+The MCP server exposes deterministic analysis, policy, compilation, and audit tools. Search the [GitHub MCP Registry](https://github.com/mcp?query=pcp-engine) for its listing. The [onboarding request](https://github.com/github/github-mcp-server/discussions/3934) is submitted and awaits manual curation.
 
 ## Use the TypeScript API
 
