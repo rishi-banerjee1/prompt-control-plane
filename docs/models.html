@@ -8,21 +8,21 @@
   <link rel="icon" type="image/png" sizes="16x16" href="favicon-16.png">
   <link rel="apple-touch-icon" sizes="180x180" href="apple-touch-icon.png">
   <link rel="manifest" href="site.webmanifest">
-  <title>Supported Models: Prompt Control Plane | 21 Costed Models, 4 Providers</title>
-  <meta name="description" content="Prompt Control Plane tracks pricing for 21 models across Anthropic, OpenAI, Google, and Perplexity. Deterministic cost estimation, model routing, and multi-format compilation: all offline.">
+  <title>Any Model, Any Provider: Prompt Control Plane</title>
+  <meta name="description" content="Prompt Control Plane governs prompts before any model or provider. Deterministic checks and compilation are model agnostic; routing and cost estimates use a maintained four-provider catalog.">
   <meta name="keywords" content="LLM model routing, prompt cost estimation, Claude model pricing, GPT-5.6 pricing, Gemini pricing, Perplexity Sonar, multi-provider LLM, model selection, prompt governance models">
   <link rel="canonical" href="https://getpcp.site/models.html">
 
   <!-- Open Graph -->
   <meta property="og:title" content="Supported Models: Prompt Control Plane">
-  <meta property="og:description" content="21 costed models across 4 providers. Deterministic cost estimation and model routing for Anthropic, OpenAI, Google, and Perplexity.">
+  <meta property="og:description" content="Model-agnostic prompt governance for any model or provider. Optional routing and cost estimates use a maintained catalog.">
   <meta property="og:type" content="website">
   <meta property="og:url" content="https://getpcp.site/models.html">
 
   <!-- Twitter Card -->
   <meta name="twitter:card" content="summary_large_image">
   <meta name="twitter:title" content="Supported Models: Prompt Control Plane">
-  <meta name="twitter:description" content="21 costed models across 4 providers. Deterministic cost estimation and model routing: all offline.">
+  <meta name="twitter:description" content="Model-agnostic prompt governance for any model or provider. Optional routing and cost estimates use a maintained catalog.">
 
   <!-- Schema.org structured data -->
   <script type="application/ld+json">
@@ -30,7 +30,7 @@
     "@context": "https://schema.org",
     "@type": "WebPage",
     "name": "Supported Models: Prompt Control Plane",
-    "description": "Prompt Control Plane tracks pricing for 21 models across Anthropic, OpenAI, Google, and Perplexity with deterministic cost estimation and model routing.",
+    "description": "Prompt Control Plane governs prompts before any model or provider. Model recommendations and cost estimates use a maintained catalog.",
     "url": "https://getpcp.site/models.html",
     "isPartOf": {
       "@type": "WebSite",
@@ -70,9 +70,9 @@
   <!-- Hero -->
   <section class="models-hero">
     <div class="container">
-      <div class="badge badge-accent">Multi-Provider Support</div>
-      <h1><span>21</span> costed models across <span>4</span> providers</h1>
-      <p>Cost estimation, model routing, and compilation across major LLM providers. PCP does not call provider APIs: all support here is deterministic catalog and routing support.</p>
+      <div class="badge badge-accent">Model-Agnostic Prompt Governance</div>
+      <h1>Any model.<br><span>Any provider.</span></h1>
+      <p>PCP checks, scores, and compiles prompts before they reach your model. Those core checks do not depend on a provider API. Optional recommendations and cost estimates use a maintained catalog of 21 models across Anthropic, OpenAI, Google, and Perplexity.</p>
     </div>
   </section>
 
@@ -199,10 +199,7 @@
       <div class="card mt-32 csp-style-140">
         <p class="csp-style-141">
           <strong class="csp-style-136">The insight:</strong>
-          Most teams send <strong class="csp-style-142">every prompt to their strongest model</strong>: even simple tasks
-          that a smaller, faster model handles equally well. The router analyzes each prompt's complexity and risk,
-          then picks the <strong class="csp-style-143">right-sized model</strong> automatically. You get the same quality output
-          with dramatically better token efficiency.
+          PCP helps teams make prompt quality and routing decisions before generation. It can estimate prompt token changes after compression, then recommend from its maintained catalog. You choose the model. Lower estimated cost depends on the model, provider, rates and how the compressed prompt performs in your task.
         </p>
       </div>
 
@@ -221,19 +218,18 @@
           <h3>Smart compression</h3>
           <p>
             The multi-stage compression pipeline intelligently strips boilerplate,
-            collapses redundancy, and removes irrelevant content: while protecting
-            code blocks, tables, and important structure. Typical reduction:
-            <strong class="csp-style-143">20-40% fewer tokens</strong> per call.
+            collapses redundancy, and removes irrelevant content while protecting
+            code blocks, tables, and important structure. PCP reports estimated
+            token counts before and after compression for each prompt. Results vary by input.
           </p>
         </div>
         <div class="card">
           <div class="icon">🧭</div>
           <h3>Intelligent routing</h3>
           <p>
-            Not every prompt needs the most powerful model. The router classifies your task's
-            complexity and risk, then picks the right-sized model for the job.
-            A simple code review doesn't need Opus-level reasoning: Haiku handles it
-            <strong class="csp-style-143">just as well, 19× more efficiently</strong>.
+            The router classifies task complexity and risk, then recommends a model from
+            the maintained catalog. Recommendations are deterministic starting points,
+            not quality guarantees. Validate model choice against your own tasks.
           </p>
         </div>
       </div>
@@ -567,8 +563,8 @@ Refactor auth module
 
       <div class="card csp-style-158">
         <h3 class="csp-style-155">Pricing You Can Trust</h3>
-        <p class="csp-style-159">Pricing data is versioned in the engine as <strong>2026-08</strong>. Every claimed model appears in automated tests for cost estimation and routing consistency. Prices use standard short-context text token rates where applicable and exclude cache, batch, flex, fast/priority, request, search, citation, image, audio, and vendor-specific add-on fees.</p>
-        <p class="csp-style-159">Savings are calculated against the current <strong>GPT-5.6 Terra</strong> baseline so you can see exactly how much cheaper or more expensive a routed model would be before you commit.</p>
+        <p class="csp-style-159">Prompt analysis, scoring, and compilation are provider agnostic and make no model API calls. Cost estimation and routing are separate optional features backed by a maintained four-provider catalog. Listed rates are standard text-token estimates; provider discounts, caching, tools, long-context tiers, and other fees can change actual cost.</p>
+        <p class="csp-style-159">Token savings describe estimated prompt input reduction. Cost savings depend on the selected model, provider pricing, output length, caching, and task quality. Treat router output as a recommendation and validate it against your own evaluation set.</p>
         <p class="csp-style-160">Model routing and cost estimation are always free (not metered). No API keys required.</p>
       </div>
     </div>

@@ -178,7 +178,7 @@ pcp hook install --threshold 70</div>
         <li><code>quality_before</code>: A multi-dimensional score from 0-100 with traceable deductions</li>
         <li><code>compiled_prompt</code>: The structured, optimized prompt formatted for your target LLM</li>
         <li><code>blocking_questions</code>: Ambiguities that must be resolved before approval</li>
-        <li><code>cost_estimate</code>: Token counts and costs across 21 costed models from 4 providers</li>
+        <li><code>cost_estimate</code>: Token counts and costs for the maintained 21-model catalog across 4 providers</li>
         <li><code>model_recommendation</code>: The recommended model for this task</li>
       </ul>
 
@@ -379,7 +379,7 @@ pcp hook install --threshold 70</div>
             <tr class="csp-style-035">
               <td class="csp-style-034"><code>cost_estimate</code></td>
               <td class="csp-style-034">CostEstimate</td>
-              <td class="csp-style-034">Token counts + cost across 21 costed models from 4 providers</td>
+              <td class="csp-style-034">Token counts + estimates for the maintained 21-model catalog across 4 providers</td>
               <td class="csp-style-034"><span class="tag tag-free">All</span></td>
             </tr>
             <tr class="csp-style-035">
@@ -667,7 +667,7 @@ pcp hook install --threshold 70</div>
           <span class="tag tag-free">Free</span>
           <span class="tag tag-free">All Plans</span>
         </div>
-        <p class="tool-desc">Estimates token count and cost across all supported providers for any prompt text. No session needed. Covers 21 costed models from Anthropic, OpenAI, Google, and Perplexity.</p>
+        <p class="tool-desc">Estimates token count and cost across PCP’s maintained 21-model catalog for any prompt text. No session needed. Prompt checks and compilation remain model agnostic; these optional estimates cover Anthropic, OpenAI, Google, and Perplexity.</p>
         <div class="tool-params">
           <div class="tool-params-title">Parameters</div>
           <div class="param-row"><span class="param-name">prompt_text</span> <span class="param-type">string</span> <span class="param-required">required</span> <span class="param-desc">The prompt text to estimate</span></div>

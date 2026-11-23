@@ -38,7 +38,7 @@ pcp demo
 |---------|-------------|
 | `pcp check "prompt"` | Quick quality score + top issues |
 | `pcp score "prompt"` | Full 5-dimension quality breakdown |
-| `pcp cost "prompt"` | Cost estimate across 21 costed models |
+| `pcp cost "prompt"` | Cost estimate across the maintained 21-model catalog |
 | `pcp benchmark` | Run 15-prompt regression suite |
 
 Free tier gives you 50 optimizations/month to try it out.
@@ -130,7 +130,7 @@ jobs:
 
 - **Prompts run without any quality check.** "Make the code better" gives Claude no constraints, no success criteria, and no target: leading to unpredictable results and wasted compute.
 - **No structure scoring, no ambiguity detection.** Even experienced engineers skip success criteria, constraints, and workflow steps. This linter flags structural gaps before you send.
-- **Cost is invisible until after you've spent it.** Most users have no idea how many tokens their prompt will consume. The linter shows cost breakdowns across 21 costed models from Anthropic, OpenAI, Google, and Perplexity before you commit. Cost estimates are approximate: validate for billing-critical workflows.
+- **Cost is invisible until after you've spent it.** PCP estimates prompt tokens before generation and reports compression deltas so teams can measure input-token changes. Optional cost estimates use a maintained 21-model catalog across Anthropic, OpenAI, Google, and Perplexity. Estimates are approximate: validate for billing-critical workflows.
 - **Simple tasks run on expensive models.** Without routing intelligence, every prompt goes to the same model. The decision engine classifies complexity and routes simple tasks to cheaper models automatically: reducing LLM spend without changing your prompts.
 - **Context bloat is the hidden cost multiplier.** Sending 500 lines of code when 50 are relevant burns tokens on irrelevant context. The smart compressor runs 5 heuristics (license strip, comment collapse, duplicate collapse, stub collapse, aggressive truncation) with zone protection for code blocks and tables: standard mode is safe, aggressive mode is opt-in.
 - **Human-in-the-loop approval.** The MCP asks blocking questions when your prompt is ambiguous, requires you to answer them before proceeding, and only finalizes the compiled prompt after you explicitly approve. No prompt runs without your sign-off: the gate is enforced in code, not convention.
@@ -512,11 +512,11 @@ The `optimize()` function runs the exact same pipeline as the `optimize_prompt` 
 | `scorePrompt(intent, context?)` | Intent → `QualityScore` (0-100) |
 | `compilePrompt(intent, context?, target?)` | Intent → compiled prompt string |
 | `generateChecklist(compiledPrompt)` | Compiled prompt → structural coverage |
-| `estimateCost(text, taskType, riskLevel, target?)` | Text → `CostEstimate` (21 costed models) |
+| `estimateCost(text, taskType, riskLevel, target?)` | Text → `CostEstimate` (maintained 21-model catalog) |
 | `compressContext(context, intent)` | Strip irrelevant context, report savings |
 | `validateLicenseKey(key)` | Ed25519 offline license validation |
 
-**Targets:** `'claude'` (XML), `'openai'` (System/User), `'generic'` (Markdown). Default is `'claude'`.
+**Targets:** `'claude'` (XML), `'openai'` (System/User), `'generic'` (Markdown). Default is `'claude'`. Generic compilation and deterministic prompt checks can be used before any model or provider; model-specific recommendations and cost estimates are limited to the maintained catalog.
 
 ```typescript
 // OpenAI-formatted output

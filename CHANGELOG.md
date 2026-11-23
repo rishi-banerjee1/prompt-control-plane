@@ -2,6 +2,7 @@
 
 ## Unreleased
 
+- Reframed the product around model-agnostic prompt checks, measured token deltas, and clearly scoped catalog-based routing and cost estimates.
 - Replaced the website explainer with the five-minute styled narration-synced video.
 
 ## Unreleased
