@@ -1,14 +1,14 @@
 # Prompt Control Plane
 
-Open-source prompt governance for any model. Every feature is available under Apache-2.0, with no monthly quota or license key.
+Open-source prompt quality checks and governance for any model or provider. Apache-2.0, unlimited use, and zero LLM calls inside the engine.
 
 [![CI](https://github.com/rishi-banerjee1/prompt-control-plane/actions/workflows/ci.yml/badge.svg)](https://github.com/rishi-banerjee1/prompt-control-plane/actions/workflows/ci.yml)
-[![npm version](https://img.shields.io/npm/v/pcp-engine)](https://www.npmjs.com/package/pcp-engine)
+[![GitHub release](https://img.shields.io/github/v/release/rishi-banerjee1/prompt-control-plane)](https://github.com/rishi-banerjee1/prompt-control-plane/releases/latest)
+[![GitHub stars](https://img.shields.io/github/stars/rishi-banerjee1/prompt-control-plane?style=social)](https://github.com/rishi-banerjee1/prompt-control-plane/stargazers)
 ![Node.js](https://img.shields.io/badge/Node.js-20%2B-339933?logo=node.js&logoColor=white)
 ![TypeScript](https://img.shields.io/badge/TypeScript-Strict-3178C6?logo=typescript&logoColor=white)
 ![License](https://img.shields.io/badge/License-Apache--2.0-blue)
 ![No Dependencies](https://img.shields.io/badge/Runtime_Deps-3-brightgreen)
-[![npm downloads](https://img.shields.io/npm/dm/pcp-engine)](https://www.npmjs.com/package/pcp-engine)
 
 ---
 
