@@ -4,7 +4,7 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Enterprise Admin Console | Prompt Control Plane</title>
-  <meta name="description" content="License-gated governance console for Enterprise PCP installations. Configure policy, inspect audit logs, and manage custom rules.">
+  <meta name="description" content="Open-source governance console. Configure policy, inspect audit logs, and manage custom rules.">
   <meta name="robots" content="noindex">
   <link rel="icon" href="favicon.svg" type="image/svg+xml">
   <link rel="stylesheet" href="shared.css?v=20260827">
@@ -19,7 +19,7 @@
       <div class="gate-logo">Prompt <span>Control Plane</span></div>
       <div class="gate-lock-icon">🔐</div>
       <h2>Enterprise access required</h2>
-      <p>This admin console is restricted to Enterprise license holders. Enter your license key to authenticate: verification happens entirely in your browser.</p>
+      <p>Use the open-source governance console to configure your local PCP installation.</p>
       <input type="text" class="gate-input" id="gate-key"
         placeholder="pcp_eyJ…"
         autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false">
@@ -27,7 +27,7 @@
       <button class="gate-btn" id="gate-btn">Verify License Key</button>
       <p class="gate-footer">
         License verification is offline: your key is never transmitted anywhere.<br>
-        Don't have an Enterprise license? <a href="contact.html" class="csp-style-001">Contact sales →</a>
+        No license key is required.
       </p>
     </div>
   </div>
@@ -65,7 +65,7 @@
     <h1 class="csp-style-004">Governance Control Panel</h1>
     <p class="csp-style-005">Configure policy, inspect audit logs, manage custom rules, and govern your enterprise PCP installation: all from one authenticated place.</p>
     <div class="alert alert-info">
-      <strong>How this works:</strong> Each section generates a ready-to-use governance command. Copy and paste it into Claude to apply the change: or download the generated JSON files to <code>~/.prompt-control-plane/</code>. Your config lock passphrase is automatically derived from your enterprise license key, so governance settings can only be changed through this console.
+      <strong>How this works:</strong> Each section generates a ready-to-use governance command. Copy and paste it into Claude to apply the change: or download the generated JSON files to <code>~/.prompt-control-plane/</code>. Choose a passphrase when locking configuration and keep it safe for unlocking later.
     </div>
   </div>
 
@@ -210,12 +210,12 @@
           <h3>Config Lock</h3>
           <p class="card-desc">Lock your configuration behind a passphrase so governance settings can't be changed in a Claude session without it. Protects policy from being overridden mid-session.</p>
           <div class="alert alert-info">
-            <strong>License-tied passphrase:</strong> Your lock passphrase is automatically derived from your enterprise license key. To change governance settings later, log back into this console and generate a new unlock command: no separate passphrase to remember or store.
+            <strong>Local passphrase:</strong> Choose and keep a passphrase to unlock configuration later.
           </div>
           <div class="form-row">
             <div class="form-group">
               <span class="form-label">Passphrase</span>
-              <input type="text" class="form-control csp-style-008" id="pol-pass" placeholder="Auto-derived from your license key" readonly>
+              <input type="text" class="form-control csp-style-008" id="pol-pass" placeholder="Choose a passphrase">
               <span id="pol-pass-note" class="csp-style-009"></span>
             </div>
             <div class="form-group csp-style-010">
@@ -513,7 +513,7 @@
           <a href="contact.html">Contact</a>
         </div>
       </div>
-      <p class="footer-copy">&copy; 2025-2026 Rishi Banerjee. Elastic License 2.0 (ELv2).</p>
+      <p class="footer-copy">&copy; 2025-2026 Rishi Banerjee. Apache License 2.0.</p>
     </div>
   </footer>
 

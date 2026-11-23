@@ -63,8 +63,8 @@ export function sanitizeLimits(limits: typeof PLAN_LIMITS.free): SerializedTierL
 
 // ─── Purchase URLs (Razorpay checkout) ───────────────────────────────────────
 
-export const PRO_PURCHASE_URL = 'https://rzp.io/rzp/FXZk3gcZ';
-export const POWER_PURCHASE_URL = 'https://rzp.io/rzp/u0TSscp';
+export const PRO_PURCHASE_URL = ''; // Legacy API export; individual paid tiers were removed.
+export const POWER_PURCHASE_URL = ''; // Legacy API export; individual paid tiers were removed.
 export const ENTERPRISE_PURCHASE_URL = 'https://getpcp.site/contact';
 
 // ─── BuildCtx factory ────────────────────────────────────────────────────────

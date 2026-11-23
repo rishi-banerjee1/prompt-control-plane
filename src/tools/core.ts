@@ -18,7 +18,6 @@ import type {
 } from '../types.js';
 import {
   hardenInput, jsonResponse, errorResponse, buildCtx, log,
-  PRO_PURCHASE_URL, POWER_PURCHASE_URL, ENTERPRISE_PURCHASE_URL,
   STRICTNESS_THRESHOLDS,
 } from './helpers.js';
 
@@ -56,10 +55,9 @@ export function registerCoreTools(
         // Freemium gate (I4: rate limit enforced inside canUseOptimization)
         const enforcement = await storage.canUseOptimization(ctx);
         if (!enforcement.allowed) {
-          const isRateLimit = enforcement.enforcement === 'rate';
           return jsonResponse({
             request_id: requestId,
-            error: isRateLimit ? 'rate_limited' : 'free_tier_limit_reached',
+            error: 'rate_limited',
             enforcement: enforcement.enforcement,
             remaining: enforcement.remaining,
             limits: enforcement.limits,
@@ -67,12 +65,7 @@ export function registerCoreTools(
             ...(enforcement.retry_after_seconds != null && {
               retry_after_seconds: enforcement.retry_after_seconds,
             }),
-            ...(!isRateLimit && {
-              pro_purchase_url: PRO_PURCHASE_URL,
-              power_purchase_url: POWER_PURCHASE_URL,
-              enterprise_purchase_url: ENTERPRISE_PURCHASE_URL,
-              next_step: 'You\'ve hit your plan limit. Upgrade to Pro (₹499/mo), Power (₹899/mo), or contact us for Enterprise — then run set_license with your key.',
-            }),
+            message: 'Request rate limit reached. Wait for the retry interval, then try again.',
           });
         }
 
@@ -83,7 +76,7 @@ export function registerCoreTools(
         }
 
         // Policy enforcement gate (v3.3.0) — Enterprise only (v4.0.0)
-        if (ctx.config.policy_mode === 'enforce' && ctx.tier === 'enterprise') {
+        if (ctx.config.policy_mode === 'enforce') {
           const { evaluatePolicyViolations } = await import('../policy.js');
           const policyRuleResults = runRules(raw_prompt, context);
           const violations = evaluatePolicyViolations(policyRuleResults, ctx.config);
@@ -244,10 +237,7 @@ export function registerCoreTools(
               retry_after_seconds: enforcement.retry_after_seconds,
             }),
             ...(!isRateLimit && {
-              pro_purchase_url: PRO_PURCHASE_URL,
-              power_purchase_url: POWER_PURCHASE_URL,
-              enterprise_purchase_url: ENTERPRISE_PURCHASE_URL,
-              next_step: 'You\'ve hit your plan limit. Upgrade to Pro (₹499/mo), Power (₹899/mo), or contact us for Enterprise — then run set_license with your key.',
+              message: 'Request rate limit reached. Wait for the retry interval, then try again.',
             }),
           });
         }
@@ -403,10 +393,7 @@ export function registerCoreTools(
               retry_after_seconds: enforcement.retry_after_seconds,
             }),
             ...(!isRateLimit && {
-              pro_purchase_url: PRO_PURCHASE_URL,
-              power_purchase_url: POWER_PURCHASE_URL,
-              enterprise_purchase_url: ENTERPRISE_PURCHASE_URL,
-              next_step: 'You\'ve hit your plan limit. Upgrade to Pro (₹499/mo), Power (₹899/mo), or contact us for Enterprise — then run set_license with your key.',
+              message: 'Request rate limit reached. Wait for the retry interval, then try again.',
             }),
           });
         }
@@ -419,9 +406,7 @@ export function registerCoreTools(
 
         // 3. Risk scoring (custom rules: enterprise only — v4.0.0)
         const ruleResults = runRules(prompt, context, taskType);
-        const { riskScore: riskScoreResult } = ctx.tier === 'enterprise'
-          ? await computeRiskScoreWithCustomRules(ruleResults, prompt, taskType)
-          : { riskScore: computeRiskScore(ruleResults) };
+        const { riskScore: riskScoreResult } = await computeRiskScoreWithCustomRules(ruleResults, prompt, taskType);
         const blockingQuestions = extractBlockingQuestions(ruleResults);
         const warnings = ruleResults
           .filter(r => r.triggered && r.severity === 'non_blocking')

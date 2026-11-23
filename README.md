@@ -1,12 +1,12 @@
 # Prompt Control Plane
 
-The control plane for AI prompts. Score, enforce policy, lock config, and audit every prompt decision. Free tier included.
+Open-source prompt governance for any model. Unlimited community use; enterprise services and support available by inquiry.
 
 [![CI](https://github.com/rishi-banerjee1/prompt-control-plane/actions/workflows/ci.yml/badge.svg)](https://github.com/rishi-banerjee1/prompt-control-plane/actions/workflows/ci.yml)
 [![npm version](https://img.shields.io/npm/v/pcp-engine)](https://www.npmjs.com/package/pcp-engine)
 ![Node.js](https://img.shields.io/badge/Node.js-20%2B-339933?logo=node.js&logoColor=white)
 ![TypeScript](https://img.shields.io/badge/TypeScript-Strict-3178C6?logo=typescript&logoColor=white)
-![License](https://img.shields.io/badge/License-ELv2-blue)
+![License](https://img.shields.io/badge/License-Apache--2.0-blue)
 ![No Dependencies](https://img.shields.io/badge/Runtime_Deps-3-brightgreen)
 [![npm downloads](https://img.shields.io/npm/dm/pcp-engine)](https://www.npmjs.com/package/pcp-engine)
 
@@ -41,7 +41,7 @@ pcp demo
 | `pcp cost "prompt"` | Cost estimate across the maintained 21-model catalog |
 | `pcp benchmark` | Run 15-prompt regression suite |
 
-Free tier gives you 50 optimizations/month to try it out.
+Free forever: unlimited individual and community use.
 
 ## Try It
 
@@ -450,7 +450,7 @@ npm install -g pcp-engine
 pcp preflight "Your prompt here" --json
 ```
 
-Free tier gives you 50 optimizations/month to try it out.
+Free forever: unlimited individual and community use.
 
 <details>
 <summary><strong>Add MCP integration (optional: for AI-assisted workflows)</strong></summary>
@@ -543,7 +543,7 @@ console.log(withCtx.cost);   // Higher token count (context included)
 | Compress context before sending | Ask Claude: "Use compress_context on this code for [intent]" |
 | Check usage & limits | Ask Claude: "Use get_usage to check my remaining optimizations" |
 | View stats | Ask Claude: "Use prompt_stats to see my optimization history" |
-| Activate Pro license | Ask Claude: "Use set_license with key: pcp_..." |
+| Use governance tools | No license key required |
 | Check license status | Ask Claude: "Use license_status" |
 
 ## 20 Capabilities
@@ -563,8 +563,8 @@ console.log(withCtx.cost);   // Higher token count (context included)
 | 11 | `configure_optimizer` | Free | Set mode, threshold, strictness, target, lock/unlock config with passphrase |
 | 12 | `get_usage` | Free | Usage count, limits, remaining, tier info |
 | 13 | `prompt_stats` | Free | Aggregates: total optimized, avg score, top task types, cost savings |
-| 14 | `set_license` | Free | Activate a Pro or Power license key (Ed25519 offline validation) |
-| 15 | `license_status` | Free | Check license status, tier, expiry. Shows purchase link if free tier. |
+| 14 | `set_license` | Free | Check legacy license status (Ed25519 offline validation) |
+| 15 | `license_status` | Free | Check license status, tier, expiry. Shows enterprise contact information when inactive. |
 | 16 | `list_sessions` | Free | List session history (metadata only, no raw prompts) |
 | 17 | `export_session` | Free | Full session export with rule-set hash + policy hash for reproducibility |
 | 18 | `delete_session` | Free | Delete a single session by ID |
@@ -573,40 +573,36 @@ console.log(withCtx.cost);   // Higher token count (context included)
 
 ## Pricing
 
-| | Free | Pro | Power | Enterprise |
-|---|------|-----|-------|-----------|
-| **Price** | ₹0 | $6/mo (₹499) | $11/mo (₹899) | Custom |
-| **Optimizations** | 50/month | 100/month | Unlimited | Unlimited |
-| **Rate limit** | 5/min | 30/min | 60/min | 120/min |
-| **Always-on mode** | N/A | N/A | ✓ | ✓ |
-| **All 20 capabilities** | ✓ | ✓ | ✓ | ✓ |
-| **Enterprise Console** | N/A | N/A | N/A | ✓ |
-| **Policy Enforcement** | N/A | N/A | N/A | ✓ |
-| **Custom Governance Rules** | N/A | N/A | N/A | ✓ |
-| **Hash-Chained Audit Trail** | N/A | N/A | N/A | ✓ |
-| **Config Lock Mode** | N/A | N/A | N/A | ✓ |
-| **Support** | Community | Email | Priority | Dedicated |
-| **SLA** | N/A | N/A | N/A | Custom |
+| | Community | Enterprise |
+|---|---|---|
+| **Price** | Free | Custom |
+| **Optimizations** | Unlimited | Unlimited |
+| **Rate limit** | 60/min | 120/min |
+| **Always-on mode** | ✓ | ✓ |
+| **All community tools** | ✓ | ✓ |
+| **Enterprise Console** | ✓ | ✓ |
+| **Policy Enforcement** | ✓ | ✓ |
+| **Custom Governance Rules** | ✓ | ✓ |
+| **Hash-Chained Audit Trail** | ✓ | ✓ |
+| **Config Lock Mode** | ✓ | ✓ |
+| **Support** | Community | Paid services available |
+| **SLA** | None | Custom services |
 
-**Free tier** gives you 50 optimizations/month to experience the full pipeline. No credit card required.
+**Community edition**: all core features, unlimited, free, and open source under Apache-2.0.
 
-**Enterprise** includes unlimited usage, custom integrations, and dedicated support. [Contact sales](https://getpcp.site/contact.html) for pricing and details.
+All software capabilities are open source under Apache-2.0. Optional enterprise support, service levels, and custom implementation are available by inquiry.
 
-### Activate a License
+### Licensing
 
-1. **Free**: No action needed: you get 50 optimizations/month immediately.
-2. **Pro/Power**: Purchase at the [Prompt Control Plane store](https://getpcp.site/) and you receive a license key starting with `pcp_...`
-3. Tell Claude: "Use set_license with key: pcp_YOUR_KEY_HERE"
-4. Done: your tier upgrades instantly. Verify with `license_status`.
-5. **Enterprise**: [Contact sales](https://getpcp.site/contact.html) for custom license key generation.
+All repository features are Apache-2.0 licensed. No license key or account is required. [Contact us](https://getpcp.site/contact.html) for optional enterprise support and services.
 
 ## Enterprise Features
 
-Enterprise features are gated by an Enterprise license key. All features below are managed through the **[Enterprise Console](https://getpcp.site/admin.html)**: a web-based admin interface with one-click toggles.
+All governance features are available in the open-source software. Configure them through the **[Enterprise Console](https://getpcp.site/admin.html)**: a web-based admin interface with one-click toggles.
 
 ### Enterprise Console
 
-A browser-based admin panel that provides full visibility and control over your Prompt Control Plane deployment. Requires an Enterprise license key to access. Configure policies, build custom rules, manage audit settings, and deploy governance changes: all without touching configuration files.
+A browser-based admin panel that provides full visibility and control over your Prompt Control Plane deployment. Configure policies, build custom rules, manage audit settings, and deploy governance changes: all without touching configuration files.
 
 ### Policy Enforcement
 
@@ -614,7 +610,7 @@ Switch from advisory to enforce mode. In enforce mode, BLOCKING rules (built-in 
 
 ### Policy-Locked Configuration
 
-Lock your governance settings so no one can change policy, strictness, or audit settings without the correct passphrase. Every lock, unlock, and blocked attempt is audit-logged. When activated through the Enterprise Console, the lock passphrase is auto-derived from your license key.
+Lock your governance settings so no one can change policy, strictness, or audit settings without the correct passphrase. Every lock, unlock, and blocked attempt is audit-logged. Choose and retain a passphrase when locking configuration.
 
 ### Hash-Chained Audit Trail
 
@@ -670,7 +666,7 @@ Input: "Build a REST API with authentication, rate limiting,
 → Quality Score: 52/100
 ```
 
-`pre_flight` counts as 1 metered optimization use (same quota as `optimize_prompt`). It does **not** call `optimize_prompt` internally: no double-metering. `classify_task` and `route_model` are always free and unlimited.
+`pre_flight` does **not** call `optimize_prompt` internally. All tools are available with no monthly quota.
 
 ### Model Routing
 
@@ -1206,7 +1202,7 @@ Reason:         Balanced task: Sonnet offers the best
 - [x] Structured audience/tone/platform detection: 19 audience patterns, 9 platforms, tone signals
 - [x] Multi-LLM output targets: Claude (XML), OpenAI (system/user), Generic (Markdown)
 - [x] Persistent file-based storage (`~/.prompt-control-plane/`)
-- [x] 3-tier freemium system: Free (50/mo), Pro ($6/mo, 100/mo), Power ($11/mo, unlimited)
+- [x] Open-source software: all features available without license keys
 - [x] Ed25519 offline license key activation: no phone-home, no backend
 - [x] Monthly usage enforcement with calendar-month reset
 - [x] Rate limiting: tier-keyed sliding window (5/30/60 per minute)
@@ -1231,7 +1227,7 @@ Reason:         Balanced task: Sonnet offers the best
 - [x] Auto-check hooks: `pcp hook install/uninstall/status`: silently checks every prompt before it reaches the LLM
 - [ ] Optional Haiku pass for nuanced ambiguity detection
 - [ ] Prompt template library (common patterns)
-- [x] Always-on mode for Power tier (auto-optimize every prompt)
+- [x] Always-on mode for every user (auto-optimize every prompt)
 
 ## Contributors
 
@@ -1243,4 +1239,4 @@ Built on the [Model Context Protocol](https://modelcontextprotocol.io) by **[Ant
 
 ## License
 
-[Elastic License 2.0 (ELv2)](https://www.elastic.co/licensing/elastic-license): use, modify, and redistribute freely. You may not offer it as a competing hosted service or remove the license key system.
+Apache-2.0. Use, modify, and redistribute the community software under its license. All software is licensed under Apache-2.0. The PCP name and logo are trademarks.

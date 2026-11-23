@@ -59,13 +59,13 @@ describe('Freemium enforcement', () => {
     assert.ok(PLAN_LIMITS.pro, 'Pro tier should exist');
     assert.ok(PLAN_LIMITS.power, 'Power tier should exist');
     assert.equal(PLAN_LIMITS.free.lifetime, Infinity);
-    assert.equal(PLAN_LIMITS.free.monthly, 50);
-    assert.equal(PLAN_LIMITS.free.rate_per_minute, 5);
-    assert.equal(PLAN_LIMITS.free.always_on, false);
+    assert.equal(PLAN_LIMITS.free.monthly, Infinity);
+    assert.equal(PLAN_LIMITS.free.rate_per_minute, 60);
+    assert.equal(PLAN_LIMITS.free.always_on, true);
     assert.equal(PLAN_LIMITS.pro.lifetime, Infinity);
-    assert.equal(PLAN_LIMITS.pro.monthly, 100);
-    assert.equal(PLAN_LIMITS.pro.rate_per_minute, 30);
-    assert.equal(PLAN_LIMITS.pro.always_on, false);
+    assert.equal(PLAN_LIMITS.pro.monthly, Infinity);
+    assert.equal(PLAN_LIMITS.pro.rate_per_minute, 60);
+    assert.equal(PLAN_LIMITS.pro.always_on, true);
     assert.equal(PLAN_LIMITS.power.lifetime, Infinity);
     assert.equal(PLAN_LIMITS.power.monthly, Infinity);
     assert.equal(PLAN_LIMITS.power.rate_per_minute, 60);
@@ -84,18 +84,17 @@ describe('Freemium enforcement', () => {
     }
   });
 
-  it('gates 51st use on free tier with monthly enforcement', async () => {
+  it('allows community use beyond the former monthly quota', async () => {
     const ctx = makeCtx();
 
-    // Use up 50
-    for (let i = 0; i < 50; i++) {
+    for (let i = 0; i < 100; i++) {
       await storage.incrementUsage();
     }
 
     const result = await storage.canUseOptimization(ctx);
-    assert.equal(result.allowed, false);
-    assert.equal(result.enforcement, 'monthly');
-    assert.equal(result.remaining.monthly, 0);
+    assert.equal(result.allowed, true);
+    assert.equal(result.enforcement, null);
+    assert.equal(result.remaining.monthly, Infinity);
   });
 
   it('EnforcementResult has correct shape', async () => {
@@ -147,10 +146,8 @@ describe('Freemium enforcement', () => {
     assert.equal(afterUsage.total_optimizations, 0, 'Counter should be unchanged after failure');
   });
 
-  it('always_on mode blocked for free and pro tiers, allowed for power', () => {
-    assert.equal(PLAN_LIMITS.free.always_on, false);
-    assert.equal(PLAN_LIMITS.pro.always_on, false);
-    assert.equal(PLAN_LIMITS.power.always_on, true);
+  it('always_on is available in the open-source edition', () => {
+    assert.equal(PLAN_LIMITS.free.always_on, true);
   });
 });
 
@@ -160,7 +157,7 @@ describe('Rate limiter', () => {
     const limiter2 = new LocalRateLimiter();
 
     // Fill up limiter1
-    for (let i = 0; i < 5; i++) {
+    for (let i = 0; i < PLAN_LIMITS.free.rate_per_minute; i++) {
       limiter1.check('free');
     }
     const result1 = limiter1.check('free');

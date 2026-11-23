@@ -34,10 +34,8 @@
     "applicationCategory": "DeveloperApplication",
     "operatingSystem": "Cross-platform",
     "offers": [
-      { "@type": "Offer", "price": "0", "priceCurrency": "INR", "description": "Free tier: 50 optimizations/month" },
-      { "@type": "Offer", "price": "499", "priceCurrency": "INR", "description": "Pro: 100/month" },
-      { "@type": "Offer", "price": "899", "priceCurrency": "INR", "description": "Power: unlimited" },
-      { "@type": "Offer", "priceCurrency": "INR", "description": "Enterprise: custom pricing, dedicated support, SLA" }
+      { "@type": "Offer", "price": "0", "priceCurrency": "INR", "description": "Community edition: unlimited optimizations" },
+      { "@type": "Offer", "priceCurrency": "INR", "description": "Optional paid enterprise services and support" }
     ],
     "url": "https://getpcp.site/",
     "downloadUrl": "https://www.npmjs.com/package/pcp-engine"
@@ -86,7 +84,7 @@
         <a href="https://www.npmjs.com/package/pcp-engine"><img src="https://img.shields.io/npm/v/pcp-engine?style=flat-square&color=6366f1" alt="npm version"></a>
         <a href="https://www.npmjs.com/package/pcp-engine"><img src="https://img.shields.io/npm/dm/pcp-engine?style=flat-square&color=6366f1" alt="npm downloads"></a>
         <a href="https://github.com/rishi-banerjee1/prompt-control-plane/releases"><img src="https://img.shields.io/github/v/tag/rishi-banerjee1/prompt-control-plane?style=flat-square&color=6366f1&label=release" alt="GitHub release"></a>
-        <img src="https://img.shields.io/badge/License-ELv2-6366f1?style=flat-square" alt="License">
+        <img src="https://img.shields.io/badge/License-Apache-2.0-6366f1?style=flat-square" alt="License">
       </div>
       <div class="cta-row">
         <a href="#pricing" class="btn btn-primary">Try It Free</a>
@@ -234,20 +232,20 @@
   <section class="section section-alt" id="enterprise-controls">
     <div class="container">
       <h2 class="section-title">Enterprise Controls</h2>
-      <p class="section-subtitle">The governance layer you need before approving AI in production. All managed through a license-gated <a href="admin.html" class="csp-style-037">Enterprise Console</a>.</p>
+      <p class="section-subtitle">The governance layer you need before approving AI in production. All available in the open-source <a href="admin.html" class="csp-style-037">Governance Console</a>.</p>
       <div>
         <div class="flow-step">
           <div class="flow-num csp-style-095">&#x1f5a5;</div>
           <div class="flow-content">
             <h3>Enterprise Console</h3>
-            <p>A web-based governance control panel, accessible only with a valid Enterprise license key. Configure policy, inspect audit logs, build custom rules, and manage session retention: all from one authenticated place. License verification is fully offline.</p>
+            <p>An open-source governance control panel. Configure policy, inspect audit logs, build custom rules, and manage session retention locally, with no license key required.</p>
           </div>
         </div>
         <div class="flow-step">
           <div class="flow-num csp-style-095">&#x1f512;</div>
           <div class="flow-content">
             <h3>Policy-Locked Configuration</h3>
-            <p>Lock your governance config with a passphrase derived from your enterprise license. No one can change policy, strictness, or audit settings without authenticating through the console. Every attempt: successful or blocked: is audit-logged.</p>
+            <p>Lock your governance config with a passphrase you choose. No one can change policy, strictness, or audit settings without the passphrase. Every attempt: successful or blocked: is audit-logged.</p>
           </div>
         </div>
         <div class="flow-step">
@@ -417,7 +415,7 @@
   <section class="section" id="pricing">
     <div class="container-wide text-center">
       <h2 class="section-title">Pricing</h2>
-      <p class="section-subtitle">Free tier includes 50 optimizations/month, unlimited scoring, and all 20 tools. No credit card required.</p>
+      <p class="section-subtitle">The complete open-source project is free: unlimited optimizations, scoring, and all 20 tools. Enterprise support and custom services are available by inquiry.</p>
 
       <div class="pricing-grid">
         <div class="pricing-card">
@@ -425,39 +423,13 @@
           <div class="price">&#x20b9;0 <span class="csp-style-104">/ $0</span></div>
           <div class="price-note">forever</div>
           <ul>
-            <li>50 optimizations / month</li>
+            <li>Unlimited optimizations</li>
             <li>Unlimited scoring &amp; checking</li>
-            <li>5 per minute rate limit</li>
-            <li>All 20 tools</li>
+            <li>60 requests / minute</li>
+            <li>All tools and governance features</li>
             <li>All 3 output formats</li>
           </ul>
           <a href="https://github.com/rishi-banerjee1/prompt-control-plane" class="btn btn-secondary">Get Started</a>
-        </div>
-        <div class="pricing-card featured">
-          <div class="tier">Pro</div>
-          <div class="price">&#x20b9;499 <span class="csp-style-104">/ ~$6</span></div>
-          <div class="price-note">per month</div>
-          <ul>
-            <li>100 optimizations / month</li>
-            <li>Unlimited scoring &amp; checking</li>
-            <li>30 per minute rate limit</li>
-            <li>Offline license key</li>
-            <li>No account needed</li>
-          </ul>
-          <a href="https://rzp.io/rzp/FXZk3gcZ" id="buy-pro-btn" class="btn btn-primary">Get Pro</a>
-        </div>
-        <div class="pricing-card">
-          <div class="tier">Power</div>
-          <div class="price">&#x20b9;899 <span class="csp-style-104">/ ~$11</span></div>
-          <div class="price-note">per month</div>
-          <ul>
-            <li>Unlimited optimizations</li>
-            <li>Unlimited scoring &amp; checking</li>
-            <li>60 per minute rate limit</li>
-            <li>Always-on mode</li>
-            <li>Priority support</li>
-          </ul>
-          <a href="https://rzp.io/rzp/u0TSscp" id="buy-power-btn" class="btn btn-primary">Get Power</a>
         </div>
         <div class="pricing-card">
           <div class="tier">Enterprise</div>
@@ -465,7 +437,7 @@
           <div class="price-note">contact us</div>
           <ul>
             <li>Unlimited optimizations</li>
-            <li>120 per minute rate limit</li>
+            <li>60 requests per minute</li>
             <li>Policy enforcement + config lock</li>
             <li>Hash-chained audit logging</li>
             <li>Custom rules + session retention</li>
@@ -627,7 +599,7 @@
           <a href="contact.html">Contact</a>
         </div>
       </div>
-      <p class="footer-copy">&copy; 2025-2026 Rishi Banerjee. Elastic License 2.0 (ELv2).</p>
+      <p class="footer-copy">&copy; 2025-2026 Rishi Banerjee. Apache License 2.0.</p>
     </div>
   </footer>
 

@@ -7,6 +7,7 @@ import path from 'node:path';
 import os from 'node:os';
 import { LocalFsStorage } from '../src/storage/localFs.js';
 import { LocalRateLimiter } from '../src/rateLimit.js';
+import { PLAN_LIMITS } from '../src/types.js';
 import { createRequestId } from '../src/logger.js';
 
 let testDir: string;
@@ -115,7 +116,7 @@ describe('Rate limiter isolation', () => {
     const b = new LocalRateLimiter();
 
     // Exhaust 'a'
-    for (let i = 0; i < 10; i++) a.check('free');
+    for (let i = 0; i < PLAN_LIMITS.free.rate_per_minute; i++) a.check('free');
     const aResult = a.check('free');
 
     // 'b' should be fresh
@@ -129,7 +130,7 @@ describe('Rate limiter isolation', () => {
     const limiter = new LocalRateLimiter();
 
     // Fill up free
-    for (let i = 0; i < 5; i++) limiter.check('free');
+    for (let i = 0; i < PLAN_LIMITS.free.rate_per_minute; i++) limiter.check('free');
     assert.equal(limiter.check('free').allowed, false);
 
     // Pro should still work

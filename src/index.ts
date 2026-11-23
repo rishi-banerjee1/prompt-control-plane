@@ -44,16 +44,12 @@ Usage:
   pcp-engine -h       Print this help
 
 Environment:
-  PROMPT_CONTROL_PLANE_PRO=true            Enable pro tier (development/testing only)
   PROMPT_CONTROL_PLANE_LOG_LEVEL=debug     Log verbosity: debug, info, warn, error
   PROMPT_CONTROL_PLANE_LOG_PROMPTS=true    Enable raw prompt logging (never in shared envs)
 
-Tiers:
-  Free                   — 50 optimizations/month, 5/min rate limit
-  Pro ($6/mo (₹499))    — 100 optimizations/month, 30/min rate limit
-  Power ($11/mo (₹899)) — Unlimited optimizations, 60/min rate limit, always-on mode
-  Enterprise (custom)   — Policy enforcement, audit trail, config lock, custom rules
-  Activate with the set_license tool. Tier priority: license key > env var > free
+  Community use:
+  Unlimited optimizations, all community tools, no license key required.
+  All governance features are included under Apache-2.0; optional enterprise support is available.
 
 Quick setup (any MCP-compatible client):
   Add to .mcp.json or ~/.claude/settings.json:

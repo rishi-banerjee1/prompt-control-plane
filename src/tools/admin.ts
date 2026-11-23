@@ -12,7 +12,7 @@ import type {
 import { PLAN_LIMITS } from '../types.js';
 import {
   jsonResponse, errorResponse, buildCtx, log, sanitizeLimits,
-  PRO_PURCHASE_URL, POWER_PURCHASE_URL, ENTERPRISE_PURCHASE_URL,
+  ENTERPRISE_PURCHASE_URL,
 } from './helpers.js';
 
 export function registerAdminTools(
@@ -54,17 +54,6 @@ export function registerAdminTools(
 
       try {
         const { createHash } = await import('node:crypto');
-
-        // ─── Enterprise tier gates (v4.0.0) ──────────────────────────────
-        if ((params.lock || params.unlock) && ctx.tier !== 'enterprise') {
-          return errorResponse({
-            request_id: requestId,
-            error: 'tier_feature_unavailable',
-            message: 'Config lock/unlock requires Enterprise tier.',
-            current_tier: ctx.tier,
-            enterprise_purchase_url: ENTERPRISE_PURCHASE_URL,
-          });
-        }
 
         // ─── Lock/Unlock handling ────────────────────────────────────────
         if (params.lock) {
@@ -180,30 +169,6 @@ export function registerAdminTools(
         }
 
         // ─── Normal config changes ───────────────────────────────────────
-
-        // always_on tier check
-        if (params.mode === 'always_on' && !PLAN_LIMITS[ctx.tier]?.always_on) {
-          return errorResponse({
-            request_id: requestId,
-            error: 'tier_feature_unavailable',
-            message: 'always_on mode requires Pro tier.',
-            upgrade_hint: true,
-          });
-        }
-
-        // Enterprise-only settings (v4.0.0)
-        const ENTERPRISE_ONLY_SETTINGS = ['policy_mode', 'audit_log', 'session_retention_days'] as const;
-        for (const setting of ENTERPRISE_ONLY_SETTINGS) {
-          if (params[setting] !== undefined && ctx.tier !== 'enterprise') {
-            return errorResponse({
-              request_id: requestId,
-              error: 'tier_feature_unavailable',
-              message: `${setting} requires Enterprise tier.`,
-              current_tier: ctx.tier,
-              enterprise_purchase_url: ENTERPRISE_PURCHASE_URL,
-            });
-          }
-        }
 
         // Build partial config from provided params
         const updates: Partial<OptimizerConfig> = {};
@@ -322,8 +287,6 @@ export function registerAdminTools(
             message: result.error === 'expired'
               ? 'License key has expired. Please renew your subscription.'
               : `License key is invalid: ${result.error}`,
-            pro_purchase_url: PRO_PURCHASE_URL,
-            power_purchase_url: POWER_PURCHASE_URL,
             enterprise_purchase_url: ENTERPRISE_PURCHASE_URL,
           });
         }
@@ -396,8 +359,6 @@ export function registerAdminTools(
             has_license: false,
             tier: 'free',
             limits: sanitizeLimits(PLAN_LIMITS.free),
-            pro_purchase_url: PRO_PURCHASE_URL,
-            power_purchase_url: POWER_PURCHASE_URL,
             enterprise_purchase_url: ENTERPRISE_PURCHASE_URL,
           });
         }
@@ -415,7 +376,7 @@ export function registerAdminTools(
           activated_at: license.activated_at,
           limits,
           ...(license.validation_error && { validation_error: license.validation_error }),
-          ...(!license.valid && { pro_purchase_url: PRO_PURCHASE_URL, power_purchase_url: POWER_PURCHASE_URL, enterprise_purchase_url: ENTERPRISE_PURCHASE_URL }),
+          ...(!license.valid && { enterprise_purchase_url: ENTERPRISE_PURCHASE_URL }),
         });
       } catch (err) {
         log.error(requestId, 'license_status failed:', err instanceof Error ? err.message : String(err));
@@ -432,7 +393,7 @@ export function registerAdminTools(
 
   server.tool(
     'save_custom_rules',
-    'Save custom governance rules to the local rules file (~/.prompt-control-plane/custom-rules.json). Validates all rules against the product schema, writes to disk, and returns the rule-set hash. Rules take effect on the next optimization. Works with any LLM connected to PCP. Enterprise tier only.',
+    'Save custom governance rules to the local rules file (~/.prompt-control-plane/custom-rules.json). Validates all rules against the product schema, writes to disk, and returns the rule-set hash. Rules take effect on the next optimization. Works with any LLM connected to PCP. Open source for every community user.',
     {
       rules: z.array(z.object({
         id: z.string().min(1).max(64).describe('Snake_case rule ID — must start with lowercase letter (a-z), then a-z0-9_ chars'),
@@ -450,19 +411,6 @@ export function registerAdminTools(
       const { requestId } = ctx;
 
       try {
-        // Enterprise-only gate: custom rules are an enterprise governance feature
-        if (ctx.tier !== 'enterprise') {
-          return errorResponse({
-            request_id: requestId,
-            error: 'enterprise_required',
-            message: `Custom governance rules are an Enterprise-only feature. Current tier: ${ctx.tier}`,
-            current_tier: ctx.tier,
-            required_tier: 'enterprise',
-            enterprise_purchase_url: ENTERPRISE_PURCHASE_URL,
-            next_step: 'Contact us for an Enterprise license to unlock custom governance rules.',
-          });
-        }
-
         const { customRules } = await import('../customRules.js');
         const result = await customRules.saveRules(rules);
 

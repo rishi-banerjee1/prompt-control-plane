@@ -20,7 +20,6 @@ import type {
 } from '../types.js';
 import {
   hardenInput, jsonResponse, errorResponse, buildCtx, log,
-  PRO_PURCHASE_URL, POWER_PURCHASE_URL, ENTERPRISE_PURCHASE_URL,
 } from './helpers.js';
 
 export function registerAnalysisTools(
@@ -63,7 +62,7 @@ export function registerAnalysisTools(
         }
 
         // Policy enforcement gate (v3.3.0) — Enterprise only (v4.0.0)
-        if (ctx.config.policy_mode === 'enforce' && ctx.tier === 'enterprise') {
+        if (ctx.config.policy_mode === 'enforce') {
           const { evaluatePolicyViolations, checkRiskThreshold } = await import('../policy.js');
 
           // Check BLOCKING violations
@@ -288,9 +287,7 @@ export function registerAnalysisTools(
 
         // Risk scoring (custom rules: enterprise only — v4.0.0)
         const ruleResults = runRules(prompt, context, taskType);
-        const { riskScore } = ctx.tier === 'enterprise'
-          ? await computeRiskScoreWithCustomRules(ruleResults, prompt, taskType)
-          : { riskScore: computeRiskScore(ruleResults) };
+        const { riskScore } = await computeRiskScoreWithCustomRules(ruleResults, prompt, taskType);
 
         // Suggested profile (G5: deterministic mapping)
         const suggestedProfileName = suggestProfile(complexityResult.complexity, riskScore.score);
@@ -389,9 +386,7 @@ export function registerAnalysisTools(
         // Risk scoring (custom rules: enterprise only — v4.0.0)
         const contextTokens = estimateTokens((prompt || '') + (context || ''));
         const ruleResults = prompt ? runRules(prompt, context, resolvedTaskType) : [];
-        const { riskScore: riskScoreResult } = ctx.tier === 'enterprise'
-          ? await computeRiskScoreWithCustomRules(ruleResults, prompt || '', resolvedTaskType)
-          : { riskScore: computeRiskScore(ruleResults) };
+        const { riskScore: riskScoreResult } = await computeRiskScoreWithCustomRules(ruleResults, prompt || '', resolvedTaskType);
 
         // Build routing input
         const routingInput: ModelRoutingInput = {

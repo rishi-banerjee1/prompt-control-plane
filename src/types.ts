@@ -142,8 +142,8 @@ export type OutputTarget = 'claude' | 'openai' | 'google' | 'perplexity' | 'gene
 
 export interface TierLimits {
   lifetime: number;          // total uses ever (free/pro/power=Infinity)
-  monthly: number;           // per calendar month (free=50, pro=100, power=Infinity)
-  rate_per_minute: number;   // sliding window rate limit (free=5, pro=30, power=60)
+  monthly: number;           // per calendar month (community=Infinity)
+  rate_per_minute: number;   // sliding window rate limit
   always_on: boolean;        // can use always-on mode (free/pro=false, power=true)
 }
 
@@ -156,10 +156,10 @@ export interface SerializedTierLimits {
 }
 
 export const PLAN_LIMITS: Record<string, TierLimits> = {
-  free:       { lifetime: Infinity, monthly: 50,        rate_per_minute: 5,   always_on: false },
-  pro:        { lifetime: Infinity, monthly: 100,       rate_per_minute: 30,  always_on: false },
-  power:      { lifetime: Infinity, monthly: Infinity,  rate_per_minute: 60,  always_on: true },
-  enterprise: { lifetime: Infinity, monthly: Infinity,  rate_per_minute: 120, always_on: true },
+  free:       { lifetime: Infinity, monthly: Infinity,  rate_per_minute: 60, always_on: true },
+  pro:        { lifetime: Infinity, monthly: Infinity,  rate_per_minute: 60, always_on: true },
+  power:      { lifetime: Infinity, monthly: Infinity,  rate_per_minute: 60, always_on: true },
+  enterprise: { lifetime: Infinity, monthly: Infinity,  rate_per_minute: 60, always_on: true },
 };
 
 export type Tier = 'free' | 'pro' | 'power' | 'enterprise';

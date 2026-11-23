@@ -410,7 +410,7 @@ pcp hook install --threshold 70</div>
         </table>
       </div>
 
-      <p class="csp-style-036"><strong>Enterprise-only pipeline stages</strong> that influence the PreviewPack (all configured via the <a href="admin.html" class="csp-style-037">Enterprise Console</a>):</p>
+      <p class="csp-style-036"><strong>Optional governance pipeline stages</strong> that influence the PreviewPack (all configured via the <a href="admin.html" class="csp-style-037">Enterprise Console</a>):</p>
       <ul class="csp-style-038">
         <li><strong>Policy Gate</strong>: can block or warn before compilation begins. Set enforcement mode and strictness in the Enterprise Console.</li>
         <li><strong>Custom Rules</strong>: your regex-based rules affect risk score and blocking decisions. Build rules visually in the Enterprise Console and deploy with one click via the <code>save_custom_rules</code> tool. Validate with <code>pcp doctor</code>.</li>
@@ -462,7 +462,7 @@ pcp hook install --threshold 70</div>
       <!-- TOOL REFERENCE                                                      -->
       <!-- ════════════════════════════════════════════════════════════════════ -->
       <h2 id="tool-reference">Tool Reference</h2>
-      <p>Prompt Control Plane exposes 20 tools via MCP. Three are metered (count against your plan); the rest are free and unlimited. Every response includes a <code>request_id</code> for traceability.</p>
+      <p>Prompt Control Plane exposes 20 tools via MCP. All 20 tools are available in the Apache-2.0 project. Community use has no monthly quota. Every response includes a <code>request_id</code> for traceability.</p>
 
       <div class="tool-card csp-style-047">
         <h3 class="csp-style-048">All 20 Tools at a Glance</h3>
@@ -597,7 +597,7 @@ pcp hook install --threshold 70</div>
           <span class="tag tag-metered">Metered</span>
           <span class="tag tag-free">All Plans</span>
         </div>
-        <p class="tool-desc">Full pre-flight analysis in a single call: classifies task, assesses risk, routes model, and scores quality. Returns a complete decision bundle. Counts as 1 metered use (does NOT call <code>optimize_prompt</code> internally).</p>
+        <p class="tool-desc">Full pre-flight analysis in a single call: classifies task, assesses risk, routes model, and scores quality. Returns a complete decision bundle. Unlimited community use (does NOT call <code>optimize_prompt</code> internally).</p>
         <div class="tool-params">
           <div class="tool-params-title">Parameters</div>
           <div class="param-row"><span class="param-name">prompt</span> <span class="param-type">string</span> <span class="param-required">required</span> <span class="param-desc">The prompt to analyze</span></div>
@@ -797,7 +797,7 @@ pcp hook install --threshold 70</div>
           <span class="tag tag-free">Free</span>
           <span class="tag tag-free">All Plans</span>
         </div>
-        <p class="tool-desc">Activates a Pro, Power, or Enterprise license key. Uses Ed25519 asymmetric signature verification (public key only, offline, zero dependencies). The license payload contains tier, issued_at, expires_at, and license_id: no PII.</p>
+        <p class="tool-desc">Checks a legacy Enterprise license key; licenses do not gate open-source features. Uses Ed25519 asymmetric signature verification (public key only, offline, zero dependencies). The license payload contains tier, issued_at, expires_at, and license_id: no PII.</p>
         <div class="tool-params">
           <div class="tool-params-title">Parameters</div>
           <div class="param-row"><span class="param-name">license_key</span> <span class="param-type">string</span> <span class="param-required">required</span> <span class="param-desc">License key string (starts with pcp_)</span></div>
@@ -1460,7 +1460,7 @@ pcp benchmark --json
       <table class="data-table">
         <thead><tr><th>Variable</th><th>Default</th><th>Purpose</th></tr></thead>
         <tbody>
-          <tr><td><code>PROMPT_CONTROL_PLANE_PRO</code></td><td>unset</td><td>Set to <code>true</code> to enable pro tier via environment variable. Tier priority: license key (cryptographically verified) &gt; env var &gt; default free.</td></tr>
+          <tr><td><code>PROMPT_CONTROL_PLANE_PRO</code></td><td>unset</td><td>Legacy development override retained for compatibility; community use is unlimited and does not require activation.</td></tr>
           <tr><td><code>PROMPT_CONTROL_PLANE_LOG_LEVEL</code></td><td><code>info</code></td><td>Log verbosity: debug, info, warn, error</td></tr>
           <tr><td><code>PROMPT_CONTROL_PLANE_LOG_PROMPTS</code></td><td>unset (false)</td><td>Set to <code>true</code> to enable raw prompt logging. <strong>Never enable in shared environments.</strong></td></tr>
         </tbody>
@@ -1532,7 +1532,7 @@ pcp benchmark --json
           <a href="contact.html">Contact</a>
         </div>
       </div>
-      <p class="footer-copy">&copy; 2025-2026 Rishi Banerjee. Elastic License 2.0 (ELv2).</p>
+      <p class="footer-copy">&copy; 2025-2026 Rishi Banerjee. Apache License 2.0.</p>
     </div>
   </footer>
 

@@ -210,8 +210,8 @@ describe('E2E: License → tier upgrade', () => {
 
     // Verify limits match pro tier
     const proLimits = PLAN_LIMITS.pro;
-    assert.equal(proLimits.monthly, 100);
-    assert.equal(proLimits.rate_per_minute, 30);
+    assert.equal(proLimits.monthly, Infinity);
+    assert.equal(proLimits.rate_per_minute, 60);
   });
 
   it('free → power upgrade via license key', async () => {
@@ -308,24 +308,22 @@ describe('E2E: Gate enforcement', () => {
   beforeEach(() => { storage = makeTestStorage(); });
   afterEach(() => { try { fs.rmSync(testDir, { recursive: true }); } catch {} });
 
-  it('free tier exhaustion: 51st call blocked with monthly enforcement', async () => {
+  it('community use remains available beyond the former monthly quota', async () => {
     const ctx = makeCtx();
 
-    // Use up 50
-    for (let i = 0; i < 50; i++) {
+    for (let i = 0; i < 100; i++) {
       const result = await storage.canUseOptimization(ctx);
       assert.ok(result.allowed, `Use ${i + 1} should be allowed`);
       await storage.incrementUsage();
     }
 
-    // 51st blocked
-    const blocked = await storage.canUseOptimization(ctx);
-    assert.equal(blocked.allowed, false);
-    assert.equal(blocked.enforcement, 'monthly');
-    assert.equal(blocked.remaining.monthly, 0);
+    const beyondFormerQuota = await storage.canUseOptimization(ctx);
+    assert.equal(beyondFormerQuota.allowed, true);
+    assert.equal(beyondFormerQuota.enforcement, null);
+    assert.equal(beyondFormerQuota.remaining.monthly, Infinity);
   });
 
-  it('pro tier monthly limit: 101st call blocked', async () => {
+  it('legacy pro tier has no monthly quota', async () => {
     // Set up pro license
     await storage.setLicense({
       schema_version: 1,
@@ -345,8 +343,8 @@ describe('E2E: Gate enforcement', () => {
     }
 
     const blocked = await storage.canUseOptimization(ctx);
-    assert.equal(blocked.allowed, false);
-    assert.equal(blocked.enforcement, 'monthly');
+    assert.equal(blocked.allowed, true);
+    assert.equal(blocked.enforcement, null);
   });
 
   it('power tier has no limits', async () => {
@@ -375,8 +373,8 @@ describe('E2E: Gate enforcement', () => {
     const rateLimiter = new LocalRateLimiter();
     const ctx = makeCtx({ rateLimiter, tier: 'free' });
 
-    // Free tier: 5/min. Exhaust it.
-    for (let i = 0; i < 5; i++) {
+    // Community throttle: 60 requests per minute.
+    for (let i = 0; i < 60; i++) {
       const result = await storage.canUseOptimization(ctx);
       assert.ok(result.allowed, `Rate call ${i + 1} should be allowed`);
       await storage.incrementUsage();
@@ -422,29 +420,20 @@ describe('E2E: Gate enforcement', () => {
 // ═══════════════════════════════════════════════════════════════════════════════
 
 describe('E2E: Checkout URL wiring', () => {
-  it('purchase URLs are configured (Razorpay)', () => {
-    assert.equal(typeof PRO_PURCHASE_URL, 'string', 'Pro URL should be a string');
-    assert.equal(typeof POWER_PURCHASE_URL, 'string', 'Power URL should be a string');
-    assert.ok(PRO_PURCHASE_URL.length > 0, 'Pro URL should not be empty');
-    assert.ok(POWER_PURCHASE_URL.length > 0, 'Power URL should not be empty');
-    // When real Razorpay URLs are set, these will also pass:
-    if (!PRO_PURCHASE_URL.includes('TODO')) {
-      assert.ok(PRO_PURCHASE_URL.startsWith('https://'), 'Pro URL should be HTTPS');
-      assert.ok(POWER_PURCHASE_URL.startsWith('https://'), 'Power URL should be HTTPS');
-      assert.notEqual(PRO_PURCHASE_URL, POWER_PURCHASE_URL, 'Pro and Power URLs must differ');
-    }
+  it('legacy individual-tier checkout links are disabled', () => {
+    assert.equal(PRO_PURCHASE_URL, '');
+    assert.equal(POWER_PURCHASE_URL, '');
   });
 
-  it('PLAN_LIMITS tiers match expected pricing model', () => {
-    // Free: unlimited lifetime, 50 monthly
+  it('community use has no monthly quota', () => {
     assert.equal(PLAN_LIMITS.free.lifetime, Infinity);
-    assert.equal(PLAN_LIMITS.free.monthly, 50);
-    assert.equal(PLAN_LIMITS.free.always_on, false);
+    assert.equal(PLAN_LIMITS.free.monthly, Infinity);
+    assert.equal(PLAN_LIMITS.free.always_on, true);
 
     // Pro (₹499/mo): unlimited lifetime, 100 monthly
     assert.equal(PLAN_LIMITS.pro.lifetime, Infinity);
-    assert.equal(PLAN_LIMITS.pro.monthly, 100);
-    assert.equal(PLAN_LIMITS.pro.always_on, false);
+    assert.equal(PLAN_LIMITS.pro.monthly, Infinity);
+    assert.equal(PLAN_LIMITS.pro.always_on, true);
 
     // Power (₹899/mo): unlimited everything + always_on
     assert.equal(PLAN_LIMITS.power.lifetime, Infinity);

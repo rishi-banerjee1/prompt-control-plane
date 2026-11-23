@@ -434,22 +434,11 @@ function signOut() {
 }
 
 // ── Check existing session on page load ───────────────────────────────
-(async function initGate() {
-  // Hide the gate immediately until we check session
+(function initGate() {
+  // The governance console is part of the Apache-2.0 project and needs no license key.
   document.getElementById('license-gate').style.display = 'none';
-  var stored = sessionStorage.getItem(GATE_SESSION_KEY);
-  if (stored) {
-    try {
-      var s = JSON.parse(stored);
-      var result = await validateLicenseKey(s.key);
-      if (result.valid) { showConsole(result.payload, s.key); return; }
-    } catch(e) { /* fall through */ }
-    sessionStorage.removeItem(GATE_SESSION_KEY);
-  }
-  // Show gate
-  document.getElementById('license-gate').style.display = 'flex';
-  document.getElementById('license-gate').style.opacity = '1';
-})();
+  document.getElementById('session-bar').style.display = 'none';
+})();;
 
 // ── Sidebar active on scroll ─────────────────────────────────────────────
 window.addEventListener('scroll', function() {

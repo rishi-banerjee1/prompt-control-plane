@@ -27,18 +27,17 @@ describe('Enterprise config settings tier gates', () => {
     assert.deepStrictEqual([...ENTERPRISE_ONLY_SETTINGS], ['policy_mode', 'audit_log', 'session_retention_days']);
   });
 
-  for (const tier of ['free', 'pro', 'power'] as Tier[]) {
-    it(`${tier} tier cannot set policy_mode`, () => {
-      // Tier gate logic: if params[setting] !== undefined && ctx.tier !== 'enterprise' → reject
-      assert.ok(tier !== 'enterprise', `${tier} is not enterprise`);
-      assert.ok(!PLAN_LIMITS[tier].always_on || tier === 'power', `${tier} tier check`);
-    });
-  }
+  it('governance settings are not restricted by commercial tier', () => {
+    for (const tier of Object.keys(PLAN_LIMITS)) {
+      assert.equal(PLAN_LIMITS[tier].monthly, Infinity);
+      assert.equal(PLAN_LIMITS[tier].always_on, true);
+    }
+  });
 
   it('enterprise tier can access all settings', () => {
     assert.ok(PLAN_LIMITS.enterprise, 'Enterprise plan exists');
     assert.equal(PLAN_LIMITS.enterprise.always_on, true);
-    assert.equal(PLAN_LIMITS.enterprise.rate_per_minute, 120);
+    assert.equal(PLAN_LIMITS.enterprise.rate_per_minute, 60);
   });
 });
 
@@ -133,7 +132,7 @@ describe('Policy enforcement graceful degradation', () => {
     try { fs.rmSync(dir, { recursive: true }); } catch {}
   });
 
-  it('non-enterprise tier with policy_mode=enforce does not crash', async () => {
+  it('community tier with policy_mode=enforce is enabled', async () => {
     // Set policy_mode directly in config file (simulating pre-downgrade state)
     const configPath = path.join(dir, 'config.json');
     fs.writeFileSync(configPath, JSON.stringify({
@@ -146,11 +145,9 @@ describe('Policy enforcement graceful degradation', () => {
 
     const config = await storage.getConfig();
     assert.equal(config.policy_mode, 'enforce');
-    // The tier gate in tools.ts checks: ctx.config.policy_mode === 'enforce' && ctx.tier === 'enterprise'
-    // For non-enterprise tiers, enforcement is silently skipped
     const tier: Tier = 'free';
-    const shouldEnforce = config.policy_mode === 'enforce' && (tier as string) === 'enterprise';
-    assert.equal(shouldEnforce, false, 'Free tier should NOT enforce');
+    const shouldEnforce = config.policy_mode === 'enforce';
+    assert.equal(shouldEnforce, true, `${tier} can use policy enforcement`);
   });
 
   it('enterprise tier with policy_mode=enforce would enforce', async () => {
@@ -168,7 +165,7 @@ describe('PLAN_LIMITS enterprise tier exists', () => {
     const limits = PLAN_LIMITS.enterprise;
     assert.equal(limits.lifetime, Infinity);
     assert.equal(limits.monthly, Infinity);
-    assert.equal(limits.rate_per_minute, 120);
+    assert.equal(limits.rate_per_minute, 60);
     assert.equal(limits.always_on, true);
   });
 

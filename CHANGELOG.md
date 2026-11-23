@@ -2,6 +2,7 @@
 
 ## Unreleased
 
+- Re-license PCP under Apache-2.0, remove community optimization quotas and paid individual tiers; reserve enterprise governance for commercial licensing.
 - Reframed the product around model-agnostic prompt checks, measured token deltas, and clearly scoped catalog-based routing and cost estimates.
 - Replaced the website explainer with the five-minute styled narration-synced video.
 

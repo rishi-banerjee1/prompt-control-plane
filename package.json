@@ -2,7 +2,7 @@
   "name": "pcp-engine",
   "version": "5.3.4",
   "type": "module",
-  "description": "PCP: the prompt quality engine. Deterministic scoring, compilation, cost estimation & governance for AI prompts. Zero LLM calls.",
+  "description": "Open-source prompt governance engine. Deterministic scoring, compilation, cost estimates, and policy controls for any model.",
   "main": "dist/src/api.js",
   "types": "dist/src/api.d.ts",
   "exports": {
@@ -60,7 +60,7 @@
     "cost-reduction",
     "context-compression",
     "model-routing",
-    "freemium",
+    "open-source",
     "prompt-scoring",
     "multi-llm",
     "prompt-linter",
@@ -81,7 +81,7 @@
   },
   "mcpName": "io.github.rishi-banerjee1/pcp-engine",
   "author": "Rishi Banerjee",
-  "license": "Elastic-2.0",
+  "license": "Apache-2.0",
   "dependencies": {
     "@modelcontextprotocol/sdk": "^1.32.2",
     "fast-glob": "^3.3.3",
