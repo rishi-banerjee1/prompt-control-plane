@@ -13,6 +13,7 @@ on:
 permissions:
   contents: write
   id-token: write
+  pull-requests: write
 
 jobs:
   publish:
@@ -97,17 +98,25 @@ jobs:
           "$RUNNER_TEMP/mcp-publisher" login github-oidc
           "$RUNNER_TEMP/mcp-publisher" publish "$RUNNER_TEMP/server.json"
 
-      - name: Keep the checked-in registry metadata current
+      - name: Propose the checked-in registry metadata update
         env:
+          GH_TOKEN: ${{ github.token }}
           VERSION: ${{ steps.release.outputs.version }}
         run: |
           git fetch origin main
-          git switch --create registry-metadata origin/main
+          branch="registry-metadata-v${VERSION}"
+          git switch --create "$branch" origin/main
           cp "$RUNNER_TEMP/server.json" server.json
           git add server.json
           if ! git diff --cached --quiet; then
             git config user.name "github-actions[bot]"
             git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
             git commit -m "chore: sync MCP registry metadata for v${VERSION} [skip ci]"
-            git push origin HEAD:main
+            git push --set-upstream origin "$branch"
+            gh pr create \
+              --repo "$GITHUB_REPOSITORY" \
+              --base main \
+              --head "$branch" \
+              --title "chore: sync MCP registry metadata for v${VERSION}" \
+              --body "Update server.json to the MCP bundle published for v${VERSION}. The release is already live in the official MCP Registry."
           fi
