@@ -1,4 +1,4 @@
-import {readFile, writeFile, mkdir, access} from 'node:fs/promises';
+import {readFile, writeFile, mkdir, open} from 'node:fs/promises';
 import {spawnSync} from 'node:child_process';
 import {fileURLToPath} from 'node:url';
 import path from 'node:path';
@@ -20,21 +20,32 @@ const run = (cmd, args) => {
 };
 const report = [];
 for (const segment of timeline.segments) {
+  if (!/^[0-9]{2}[a-z]?$/.test(segment.id)) throw new Error('Invalid clip ID');
   const cue = cues.find(c => c.clips.includes(segment.id));
   if (!cue || segment.start < cue.start || segment.end > cue.end) {
     throw new Error(`Clip ${segment.id} is outside its matching visual cue`);
   }
   const raw = path.join(out, `${segment.id}-raw.wav`);
   const fitted = path.join(out, `${segment.id}.wav`);
-  try { await access(raw); } catch {
+  try { await readFile(raw); } catch (error) {
+    if (error.code !== 'ENOENT') throw error;
+    const file = await open(raw, 'wx', 0o600);
+    try {
     const response = await fetch('http://127.0.0.1:3900/v1/audio/speech', {
       method:'POST', headers:{'Content-Type':'application/json'},
+      redirect:'error',
       body:JSON.stringify({model:timeline.model, voice:timeline.voice, speed:timeline.speed,
         input:segment.text, language:'en', response_format:'wav', seed:42}),
       signal:AbortSignal.timeout(300000),
     });
     if (!response.ok) throw new Error(await response.text());
-    await writeFile(raw, Buffer.from(await response.arrayBuffer()));
+    const wav = Buffer.from(await response.arrayBuffer());
+    if (wav.length < 44 || wav.length > 60*1024*1024 ||
+        wav.toString('ascii',0,4) !== 'RIFF' || wav.toString('ascii',8,12) !== 'WAVE') {
+      throw new Error('VoiceStudio returned invalid WAV audio');
+    }
+    await file.writeFile(wav);
+    } finally { await file.close(); }
   }
   const duration = Number(run('ffprobe',['-v','error','-show_entries','format=duration','-of','default=nw=1:nk=1',raw]));
   const slot = segment.end - segment.start;
