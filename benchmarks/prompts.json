@@ -1,0 +1,158 @@
+{
+  "schema_version": 1,
+  "benchmark_version": "1.0.0",
+  "created_at": "2026-03-06",
+  "score_tolerance": 3,
+  "prompts": [
+    {
+      "id": "bench_001",
+      "category": "code_change",
+      "difficulty": "high",
+      "prompt": "Add input validation to the createUser function in src/users.ts using Zod schemas. Validate email format, require password minimum 8 characters with at least one number and one uppercase letter, and return 400 with structured validation errors. Preserve all existing tests in test/users.test.ts.",
+      "description": "Well-specified code change with constraints and preservation",
+      "expected_score": 65,
+      "expected_risk_level": "high",
+      "expected_task_type": "code_change"
+    },
+    {
+      "id": "bench_002",
+      "category": "debug",
+      "difficulty": "high",
+      "prompt": "The OAuth callback handler in auth/callback.ts returns a 500 error when the refresh token is expired. Expected behavior: redirect to /login with a flash message. The error only occurs in production with Redis session store. Debug and fix the root cause, do not add a try-catch wrapper.",
+      "description": "Detailed debug request with constraints",
+      "expected_score": 63,
+      "expected_risk_level": "high",
+      "expected_task_type": "debug"
+    },
+    {
+      "id": "bench_003",
+      "category": "writing",
+      "difficulty": "high",
+      "prompt": "Write a technical blog post (1500-2000 words) explaining how our rate limiting system works. Target audience: senior engineers evaluating our API. Cover the token bucket algorithm, burst handling, and per-tenant limits. Include code examples in Python. Tone: authoritative but accessible.",
+      "description": "Detailed writing request with format and audience",
+      "expected_score": 67,
+      "expected_risk_level": "low",
+      "expected_task_type": "writing"
+    },
+    {
+      "id": "bench_004",
+      "category": "refactor",
+      "difficulty": "medium",
+      "prompt": "Refactor the PaymentProcessor class to use the Strategy pattern. Extract each payment method (stripe, paypal, bank_transfer) into its own class implementing a PaymentStrategy interface. Keep the public API unchanged. All 47 tests in test/payments/ must still pass.",
+      "description": "Specific refactoring with pattern and test preservation",
+      "expected_score": 63,
+      "expected_risk_level": "low",
+      "expected_task_type": "planning"
+    },
+    {
+      "id": "bench_005",
+      "category": "vague",
+      "difficulty": "low",
+      "prompt": "make it better",
+      "description": "Intentionally vague — canonical bad prompt",
+      "expected_score": 45,
+      "expected_risk_level": "medium",
+      "expected_task_type": "other"
+    },
+    {
+      "id": "bench_006",
+      "category": "vague",
+      "difficulty": "low",
+      "prompt": "fix the bugs",
+      "description": "Vague with no target or specifics",
+      "expected_score": 50,
+      "expected_risk_level": "medium",
+      "expected_task_type": "other"
+    },
+    {
+      "id": "bench_007",
+      "category": "review",
+      "difficulty": "medium",
+      "prompt": "Review the authentication middleware in src/middleware/auth.ts for security vulnerabilities. Check for: JWT validation bypasses, timing attacks in token comparison, missing rate limiting on login attempts. Report findings with severity levels.",
+      "description": "Security review with specific checklist",
+      "expected_score": 58,
+      "expected_risk_level": "low",
+      "expected_task_type": "analysis"
+    },
+    {
+      "id": "bench_008",
+      "category": "create",
+      "difficulty": "high",
+      "prompt": "Create a REST API endpoint POST /api/v2/invoices that generates PDF invoices. Accept line items, tax rate, and customer info. Use Puppeteer for PDF generation from an HTML template. Return the PDF as a downloadable file. Add OpenAPI documentation. Handle errors: invalid items, tax calculation overflow, template rendering failures.",
+      "description": "Feature creation with full specification",
+      "expected_score": 58,
+      "expected_risk_level": "low",
+      "expected_task_type": "writing"
+    },
+    {
+      "id": "bench_009",
+      "category": "analysis",
+      "difficulty": "medium",
+      "prompt": "Analyze our database query patterns in the last 30 days of slow query logs. Identify the top 5 queries by total execution time. For each, explain why it is slow and suggest a specific index or query rewrite. Format as a markdown table.",
+      "description": "Analysis request with specific output format",
+      "expected_score": 60,
+      "expected_risk_level": "low",
+      "expected_task_type": "analysis"
+    },
+    {
+      "id": "bench_010",
+      "category": "planning",
+      "difficulty": "medium",
+      "prompt": "Plan the migration from PostgreSQL 12 to PostgreSQL 16. Consider: breaking changes in jsonb operators, extension compatibility (PostGIS, pg_trgm), connection pooling (PgBouncer config changes), and a rollback strategy. Produce a phased timeline with go/no-go checkpoints.",
+      "description": "Migration planning with specific concerns",
+      "expected_score": 58,
+      "expected_risk_level": "low",
+      "expected_task_type": "planning"
+    },
+    {
+      "id": "bench_011",
+      "category": "vague",
+      "difficulty": "low",
+      "prompt": "update the code",
+      "description": "No target, no specifics, no constraints",
+      "expected_score": 50,
+      "expected_risk_level": "medium",
+      "expected_task_type": "other"
+    },
+    {
+      "id": "bench_012",
+      "category": "research",
+      "difficulty": "medium",
+      "prompt": "Research the current state of WebAssembly support in major browsers (Chrome, Firefox, Safari, Edge). Compare WASI support levels, threading capabilities, and garbage collection proposals. Summarize in a comparison table with version numbers.",
+      "description": "Research with specific comparison criteria",
+      "expected_score": 60,
+      "expected_risk_level": "low",
+      "expected_task_type": "research"
+    },
+    {
+      "id": "bench_013",
+      "category": "code_change",
+      "difficulty": "medium",
+      "prompt": "Add dark mode support to the dashboard. Use CSS custom properties for all colors. Toggle should persist in localStorage. Respect the prefers-color-scheme media query for initial state. Do not change any existing component APIs.",
+      "description": "Feature with implementation constraints",
+      "expected_score": 60,
+      "expected_risk_level": "medium",
+      "expected_task_type": "other"
+    },
+    {
+      "id": "bench_014",
+      "category": "communication",
+      "difficulty": "medium",
+      "prompt": "Draft an incident postmortem for the 2-hour API outage on March 1st. Include: timeline of events, root cause (connection pool exhaustion from leaked connections in the batch job), impact (35% of API requests failed), remediation steps taken, and 3 follow-up action items with owners and deadlines.",
+      "description": "Structured communication with required sections",
+      "expected_score": 60,
+      "expected_risk_level": "low",
+      "expected_task_type": "planning"
+    },
+    {
+      "id": "bench_015",
+      "category": "data",
+      "difficulty": "medium",
+      "prompt": "Write a SQL migration to add soft-delete support to the users, orders, and products tables. Add deleted_at timestamp column (nullable, indexed). Update the existing queries in src/db/queries.ts to filter out soft-deleted rows. Add a scheduled job to hard-delete records older than 90 days.",
+      "description": "Data migration with multiple steps and automation",
+      "expected_score": 58,
+      "expected_risk_level": "low",
+      "expected_task_type": "data"
+    }
+  ]
+}

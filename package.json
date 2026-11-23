@@ -1,0 +1,98 @@
+{
+  "name": "pcp-engine",
+  "version": "5.4.1",
+  "type": "module",
+  "description": "Open-source prompt governance engine. Deterministic scoring, compilation, cost estimates, and policy controls for any model.",
+  "main": "dist/src/api.js",
+  "types": "dist/src/api.d.ts",
+  "exports": {
+    ".": {
+      "types": "./dist/src/api.d.ts",
+      "import": "./dist/src/api.js"
+    },
+    "./server": {
+      "types": "./dist/src/index.d.ts",
+      "import": "./dist/src/index.js"
+    },
+    "./validate": {
+      "types": "./dist/src/validate.d.ts",
+      "import": "./dist/src/validate.js"
+    }
+  },
+  "bin": {
+    "pcp-engine": "bin/cli.js",
+    "prompt-lint": "bin/lint.js",
+    "pcp": "bin/pcp.js"
+  },
+  "files": [
+    "dist/src/**/*.js",
+    "dist/src/**/*.d.ts",
+    "bin",
+    "benchmarks",
+    "README.md",
+    "LICENSE"
+  ],
+  "scripts": {
+    "build": "tsc",
+    "start": "node dist/src/index.js",
+    "test": "node --test dist/test/*.test.js",
+    "security:sast": "node scripts/security-sast.mjs",
+    "security:audit": "npm audit --audit-level=moderate",
+    "security:all": "npm run security:audit && npm run security:sast",
+    "prepublishOnly": "npm run build",
+    "prepare": "npm run build"
+  },
+  "keywords": [
+    "mcp",
+    "model-context-protocol",
+    "claude",
+    "pcp-engine",
+    "prompt-governance",
+    "prompt-optimization",
+    "prompt-engineering",
+    "token-cost",
+    "llm",
+    "anthropic",
+    "ai",
+    "cost-reduction",
+    "context-compression",
+    "model-routing",
+    "open-source",
+    "prompt-scoring",
+    "multi-llm",
+    "prompt-linter",
+    "lint",
+    "pcp",
+    "cli",
+    "prompt-quality",
+    "audit-trail",
+    "policy-enforcement"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/rishi-banerjee1/prompt-control-plane.git"
+  },
+  "homepage": "https://getpcp.site/",
+  "bugs": {
+    "url": "https://github.com/rishi-banerjee1/prompt-control-plane/issues"
+  },
+  "mcpName": "io.github.rishi-banerjee1/pcp-engine",
+  "author": "Rishi Banerjee",
+  "license": "Apache-2.0",
+  "dependencies": {
+    "@modelcontextprotocol/sdk": "^1.32.2",
+    "fast-glob": "^3.3.3",
+    "zod": "^4.6.7"
+  },
+  "devDependencies": {
+    "@types/node": "^26.6.6",
+    "parse5": "8.1.1",
+    "typescript": "^5.8.0"
+  },
+  "overrides": {
+    "hono": "4.13.16"
+  },
+  "engines": {
+    "node": ">=20.0.0"
+  }
+}

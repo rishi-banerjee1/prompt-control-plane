@@ -1,0 +1,29 @@
+{
+  "manifest_version": "0.3",
+  "name": "prompt-control-plane",
+  "version": "5.4.1",
+  "description": "Deterministic prompt quality, policy, and governance tools for any model.",
+  "author": {
+    "name": "Prompt Control Plane contributors"
+  },
+  "license": "Apache-2.0",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/rishi-banerjee1/prompt-control-plane"
+  },
+  "server": {
+    "type": "node",
+    "entry_point": "dist/src/index.js",
+    "mcp_config": {
+      "command": "node",
+      "args": ["${__dirname}/dist/src/index.js"]
+    }
+  },
+  "compatibility": {
+    "platforms": ["darwin", "win32", "linux"],
+    "runtimes": {
+      "node": ">=20.0.0"
+    }
+  },
+  "tools_generated": true
+}

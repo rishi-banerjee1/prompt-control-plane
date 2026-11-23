@@ -1,0 +1,619 @@
+// types.ts — All TypeScript interfaces for Prompt Control Plane v4.0.
+// This is the interface contract: Phase B must not change these shapes.
+
+// ─── Enums ────────────────────────────────────────────────────────────────────
+
+export type TaskType =
+  // Code tasks
+  | 'code_change'
+  | 'question'
+  | 'review'
+  | 'debug'
+  | 'create'
+  | 'refactor'
+  // Non-code tasks
+  | 'writing'
+  | 'research'
+  | 'planning'
+  | 'analysis'
+  | 'communication'
+  | 'data'
+  | 'other';
+
+/** Whether a task type is code-related. Used by rules, scorer, and compiler to adapt behavior. */
+export function isCodeTask(taskType: TaskType): boolean {
+  return ['code_change', 'debug', 'create', 'refactor'].includes(taskType);
+}
+
+/** Whether a task type involves prose/communication. */
+export function isProseTask(taskType: TaskType): boolean {
+  return ['writing', 'communication', 'planning'].includes(taskType);
+}
+
+export type RiskLevel = 'low' | 'medium' | 'high';
+
+export type SessionState = 'ANALYZING' | 'COMPILED' | 'APPROVED';
+
+export type RuleSeverity = 'blocking' | 'non_blocking';
+
+/** Canonical routing tier for the decision engine (G9: small/mid/top everywhere). */
+export type ModelTier = 'small' | 'mid' | 'top';
+
+// ─── Reasoning Complexity (v3 decision engine) ──────────────────────────────
+
+export type ReasoningComplexity =
+  | 'simple_factual'
+  | 'analytical'
+  | 'multi_step'
+  | 'creative'
+  | 'long_context'
+  | 'agent_orchestration';
+
+// ─── Optimization Profiles (v3 decision engine) ─────────────────────────────
+
+export type OptimizationProfile =
+  | 'cost_minimizer'
+  | 'balanced'
+  | 'quality_first'
+  | 'creative'
+  | 'enterprise_safe';
+
+// ─── Complexity Classification Result ───────────────────────────────────────
+
+export interface ComplexityResult {
+  complexity: ReasoningComplexity;
+  confidence: number;          // 0-100
+  signals: string[];           // key=value pairs, sorted alphabetically, capped at 10
+}
+
+// ─── Risk Dimensions & Score (v3 decision engine) ───────────────────────────
+
+export interface RiskDimensions {
+  underspec: number;
+  hallucination: number;
+  scope: number;
+  constraint: number;
+}
+
+export interface RiskScore {
+  score: number;               // 0-100
+  dimensions: RiskDimensions;
+  level: RiskLevel;            // derived: 0-29=low, 30-59=medium, 60-100=high (G14)
+}
+
+// ─── Savings Comparison (structured numeric, G13) ───────────────────────────
+
+export interface SavingsComparison {
+  baselineModel: string;       // e.g. 'gpt-5.6-terra'
+  baselineCost: number;        // USD total cost
+  recommendedCost: number;     // USD total cost
+  savingsPercent: number;      // 0-100
+}
+
+// ─── Tier Model Entry (G1) ──────────────────────────────────────────────────
+
+export interface TierModelEntry {
+  provider: string;
+  model: string;
+  defaultTemp: number;
+  maxTokensCap: number;
+}
+
+// ─── Model Routing Input (v3 decision engine, G16) ──────────────────────────
+
+export interface ModelRoutingInput {
+  taskType: TaskType;
+  complexity: ReasoningComplexity;
+  budgetSensitivity: 'low' | 'medium' | 'high';
+  latencySensitivity: 'low' | 'medium' | 'high';
+  contextTokens: number;
+  riskScore: number;           // 0-100 (G16: drives routing, not riskLevel)
+  profile?: OptimizationProfile;
+}
+
+// ─── Model Recommendation (v3 decision engine) ─────────────────────────────
+
+export interface ModelRecommendation {
+  primary: {
+    model: string;
+    provider: string;
+    temperature: number;
+    maxTokens: number;
+  };
+  fallback: {
+    model: string;
+    provider: string;
+    reason: string;
+  };
+  confidence: number;                  // 0-100 (G3: deterministic formula)
+  costEstimate: CostEstimate;
+  rationale: string;
+  tradeoffs: string[];
+  savings_vs_default: SavingsComparison;  // G13: structured numeric
+  savings_summary: string;                // display label
+  decision_path: string[];                // full audit trail
+}
+
+// ─── Output Target (multi-LLM) ───────────────────────────────────────────────
+
+export type OutputTarget = 'claude' | 'openai' | 'google' | 'perplexity' | 'generic';
+
+// ─── Tier System ──────────────────────────────────────────────────────────────
+
+export interface TierLimits {
+  lifetime: number;          // total uses ever (free/pro/power=Infinity)
+  monthly: number;           // per calendar month (community=Infinity)
+  rate_per_minute: number;   // sliding window rate limit
+  always_on: boolean;        // can use always-on mode (free/pro=false, power=true)
+}
+
+/** Serialized tier limits (Infinity → null for JSON safety). */
+export interface SerializedTierLimits {
+  lifetime: number | null;   // null when Infinity (unlimited)
+  monthly: number | null;    // null when Infinity (unlimited)
+  rate_per_minute: number;
+  always_on: boolean;
+}
+
+export const PLAN_LIMITS: Record<string, TierLimits> = {
+  free:       { lifetime: Infinity, monthly: Infinity,  rate_per_minute: 60, always_on: true },
+  pro:        { lifetime: Infinity, monthly: Infinity,  rate_per_minute: 60, always_on: true },
+  power:      { lifetime: Infinity, monthly: Infinity,  rate_per_minute: 60, always_on: true },
+  enterprise: { lifetime: Infinity, monthly: Infinity,  rate_per_minute: 60, always_on: true },
+};
+
+export type Tier = 'free' | 'pro' | 'power' | 'enterprise';
+
+// ─── Ambiguity Rules ──────────────────────────────────────────────────────────
+
+export interface Question {
+  id: string;
+  question: string;
+  reason: string;
+  blocking: boolean;
+}
+
+export interface Assumption {
+  id: string;
+  assumption: string;
+  confidence: 'low' | 'medium' | 'high';
+  impact: 'low' | 'medium' | 'high';
+  reversible: boolean;
+}
+
+export interface RuleResult {
+  rule_name: string;
+  severity: RuleSeverity;
+  triggered: boolean;
+  message: string;
+  question?: Question;
+  assumption?: Assumption;
+  risk_elevation?: RiskLevel;
+}
+
+// ─── Intent Spec ──────────────────────────────────────────────────────────────
+
+export interface IntentSpec {
+  user_intent: string;
+  goal: string;
+  definition_of_done: string[];
+  task_type: TaskType;
+  inputs_detected: string[];
+  constraints: {
+    scope: string[];
+    forbidden: string[];
+    time_budget?: string;
+  };
+  output_format: string;
+  risk_level: RiskLevel;
+  assumptions: Assumption[];
+  blocking_questions: Question[];
+  audience?: string;
+  tone?: string;
+  platform?: string;
+}
+
+// ─── Quality Score ────────────────────────────────────────────────────────────
+
+export interface QualityDimension {
+  name: string;
+  score: number;
+  max: number;
+  notes: string[];
+}
+
+export interface QualityScore {
+  total: number;
+  max: 100;
+  dimensions: QualityDimension[];
+  confidence: 'low' | 'medium' | 'high';
+  confidence_note: string;
+}
+
+// ─── Compilation Checklist (replaces quality_after) ──────────────────────────
+
+export interface ChecklistItem {
+  name: string;
+  present: boolean;
+  note?: string;
+}
+
+export interface CompilationChecklist {
+  items: ChecklistItem[];
+  summary: string;
+}
+
+// ─── Cost Estimation ──────────────────────────────────────────────────────────
+
+export interface ModelCost {
+  model: string;
+  provider: string;
+  input_tokens: number;
+  estimated_output_tokens: number;
+  input_cost_usd: number;
+  output_cost_usd: number;
+  total_cost_usd: number;
+}
+
+export interface CostEstimate {
+  input_tokens: number;
+  estimated_output_tokens: number;
+  costs: ModelCost[];
+  recommended_model: string;
+  recommendation_reason: string;
+}
+
+// ─── Preview Pack ─────────────────────────────────────────────────────────────
+
+export interface PreviewPack {
+  request_id: string;
+  session_id: string;
+  state: SessionState;
+  intent_spec: IntentSpec;
+  quality_before: QualityScore;
+  compiled_prompt: string;
+  compilation_checklist: CompilationChecklist;
+  blocking_questions: Question[];
+  assumptions: Assumption[];
+  cost_estimate: CostEstimate;
+  model_recommendation: string;
+  changes_made: string[];
+  target: OutputTarget;
+  format_version: 1;
+  scoring_version: 2;
+  storage_health?: 'ok' | 'degraded';
+}
+
+// ─── Session ──────────────────────────────────────────────────────────────────
+
+export interface Session {
+  id: string;
+  state: SessionState;
+  created_at: number;
+  last_accessed: number;
+  raw_prompt: string;
+  context?: string;
+  target: OutputTarget;
+  intent_spec: IntentSpec;
+  compiled_prompt: string;
+  quality_before: QualityScore;
+  compilation_checklist: CompilationChecklist;
+  cost_estimate: CostEstimate;
+  answers: Record<string, string>;
+}
+
+// ─── Session History (v3.2.1) ────────────────────────────────────────────────
+
+export interface SessionRecord {
+  schema_version: 1;
+  session_id: string;
+  created_at: number;                    // Unix timestamp
+  state: SessionState;                   // ANALYZING, COMPILED, APPROVED
+  task_type: TaskType;
+  quality_before: number;                // 0-100
+  confidence: 'low' | 'medium' | 'high'; // Improvement confidence level
+  prompt_hash: string;                   // SHA256 of raw prompt
+  prompt_length: number;                 // Character count
+  target: OutputTarget;                  // claude, openai, google, perplexity, generic
+}
+
+export interface SessionExport {
+  schema_version: 1;
+  session_id: string;
+  created_at: number;
+  state: SessionState;
+  raw_prompt: string;
+  compiled_prompt: string;
+  quality_before: number;
+  confidence: 'low' | 'medium' | 'high'; // Improvement confidence level
+  rule_set_hash: string;                 // SHA256 of rule set
+  rule_set_version: string;              // e.g., '3.2.1'
+  metadata: {
+    target: OutputTarget;
+    task_type: TaskType;
+    complexity: ReasoningComplexity;
+    risk_score: number;
+    custom_rules_applied: string[];      // IDs of custom rules applied
+    custom_rule_set_hash: string;        // SHA256 of custom rules applied
+    // v3.3.0: Enterprise metadata
+    engine_version?: string;             // package.json version at export time
+    policy_mode?: string;                // advisory | enforce
+    policy_hash?: string;                // SHA256 of builtIn+custom+policyMode+strictness
+  };
+}
+
+export interface SessionListResponse {
+  schema_version: 1;
+  sessions: SessionRecord[];
+  total_sessions: number;
+  storage_path: string;                  // ~/.prompt-control-plane/
+}
+
+// ─── Custom Rules (v3.2.1) ──────────────────────────────────────────────────
+
+export interface CustomRule {
+  id: string;                            // snake_case, max 64 chars, regex: ^[a-z][a-z0-9_]{0,63}$
+  description: string;                   // max 200 chars
+  pattern: string;                       // JavaScript regex string, max 500 chars
+  negative_pattern?: string;             // optional exclusion regex, max 500 chars
+  applies_to: 'code' | 'prose' | 'all';  // which task type groups this applies to
+  severity: 'BLOCKING' | 'NON-BLOCKING'; // capitalized
+  risk_dimension: 'hallucination' | 'constraint' | 'underspec' | 'scope'; // which RiskDimension to target
+  risk_weight: number;                   // 1-25
+}
+
+export interface CustomRulesConfig {
+  schema_version: 1;
+  created_at: number;                    // Unix timestamp
+  rules: CustomRule[];
+}
+
+export interface RuleMatch {
+  rule_id: string;                       // namespaced as custom_{id}
+  matched: boolean;
+  description: string;                   // from custom rule description field
+  severity: 'BLOCKING' | 'NON-BLOCKING';
+  custom_weight?: number;                // for custom rules only; never mutates RISK_WEIGHTS
+  risk_dimension?: 'hallucination' | 'constraint' | 'underspec' | 'scope'; // which dimension this contributes to
+  error?: string;                        // if regex compile failed (skip-on-error pattern)
+}
+
+// ─── Compression Config (v3.1) ───────────────────────────────────────────────
+
+export interface CompressionConfig {
+  mode?: 'standard' | 'aggressive';      // default: 'standard'
+  tokenBudget?: number;                   // for aggressive mode, default: 8000
+  preservePatterns?: string[];            // regex strings; never remove matching lines
+  enableStubCollapse?: boolean;           // default: false — gate for aggressive H4
+}
+
+// ─── Compression Result ───────────────────────────────────────────────────────
+
+export interface CompressionResult {
+  original_tokens: number;
+  compressed_tokens: number;
+  tokens_saved: number;
+  savings_percent: number;
+  compressed_context: string;
+  removed_sections: string[];
+}
+
+// ─── Compression Pipeline Result (v3.1) ───────────────────────────────────────
+
+/**
+ * Result of running compression pipeline.
+ * heuristics_applied: identifiers only (H2, H3, H1, H4, H5) in stable order
+ * warnings: separate channel for regex compilation errors, etc.
+ */
+export interface CompressionPipelineResult {
+  compressed: string;
+  originalTokens: number;
+  compressedTokens: number;
+  heuristics_applied: string[];     // ['H2', 'H3'] if they ran; stable order
+  removed_sections: string[];       // Detailed removal descriptions
+  warnings: string[];               // e.g., "Invalid regex at pattern[0]: ..."
+  mode: 'standard' | 'aggressive';
+}
+
+// ─── Internal Compression Return (v3.1) ──────────────────────────────────────
+
+export interface CompressContextResult {
+  compressed: string;
+  removed: string[];
+  originalTokens: number;
+  compressedTokens: number;
+  heuristics_applied?: string[];  // NEW v3.1: which heuristics fired
+  mode?: 'standard' | 'aggressive';
+}
+
+// ─── License Data ─────────────────────────────────────────────────────────────
+
+export interface LicenseData {
+  schema_version: 1;
+  tier: Tier;
+  issued_at: string;          // ISO 8601
+  expires_at: string;         // ISO 8601 or "never"
+  license_id: string;         // short ID for support (first 8 chars of key hash)
+  activated_at: string;       // ISO 8601 — when set_license was called
+  valid: boolean;             // cached validation result
+  validation_error?: string;  // present when valid=false
+}
+
+// ─── Usage Data ─────────────────────────────────────────────────────────────────
+
+export interface UsageData {
+  schema_version: 1;
+  total_optimizations: number;
+  current_period_start?: string;     // ISO 8601 — unused Phase A, ready for Phase B
+  period_optimizations?: number;     // unused Phase A, ready for Phase B
+  first_used_at: string;
+  last_used_at: string;
+  tier: Tier;
+}
+
+// ─── Policy Mode (v3.3.0) ────────────────────────────────────────────────────
+
+export type PolicyMode = 'advisory' | 'enforce';
+
+// ─── Audit Types (v3.3.0) ───────────────────────────────────────────────────
+
+export type AuditEvent = 'optimize' | 'approve' | 'delete' | 'purge' | 'configure' | 'license_activate' | 'save_custom_rules';
+export type AuditOutcome = 'success' | 'blocked' | 'error';
+
+/**
+ * Audit trail entry. Append-only JSONL format.
+ * PRIVACY INVARIANT: Never stores raw_prompt, compiled_prompt, or prompt_preview.
+ * details field: max 10 keys, typed values only (string | number | boolean).
+ */
+export interface AuditEntry {
+  timestamp: string;                  // ISO 8601
+  event: AuditEvent;
+  session_id?: string;
+  request_id: string;
+  task_type?: string;
+  risk_score?: number;
+  routing_tier?: string;
+  rule_set_hash?: string;
+  policy_mode?: string;
+  outcome: AuditOutcome;
+  details?: Record<string, string | number | boolean>;
+  integrity_hash?: string;           // SHA-256 chain: hash(prev_hash + JSON(entry)). Tamper-evident.
+}
+
+/**
+ * Policy violation returned when enforce mode blocks an action.
+ */
+export interface PolicyViolation {
+  rule_id: string;
+  description: string;
+  severity: string;
+  risk_dimension?: string;
+}
+
+// ─── Purge Result (v3.3.0) ──────────────────────────────────────────────────
+
+export interface PurgeResult {
+  deleted_count: number;
+  retained_count: number;
+  scanned_count: number;
+  deleted_session_ids: string[];     // capped at 100, always sorted lexicographic
+  truncated: boolean;
+  dry_run: boolean;
+  no_op: boolean;
+  cutoff_date?: string;              // ISO 8601, when mode='by_policy'
+  effective_older_than_days?: number;
+}
+
+// ─── Optimizer Config ─────────────────────────────────────────────────────────
+
+export interface OptimizerConfig {
+  schema_version: 1;
+  mode: 'manual' | 'always_on';
+  threshold: number;                 // 0-100, default 60
+  strictness: 'relaxed' | 'standard' | 'strict';
+  auto_compile: boolean;
+  default_target: OutputTarget;
+  ephemeral_mode: boolean;           // true = no session persistence to disk
+  max_sessions: number;              // default 200
+  max_session_size_kb: number;       // default 50
+  max_session_dir_mb: number;        // default 20 — absolute cap on session directory size
+  // v3.3.0: Enterprise Operations
+  session_retention_days?: number;   // undefined = no auto-purge
+  policy_mode?: PolicyMode;          // default 'advisory'
+  audit_log?: boolean;               // default false — opt-in JSONL audit trail
+  locked_config?: boolean;           // default false — when true, configure_optimizer refuses changes
+  lock_secret_hash?: string;         // SHA-256 of admin passphrase (set when locking, required to unlock)
+}
+
+// ─── Stats Data ───────────────────────────────────────────────────────────────
+
+export interface StatsData {
+  schema_version: 1;
+  scoring_version: 2;
+  total_optimized: number;
+  total_approved: number;
+  score_sum_before: number;          // numeric pre-compile scores ONLY
+  task_type_counts: Record<string, number>;
+  blocking_question_counts: Record<string, number>;
+  estimated_cost_savings_usd: number;
+}
+
+// ─── Stats Event (for updateStats) ───────────────────────────────────────────
+
+export interface StatsEvent {
+  type: 'optimize' | 'approve';
+  score_before?: number;
+  task_type?: string;
+  blocking_questions?: string[];
+  cost_savings_usd?: number;
+}
+
+// ─── Enforcement Result ───────────────────────────────────────────────────────
+
+export interface EnforcementResult {
+  allowed: boolean;
+  enforcement: 'lifetime' | 'monthly' | 'rate' | 'always_on' | 'error' | null;
+  usage: UsageData;
+  limits: SerializedTierLimits;       // Serialized (Infinity → null for JSON safety)
+  remaining: {
+    lifetime: number | null;   // null when lifetime is unlimited (Infinity not JSON-serializable)
+    monthly: number;
+  };
+  retry_after_seconds?: number;      // present ONLY when enforcement='rate'
+}
+
+// ─── Rate Limiter Interface ───────────────────────────────────────────────────
+
+export interface RateLimiter {
+  check(tier: string): { allowed: boolean; retry_after_seconds?: number };
+}
+
+// ─── Logger Interface ─────────────────────────────────────────────────────────
+
+export interface Logger {
+  debug: (requestId: string, ...args: unknown[]) => void | boolean;
+  info: (requestId: string, ...args: unknown[]) => void | boolean;
+  warn: (requestId: string, ...args: unknown[]) => void | boolean;
+  error: (requestId: string, ...args: unknown[]) => void | boolean;
+  prompt: (requestId: string, label: string, content: string) => void | boolean;
+}
+
+// ─── Execution Context ────────────────────────────────────────────────────────
+
+export interface ExecutionContext {
+  requestId: string;
+  storage: StorageInterface;
+  logger: Logger;
+  config: OptimizerConfig;
+  rateLimiter: RateLimiter;
+  tier: Tier;
+  // Phase B extensions (added without interface change):
+  // user_id?: string;
+  // api_key_hash?: string;
+  // workspace_id?: string;
+  // ip?: string;
+}
+
+// ─── Storage Interface (async — Phase B ready) ───────────────────────────────
+// SECURITY INVARIANT: No method on this interface may throw an error that
+// exposes internal file paths, stack traces, or implementation details.
+// All errors must be caught internally and returned as safe defaults.
+
+export interface StorageInterface {
+  health(): Promise<'ok' | 'degraded'>;
+  getUsage(): Promise<UsageData>;
+  incrementUsage(): Promise<UsageData>;
+  canUseOptimization(ctx: ExecutionContext): Promise<EnforcementResult>;
+  isProTier(): Promise<boolean>;
+  getConfig(): Promise<OptimizerConfig>;
+  setConfig(config: Partial<OptimizerConfig>): Promise<OptimizerConfig>;
+  saveSession(session: Session): Promise<void>;
+  loadSession(id: string): Promise<Session | undefined>;
+  deleteSession(id: string): Promise<void>;
+  cleanupSessions(): Promise<void>;
+  getStats(): Promise<StatsData>;
+  updateStats(event: StatsEvent): Promise<void>;
+  getLicense(): Promise<LicenseData | null>;
+  setLicense(data: LicenseData): Promise<void>;
+  clearLicense(): Promise<void>;
+}

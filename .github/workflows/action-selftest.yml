@@ -1,0 +1,189 @@
+name: Action Self-Test
+on: [push, pull_request]
+jobs:
+  # Job 1: Success path — good prompt passes at threshold 50
+  pass:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803 # v6
+      - uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7.1.0
+        with:
+          node-version: 20
+          cache: 'npm'
+      - run: npm ci && npm run build
+      - uses: ./
+        with:
+          files: 'test/fixtures/good-prompt.txt'
+          threshold: 50
+
+  # Job 2: Fail path — bad prompt fails at threshold 90
+  fail:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803 # v6
+      - uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7.1.0
+        with:
+          node-version: 20
+          cache: 'npm'
+      - run: npm ci && npm run build
+      - uses: ./
+        id: lint
+        continue-on-error: true
+        with:
+          files: 'test/fixtures/bad-prompt.txt'
+          threshold: 90
+      - name: Assert lint failed
+        if: steps.lint.outcome != 'failure'
+        run: |
+          echo "::error::Expected lint to fail at threshold 90 but it passed"
+          exit 1
+
+  # Job 3: Strictness wiring — strict preset works without threshold
+  strictness:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803 # v6
+      - uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7.1.0
+        with:
+          node-version: 20
+          cache: 'npm'
+      - run: npm ci && npm run build
+      - uses: ./
+        id: strict-lint
+        continue-on-error: true
+        with:
+          files: 'test/fixtures/bad-prompt.txt'
+          strictness: strict
+      - name: Assert strict lint failed
+        if: steps.strict-lint.outcome != 'failure'
+        run: |
+          echo "::error::Expected strict lint to fail but it passed"
+          exit 1
+
+  # Job 4: Packaging — verify bin files ship in npm tarball
+  packaging:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803 # v6
+      - uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7.1.0
+        with:
+          node-version: 20
+          cache: 'npm'
+      - run: npm ci && npm run build
+      - run: npm pack
+      - run: |
+          tar -xzf pcp-engine-*.tgz
+          test -f package/bin/pcp.js || (echo "::error::bin/pcp.js missing from npm tarball" && exit 1)
+          test -f package/bin/lint.js || (echo "::error::bin/lint.js missing from npm tarball" && exit 1)
+          test -f package/bin/cli.js || (echo "::error::bin/cli.js missing from npm tarball" && exit 1)
+          node package/bin/pcp.js --version
+          node package/bin/lint.js --version
+
+  # Job 5: Preflight subcommand — verify preflight works via action
+  preflight:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803 # v6
+      - uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7.1.0
+        with:
+          node-version: 20
+          cache: 'npm'
+      - run: npm ci && npm run build
+      - uses: ./
+        id: pcp
+        with:
+          subcommand: preflight
+          files: 'test/fixtures/good-prompt.txt'
+      - name: Verify preflight JSON output
+        run: |
+          JSON='${{ steps.pcp.outputs.json }}'
+          echo "$JSON" | node -e "
+            const d = JSON.parse(require('fs').readFileSync('/dev/stdin','utf8'));
+            if (typeof d.pqs !== 'number') throw new Error('Missing pqs');
+            if (!d.risk_level) throw new Error('Missing risk_level');
+            if (!d.recommended_model) throw new Error('Missing recommended_model');
+            console.log('Preflight output valid: pqs=' + d.pqs + ' risk=' + d.risk_level + ' model=' + d.recommended_model);
+          "
+
+  # Job 6: PR comment — verify action outputs JSON for comment step
+  outputs-check:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803 # v6
+      - uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7.1.0
+        with:
+          node-version: 20
+          cache: 'npm'
+      - run: npm ci && npm run build
+      - uses: ./
+        id: pcp
+        continue-on-error: true
+        with:
+          files: 'test/fixtures/good-prompt.txt'
+          threshold: 50
+      - name: Verify JSON output exists
+        run: |
+          JSON='${{ steps.pcp.outputs.json }}'
+          if [ -z "$JSON" ]; then
+            echo "::error::Action did not produce JSON output"
+            exit 1
+          fi
+          # Validate it parses as JSON with expected fields
+          echo "$JSON" | node -e "
+            const d = JSON.parse(require('fs').readFileSync('/dev/stdin','utf8'));
+            if (!d.version) throw new Error('Missing version');
+            if (!d.results) throw new Error('Missing results');
+            if (typeof d.threshold !== 'number') throw new Error('Missing threshold');
+            console.log('JSON output valid: version=' + d.version + ' results=' + d.results.length);
+          "
+      - name: Verify exit code output
+        run: |
+          EXIT='${{ steps.pcp.outputs.exit_code }}'
+          if [ -z "$EXIT" ]; then
+            echo "::error::Action did not produce exit_code output"
+            exit 1
+          fi
+          echo "Exit code: $EXIT"
+
+  # Job 7: PR comment format (dry-run — validate comment markdown generation)
+  comment-format:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803 # v6
+      - uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7.1.0
+        with:
+          node-version: 20
+          cache: 'npm'
+      - run: npm ci && npm run build
+      - uses: ./
+        id: pcp
+        continue-on-error: true
+        with:
+          files: 'test/fixtures/bad-prompt.txt'
+          threshold: 90
+      - name: Validate comment format
+        run: |
+          # Simulate the comment generation logic
+          cat << 'SCRIPT' > /tmp/gen-comment.js
+          const fs = require('fs');
+          const MARKER = '<!-- pcp-bot -->';
+          const raw = process.argv[2];
+          const data = JSON.parse(raw);
+          const results = data.results || [];
+          const summary = data.summary || {};
+          const threshold = data.threshold || 60;
+          let body = MARKER + '\n## Prompt Control Plane\n\n';
+          body += '| File | Score | Status | Top Issue |\n';
+          body += '|------|-------|--------|----------|\n';
+          for (const r of results) {
+            const status = r.pass !== false ? 'PASS' : 'FAIL';
+            const topIssue = (r.issues && r.issues.length > 0) ? r.issues[0].rule : '—';
+            body += `| \`${r.source}\` | ${r.score}/100 | ${status} | ${topIssue} |\n`;
+          }
+          // Validate structure
+          if (!body.includes(MARKER)) throw new Error('Missing marker');
+          if (!body.includes('| File |')) throw new Error('Missing table header');
+          if (!body.includes('FAIL')) throw new Error('Expected at least one failure');
+          console.log('Comment format valid (' + body.length + ' chars)');
+          SCRIPT
+          node /tmp/gen-comment.js '${{ steps.pcp.outputs.json }}'

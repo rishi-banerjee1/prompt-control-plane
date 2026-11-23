@@ -1,0 +1,21 @@
+{
+  "$schema": "https://static.modelcontextprotocol.io/schemas/2025-12-11/server.schema.json",
+  "name": "io.github.rishi-banerjee1/pcp-engine",
+  "title": "Prompt Control Plane",
+  "description": "Deterministic prompt scoring, policy enforcement, and audit for any model or provider.",
+  "repository": {
+    "url": "https://github.com/rishi-banerjee1/prompt-control-plane",
+    "source": "github"
+  },
+  "version": "5.4.0",
+  "packages": [
+    {
+      "registryType": "mcpb",
+      "identifier": "https://github.com/rishi-banerjee1/prompt-control-plane/releases/download/v5.4.0/pcp-engine-v5.4.0.mcpb",
+      "fileSha256": "c458dac9952a20c6f05fa514e5cefded9996dd52c9398d0473c6687d1e1656a5",
+      "transport": {
+        "type": "stdio"
+      }
+    }
+  ]
+}

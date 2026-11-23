@@ -1,0 +1,247 @@
+name: 'Prompt Control Plane'
+description: 'Lint AI prompts for quality — deterministic scoring, classification, routing, and policy enforcement. Zero LLM calls.'
+author: 'Rishi Banerjee'
+branding:
+  icon: 'check-circle'
+  color: 'purple'
+inputs:
+  subcommand:
+    description: 'CLI subcommand: check (default), score, preflight'
+    required: false
+    default: 'check'
+  files:
+    description: 'Glob pattern for prompt files to lint (.txt and .md files only). Examples: "prompts/*.txt", "**/*.md"'
+    required: true
+  threshold:
+    description: 'Minimum quality score (0-100). Optional — overrides strictness if set.'
+    required: false
+  strictness:
+    description: 'Preset: standard (60), strict (75), relaxed (40). Ignored if threshold is set.'
+    required: false
+    default: 'standard'
+  version:
+    description: 'GitHub release version to install (optional). If omitted, uses the action tag reference.'
+    required: false
+  comment:
+    description: 'Post results as a PR comment. Requires pull-requests: write permission.'
+    required: false
+    default: 'false'
+  token:
+    description: 'GitHub token for PR commenting. Defaults to the automatic GITHUB_TOKEN.'
+    required: false
+    default: '${{ github.token }}'
+outputs:
+  json:
+    description: 'Raw JSON output from PCP'
+    value: ${{ steps.pcp-run.outputs.json }}
+  exit_code:
+    description: 'PCP exit code (0=pass, 1=fail, 2=error, 3=policy-blocked)'
+    value: ${{ steps.pcp-run.outputs.exit_code }}
+runs:
+  using: composite
+  steps:
+    - uses: actions/setup-node@249970729cb0ef3589644e2896645e5dc5ba9c38 # v6
+      with:
+        node-version: 20
+
+    # Step 1: Run PCP and capture output
+    - id: pcp-run
+      run: |
+        VERSION="${{ inputs.version }}"
+        if [ -z "$VERSION" ]; then VERSION="${{ github.action_ref }}"; fi
+        # Strip leading 'v' (e.g. v5.4.0 → 5.4.0)
+        VERSION="${VERSION#v}"
+        # Build CLI args with proper quoting (bash array)
+        SUBCMD="${{ inputs.subcommand }}"
+        ARGS=()
+        # Prepend subcommand if not the default 'check'
+        if [ -n "$SUBCMD" ] && [ "$SUBCMD" != "check" ]; then
+          ARGS+=("$SUBCMD")
+        fi
+        ARGS+=(--file "${{ inputs.files }}" --json)
+        if [ -n "${{ inputs.threshold }}" ]; then
+          ARGS+=(--threshold "${{ inputs.threshold }}")
+        elif [ "${{ inputs.strictness }}" = "strict" ]; then
+          ARGS+=(--strict)
+        elif [ "${{ inputs.strictness }}" = "relaxed" ]; then
+          ARGS+=(--relaxed)
+        fi
+
+        # Output file for JSON (shared with comment step)
+        PCP_JSON_FILE="${RUNNER_TEMP:-/tmp}/pcp-output-$$.json"
+
+        # Helper: run pcp, capture output, write step summary
+        run_pcp() {
+          local PCP_BIN="$1"; shift
+          local PCP_OUTPUT
+          PCP_OUTPUT=$("$PCP_BIN" "$@" 2>&1) || local PCP_EXIT=$?
+          PCP_EXIT=${PCP_EXIT:-0}
+          echo "$PCP_OUTPUT"
+
+          # Save JSON to file for the comment step
+          echo "$PCP_OUTPUT" > "$PCP_JSON_FILE"
+          echo "json_file=$PCP_JSON_FILE" >> "$GITHUB_OUTPUT"
+          # Escape multiline JSON for output
+          {
+            echo 'json<<PCPEOF'
+            echo "$PCP_OUTPUT"
+            echo 'PCPEOF'
+          } >> "$GITHUB_OUTPUT"
+          echo "exit_code=$PCP_EXIT" >> "$GITHUB_OUTPUT"
+
+          # Write step summary if available
+          if [ -n "${GITHUB_STEP_SUMMARY:-}" ]; then
+            {
+              echo "### Prompt Quality Report"
+              echo ""
+              echo "Run: \`pcp ${SUBCMD:-check} ${ARGS[*]}\`"
+              echo ""
+              echo "| File | PQS | Confidence | Status |"
+              echo "|------|-----|------------|--------|"
+              echo "$PCP_OUTPUT" | node -e "
+                const data = JSON.parse(require('fs').readFileSync('/dev/stdin','utf8'));
+                const results = data.results || [{ source: 'prompt', score: data.quality_score || data.total || 0, pass: data.pass !== false }];
+                results.forEach(r => {
+                  const status = r.pass !== false ? 'PASS' : 'FAIL';
+                  const conf = r.confidence || 'n/a';
+                  console.log('| ' + (r.source || 'prompt') + ' | ' + (r.score || 0) + '/100 | ' + conf + ' | ' + status + ' |');
+                });
+              " 2>/dev/null || echo "| (see logs) | - | - | - |"
+            } >> "$GITHUB_STEP_SUMMARY"
+          fi
+
+          return $PCP_EXIT
+        }
+
+        # Local checkout fallback (uses: ./ in self-tests)
+        if [ -z "$VERSION" ] && [ -f "$GITHUB_ACTION_PATH/bin/pcp.js" ] && [ -f "$GITHUB_ACTION_PATH/dist/src/lint-cli.js" ]; then
+          run_pcp node "$GITHUB_ACTION_PATH/bin/pcp.js" "${ARGS[@]}"
+          exit $?
+        fi
+        # Backward compat: fall back to lint.js if pcp.js not found
+        if [ -z "$VERSION" ] && [ -f "$GITHUB_ACTION_PATH/bin/lint.js" ] && [ -f "$GITHUB_ACTION_PATH/dist/src/lint-cli.js" ]; then
+          run_pcp node "$GITHUB_ACTION_PATH/bin/lint.js" "${ARGS[@]}"
+          exit $?
+        fi
+        # Fail fast on empty version
+        if [ -z "$VERSION" ]; then
+          echo "::error::Could not resolve release version. Set the 'version' input explicitly (e.g., version: '5.0.0')."
+          exit 2
+        fi
+        # Accept only: major (5), or exact semver (5.0.0). Reject partial (5.0) and SHAs.
+        if ! echo "$VERSION" | grep -qE '^([0-9]+|[0-9]+\.[0-9]+\.[0-9]+)$'; then
+          echo "::error::Invalid version '${VERSION}'. Use a tag like @v5 or @v5.4.0, or set 'version' input (e.g., version: '5.0.0')."
+          exit 2
+        fi
+        # Install to deterministic path and use node_modules/.bin
+        INSTALL_DIR="${RUNNER_TEMP:-/tmp}/pcp-$$"
+        rm -rf "$INSTALL_DIR"
+        npm install --prefix "$INSTALL_DIR" "github:rishi-banerjee1/prompt-control-plane#v${VERSION}" --no-save 2>&1
+        # Try pcp first (v5+), fall back to prompt-lint (v4)
+        if [ -x "$INSTALL_DIR/node_modules/.bin/pcp" ]; then
+          run_pcp "$INSTALL_DIR/node_modules/.bin/pcp" "${ARGS[@]}"
+        else
+          run_pcp "$INSTALL_DIR/node_modules/.bin/prompt-lint" "${ARGS[@]}"
+        fi
+      shell: bash
+
+    # Step 2: Post PR comment (opt-in, runs even if step 1 fails)
+    - if: always() && inputs.comment == 'true' && github.event_name == 'pull_request'
+      uses: actions/github-script@3a2844b7e9c422d3c10d287c895573f7108da1b3 # v9
+      with:
+        github-token: ${{ inputs.token }}
+        script: |
+          const fs = require('fs');
+          const MARKER = '<!-- pcp-bot -->';
+
+          // Read JSON output from step 1
+          const jsonFile = '${{ steps.pcp-run.outputs.json_file }}';
+          let data;
+          try {
+            const raw = fs.readFileSync(jsonFile, 'utf8');
+            data = JSON.parse(raw);
+          } catch (e) {
+            core.notice('PCP: Could not parse JSON output — skipping PR comment');
+            return;
+          }
+
+          // Build markdown comment
+          const results = data.results || [];
+          const summary = data.summary || { total: results.length, passed: 0, failed: 0 };
+          const threshold = data.threshold || 60;
+          const version = data.version || 'unknown';
+
+          let body = MARKER + '\n';
+          body += '## Prompt Control Plane\n\n';
+
+          if (results.length === 0) {
+            body += '_No prompt files found matching the glob pattern._\n';
+          } else {
+            body += '| File | Score | Status | Top Issue |\n';
+            body += '|------|-------|--------|----------|\n';
+            for (const r of results) {
+              const status = r.pass !== false ? 'PASS' : 'FAIL';
+              const topIssue = (r.issues && r.issues.length > 0) ? r.issues[0].rule : '—';
+              const src = r.source.length > 40 ? '...' + r.source.slice(-37) : r.source;
+              body += `| \`${src}\` | ${r.score}/100 | ${status} | ${topIssue} |\n`;
+            }
+            body += '\n';
+
+            const passed = summary.passed || results.filter(r => r.pass !== false).length;
+            const failed = summary.failed || results.filter(r => r.pass === false).length;
+            body += `**Summary:** ${passed} passed, ${failed} failed (threshold: ${threshold})\n\n`;
+
+            // Show details for failures
+            const failures = results.filter(r => r.pass === false);
+            if (failures.length > 0) {
+              body += '<details><summary>Failure details</summary>\n\n';
+              for (const f of failures) {
+                body += `**${f.source}** (${f.score}/100)\n`;
+                if (f.issues) {
+                  for (const issue of f.issues) {
+                    body += `- \`${issue.rule}\`: ${issue.message}\n`;
+                  }
+                }
+                body += '\n';
+              }
+              body += '</details>\n\n';
+            }
+          }
+
+          body += `<sub>Generated by <a href="https://getpcp.site">Prompt Control Plane</a> v${version}</sub>\n`;
+
+          // Find existing PCP comment to update (avoid spam)
+          const prNumber = context.payload.pull_request.number;
+          const { data: comments } = await github.rest.issues.listComments({
+            owner: context.repo.owner,
+            repo: context.repo.repo,
+            issue_number: prNumber,
+            per_page: 100,
+          });
+          const existing = comments.find(c => c.body && c.body.includes(MARKER));
+
+          try {
+            if (existing) {
+              await github.rest.issues.updateComment({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                comment_id: existing.id,
+                body: body,
+              });
+              core.info(`PCP: Updated existing PR comment #${existing.id}`);
+            } else {
+              await github.rest.issues.createComment({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                issue_number: prNumber,
+                body: body,
+              });
+              core.info('PCP: Posted PR comment');
+            }
+          } catch (e) {
+            if (e.status === 403) {
+              core.notice('PCP: Insufficient permissions to comment on PR (fork PRs have read-only tokens). Results are still in the step summary.');
+            } else {
+              core.warning(`PCP: Failed to post PR comment: ${e.message}`);
+            }
+          }
