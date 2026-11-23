@@ -2,6 +2,9 @@
 
 ## Unreleased
 
+- Added the five-minute narrated explainer with the approved male voice, screen-aligned passages, and music ducking.
+- Corrected misleading explainer statistics and output scoring labels.
+
 - Patched vulnerable MCP SDK, Hono, Zod, proxy-addr, body-parser, ip-address, and fast-uri dependencies.
 - Updated the matched Remotion toolchain to 4.0.545 and refreshed video transitive dependencies.
 - Updated immutable setup-node, upload-artifact, and CodeQL action pins.

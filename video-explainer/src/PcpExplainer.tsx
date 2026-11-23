@@ -7,8 +7,17 @@ import {Powerhouses} from './scenes/Powerhouses';
 import {CiIntegration} from './scenes/CiIntegration';
 import {Adoption} from './scenes/Adoption';
 import {Closing} from './scenes/Closing';
+import narration from '../narration/timeline-male-v1.json';
 
 const TRANSITION_FRAMES = 25; // ~0.8s crossfade between scenes
+
+const musicVolume = (frame: number) => {
+  const seconds = frame / FPS;
+  const speaking = Math.max(0, ...narration.segments.map(({start, end}) =>
+    Math.max(0, Math.min(1, (seconds - start + 0.3) / 0.3, (end + 0.3 - seconds) / 0.3)),
+  ));
+  return 0.2 - speaking * 0.1;
+};
 
 /**
  * Wraps each scene with smooth fade-in / fade-out transitions.
@@ -83,12 +92,14 @@ export const PcpExplainer: React.FC = () => {
       {/* Background music — math-generated, zero watermarks */}
       {/* Track 1: Gentle Flow (75s) — soft ambient piano for Hook + WhatIsPcp */}
       <Sequence from={0} durationInFrames={Math.round(75 * FPS)}>
-        <Audio src={staticFile('music/gentle-flow.wav')} volume={0.6} />
+        <Audio src={staticFile('music/gentle-flow.wav')} volume={musicVolume} />
       </Sequence>
       {/* Track 2: Bright Steps (110s, looped) — upbeat synth for remaining scenes */}
       <Sequence from={Math.round(75 * FPS)}>
-        <Audio src={staticFile('music/bright-steps.wav')} volume={0.6} loop />
+        <Audio src={staticFile('music/bright-steps.wav')} volume={(frame) => musicVolume(frame + 75 * FPS)} loop />
       </Sequence>
+
+      <Audio src={staticFile('narration/pcp-male-v1.wav')} />
 
       {scenes.map(({Component, duration}, i) => {
         const from = offset;
