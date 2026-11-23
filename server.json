@@ -10,21 +10,12 @@
   "version": "5.4.0",
   "packages": [
     {
-      "registryType": "npm",
-      "identifier": "pcp-engine",
-      "version": "5.4.0",
+      "registryType": "mcpb",
+      "identifier": "https://github.com/rishi-banerjee1/prompt-control-plane/releases/download/v5.4.0/pcp-engine-v5.4.0.mcpb",
+      "fileSha256": "c458dac9952a20c6f05fa514e5cefded9996dd52c9398d0473c6687d1e1656a5",
       "transport": {
         "type": "stdio"
-      },
-      "environmentVariables": [
-        {
-          "description": "Log verbosity level: debug, info, warn, error",
-          "isRequired": false,
-          "format": "string",
-          "isSecret": false,
-          "name": "PROMPT_CONTROL_PLANE_LOG_LEVEL"
-        }
-      ]
+      }
     }
   ]
 }
