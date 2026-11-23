@@ -48,7 +48,7 @@ Environment:
   PROMPT_CONTROL_PLANE_LOG_PROMPTS=true    Enable raw prompt logging (never in shared envs)
 
   Community use:
-  Unlimited optimizations, all community tools, no license key required.
+  Unlimited monthly use, all features included, no license key required.
   All governance features are included under Apache-2.0; optional enterprise support is available.
 
 Quick setup (any MCP-compatible client):
@@ -91,6 +91,6 @@ registerTools(server, storage, rateLimiter, pkg.version);
 const transport = new StdioServerTransport();
 await server.connect(transport);
 
-// Log tier from storage (reflects license > env var > default priority)
+// Keep legacy tier metadata visible for compatibility; feature access is not tier-gated.
 const bootUsage = await storage.getUsage();
 log.info(bootId, `MCP server v${pkg.version} ready (tier=${bootUsage.tier}, tools=20)`);

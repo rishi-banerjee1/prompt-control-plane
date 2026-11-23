@@ -9,13 +9,13 @@
   <link rel="apple-touch-icon" sizes="180x180" href="apple-touch-icon.png">
   <link rel="manifest" href="site.webmanifest">
   <title>Documentation: Prompt Control Plane | Developer Reference</title>
-  <meta name="description" content="Complete developer documentation for Prompt Control Plane. 20 MCP tools, CLI linter, GitHub Action, programmatic API, enterprise features, and architecture reference. Zero LLM calls, fully deterministic.">
+  <meta name="description" content="Complete developer documentation for Prompt Control Plane. 20 MCP tools, CLI linter, GitHub Action, programmatic API, Apache-2.0 governance features, and architecture reference. Zero LLM calls, fully deterministic.">
   <meta name="keywords" content="prompt control plane docs, pcp CLI, MCP documentation, prompt linter API, prompt governance tools, enterprise prompt policy, audit trail, config lock, developer reference">
   <link rel="canonical" href="https://getpcp.site/docs.html">
 
   <!-- Open Graph -->
   <meta property="og:title" content="Documentation: Prompt Control Plane">
-  <meta property="og:description" content="Complete developer documentation for Prompt Control Plane. 20 tools, CLI, GitHub Action, API, enterprise features.">
+  <meta property="og:description" content="Complete developer documentation for Prompt Control Plane. 20 tools, CLI, GitHub Action, API, Apache-2.0 governance features.">
   <meta property="og:type" content="website">
   <meta property="og:url" content="https://getpcp.site/docs.html">
 
@@ -30,7 +30,7 @@
     "@context": "https://schema.org",
     "@type": "TechArticle",
     "name": "Documentation: Prompt Control Plane",
-    "description": "Complete developer documentation for Prompt Control Plane: 20 MCP tools, CLI linter, GitHub Action, programmatic API, enterprise features.",
+    "description": "Complete developer documentation for Prompt Control Plane: 20 MCP tools, CLI linter, GitHub Action, programmatic API, Apache-2.0 governance features.",
     "url": "https://getpcp.site/docs.html",
     "isPartOf": {
       "@type": "WebSite",
@@ -71,7 +71,7 @@
   <!-- Hero -->
   <section class="docs-hero">
     <div class="container">
-      <div class="badge">Developer Reference &middot; <strong>v5.3</strong></div>
+      <div class="badge">Developer Reference &middot; <strong>v5.4.0</strong></div>
       <h1>Documentation</h1>
       <p class="subtitle">
         Everything you need to integrate, configure, and enforce prompt governance with Prompt Control Plane.
@@ -100,12 +100,12 @@
             <li><a href="#tools-refinement">Refinement</a></li>
             <li><a href="#tools-cost">Cost &amp; Compression</a></li>
             <li><a href="#tools-config">Configuration</a></li>
-            <li><a href="#tools-license">License</a></li>
+            <li><a href="#tools-license">Legacy license metadata</a></li>
             <li><a href="#tools-sessions">Sessions</a></li>
           </ul>
         </li>
         <li><a href="#verification">Verification</a></li>
-        <li><a href="#enterprise">Enterprise Features</a></li>
+        <li><a href="#enterprise">Governance Features</a></li>
         <li><a href="#cli">CLI (<code>pcp</code>)</a></li>
         <li><a href="#hooks">Auto-Check Hooks</a></li>
         <li><a href="#github-action">GitHub Action</a></li>
@@ -132,8 +132,8 @@
         <p><strong>Language-agnostic.</strong> Your project can be Python, Java, Go, Rust, C#, Ruby: any language. Node.js 20+ is only required to run PCP itself. It never touches your codebase.</p>
       </div>
 
-      <h4><span class="step-num">1</span> npm global (recommended)</h4>
-      <div class="code-block">npm install -g pcp-engine
+      <h4><span class="step-num">1</span> GitHub source release (Apache-2.0)</h4>
+      <div class="code-block">npm install -g github:rishi-banerjee1/prompt-control-plane#v5.4.0
 pcp preflight <span class="string">"Your prompt here"</span> --json</div>
 
       <h4><span class="step-num">2</span> MCP Config (for AI-assisted workflows)</h4>
@@ -228,10 +228,10 @@ pcp hook install --threshold 70</div>
           <text x="340" y="96" text-anchor="middle" fill="var(--accent)" font-weight="700" font-size="14">Prompt Control Plane</text>
           <text x="340" y="112" text-anchor="middle" fill="var(--text-muted)" font-size="10">All processing happens here: before the prompt reaches any LLM</text>
 
-          <!-- Policy Gate (Enterprise): left side -->
+          <!-- Policy Gate: included in the Apache-2.0 release -->
           <rect class="node-rect" x="110" y="130" width="160" height="32" fill="var(--surface)" stroke="var(--accent)" />
           <text x="190" y="150" text-anchor="middle" fill="var(--accent)" font-weight="600" font-size="11">Policy Gate</text>
-          <text x="190" y="176" text-anchor="middle" fill="var(--text-muted)" font-size="9">Enterprise only</text>
+          <text x="190" y="176" text-anchor="middle" fill="var(--text-muted)" font-size="9">Included for all users</text>
 
           <!-- Main pipeline (center-right) -->
           <rect class="node-rect" x="310" y="130" width="260" height="32" fill="var(--surface)" stroke="var(--border)" />
@@ -267,14 +267,14 @@ pcp hook install --threshold 70</div>
           <rect class="node-rect" x="310" y="418" width="260" height="32" fill="var(--surface)" stroke="var(--border)" />
           <text x="440" y="438" text-anchor="middle" fill="var(--text)" font-weight="600" font-size="11">7. Route to Optimal Model</text>
 
-          <!-- Audit Log (Enterprise): left side bottom -->
+          <!-- Audit Log (Open source): left side bottom -->
           <line class="arrow-line" x1="190" y1="176" x2="190" y2="420" stroke="var(--accent)" stroke-dasharray="4 2" />
           <rect class="node-rect" x="110" y="420" width="160" height="32" fill="var(--surface)" stroke="var(--accent)" />
           <text x="190" y="440" text-anchor="middle" fill="var(--accent)" font-weight="600" font-size="11">Audit Log</text>
-          <text x="190" y="466" text-anchor="middle" fill="var(--text-muted)" font-size="9">Enterprise only</text>
+          <text x="190" y="466" text-anchor="middle" fill="var(--text-muted)" font-size="9">Included for all users</text>
 
-          <!-- Enterprise annotations -->
-          <text x="570" y="242" fill="var(--accent)" font-size="9">*Enterprise</text>
+          <!-- Governance availability -->
+          <text x="570" y="242" fill="var(--accent)" font-size="9">Included for all users</text>
 
           <!-- PreviewPack output -->
           <line class="arrow-line" x1="340" y1="472" x2="340" y2="500" stroke="var(--accent)" marker-end="url(#arrowDown)" />
@@ -410,11 +410,11 @@ pcp hook install --threshold 70</div>
         </table>
       </div>
 
-      <p class="csp-style-036"><strong>Optional governance pipeline stages</strong> that influence the PreviewPack (all configured via the <a href="admin.html" class="csp-style-037">Enterprise Console</a>):</p>
+      <p class="csp-style-036"><strong>Optional governance pipeline stages</strong> that influence the PreviewPack (all configured via the <a href="admin.html" class="csp-style-037">Governance Console</a>):</p>
       <ul class="csp-style-038">
-        <li><strong>Policy Gate</strong>: can block or warn before compilation begins. Set enforcement mode and strictness in the Enterprise Console.</li>
-        <li><strong>Custom Rules</strong>: your regex-based rules affect risk score and blocking decisions. Build rules visually in the Enterprise Console and deploy with one click via the <code>save_custom_rules</code> tool. Validate with <code>pcp doctor</code>.</li>
-        <li><strong>Audit Log</strong>: every decision is written to a hash-chained JSONL log with SHA-256 hash chaining. Explore and verify the chain visually in the Enterprise Console.</li>
+        <li><strong>Policy Gate</strong>: can block or warn before compilation begins. Set enforcement mode and strictness in the Governance Console.</li>
+        <li><strong>Custom Rules</strong>: your regex-based rules affect risk score and blocking decisions. Build rules visually in the Governance Console and deploy with one click via the <code>save_custom_rules</code> tool. Validate with <code>pcp doctor</code>.</li>
+        <li><strong>Audit Log</strong>: every decision is written to a hash-chained JSONL log with SHA-256 hash chaining. Explore and verify the chain visually in the Governance Console.</li>
       </ul>
 
       <!-- ════════════════════════════════════════════════════════════════════ -->
@@ -453,7 +453,7 @@ pcp hook install --threshold 70</div>
         </tr>
         <tr>
           <td class="csp-style-043">Hash-chained audit</td>
-          <td class="csp-style-044">Cryptographically chained log of every decision. If any entry is modified, the chain breaks. <span class="csp-style-045">(Enterprise)</span></td>
+          <td class="csp-style-044">Cryptographically chained log of every decision. If any entry is modified, the chain breaks. <span class="csp-style-045">(included)</span></td>
         </tr>
       </table>
       <p class="csp-style-046">Extensively tested. Run the suite yourself to verify: completes in under 5 seconds.</p>
@@ -462,7 +462,7 @@ pcp hook install --threshold 70</div>
       <!-- TOOL REFERENCE                                                      -->
       <!-- ════════════════════════════════════════════════════════════════════ -->
       <h2 id="tool-reference">Tool Reference</h2>
-      <p>Prompt Control Plane exposes 20 tools via MCP. All 20 tools are available in the Apache-2.0 project. Community use has no monthly quota. Every response includes a <code>request_id</code> for traceability.</p>
+      <p>Prompt Control Plane exposes 20 tools via MCP. All 20 tools are available under Apache-2.0. There is no monthly quota or feature license. Every response includes a <code>request_id</code> for traceability.</p>
 
       <div class="tool-card csp-style-047">
         <h3 class="csp-style-048">All 20 Tools at a Glance</h3>
@@ -476,29 +476,29 @@ pcp hook install --threshold 70</div>
             </tr>
           </thead>
           <tbody>
-            <tr class="csp-style-035"><td class="csp-style-044"><code>optimize_prompt</code></td><td>Analysis</td><td><span class="tag tag-metered">Metered</span></td><td>All Plans</td></tr>
-            <tr class="csp-style-035"><td class="csp-style-044"><code>check_prompt</code></td><td>Analysis</td><td><span class="tag tag-free">Free</span></td><td>All Plans</td></tr>
-            <tr class="csp-style-035"><td class="csp-style-044"><code>classify_task</code></td><td>Analysis</td><td><span class="tag tag-free">Free</span></td><td>All Plans</td></tr>
-            <tr class="csp-style-035"><td class="csp-style-044"><code>route_model</code></td><td>Routing</td><td><span class="tag tag-free">Free</span></td><td>All Plans</td></tr>
-            <tr class="csp-style-035"><td class="csp-style-044"><code>pre_flight</code></td><td>Routing</td><td><span class="tag tag-metered">Metered</span></td><td>All Plans</td></tr>
-            <tr class="csp-style-035"><td class="csp-style-044"><code>refine_prompt</code></td><td>Refinement</td><td><span class="tag tag-metered">Metered</span></td><td>All Plans</td></tr>
-            <tr class="csp-style-035"><td class="csp-style-044"><code>approve_prompt</code></td><td>Refinement</td><td><span class="tag tag-free">Free</span></td><td>All Plans</td></tr>
-            <tr class="csp-style-035"><td class="csp-style-044"><code>estimate_cost</code></td><td>Cost</td><td><span class="tag tag-free">Free</span></td><td>All Plans</td></tr>
-            <tr class="csp-style-035"><td class="csp-style-044"><code>compress_context</code></td><td>Cost</td><td><span class="tag tag-free">Free</span></td><td>All Plans</td></tr>
-            <tr class="csp-style-035"><td class="csp-style-044"><code>prune_tools</code></td><td>Cost</td><td><span class="tag tag-free">Free</span></td><td>All Plans</td></tr>
-            <tr class="csp-style-035"><td class="csp-style-044"><code>configure_optimizer</code></td><td>Config</td><td><span class="tag tag-free">Free</span></td><td>All Plans*</td></tr>
-            <tr class="csp-style-035"><td class="csp-style-044"><code>get_usage</code></td><td>Config</td><td><span class="tag tag-free">Free</span></td><td>All Plans</td></tr>
-            <tr class="csp-style-035"><td class="csp-style-044"><code>prompt_stats</code></td><td>Config</td><td><span class="tag tag-free">Free</span></td><td>All Plans</td></tr>
-            <tr class="csp-style-035"><td class="csp-style-044"><code>set_license</code></td><td>License</td><td><span class="tag tag-free">Free</span></td><td>All Plans</td></tr>
-            <tr class="csp-style-035"><td class="csp-style-044"><code>license_status</code></td><td>License</td><td><span class="tag tag-free">Free</span></td><td>All Plans</td></tr>
-            <tr class="csp-style-035"><td class="csp-style-044"><code>list_sessions</code></td><td>Sessions</td><td><span class="tag tag-free">Free</span></td><td class="csp-style-037">Enterprise</td></tr>
-            <tr class="csp-style-035"><td class="csp-style-044"><code>export_session</code></td><td>Sessions</td><td><span class="tag tag-free">Free</span></td><td class="csp-style-037">Enterprise</td></tr>
-            <tr class="csp-style-035"><td class="csp-style-044"><code>delete_session</code></td><td>Sessions</td><td><span class="tag tag-free">Free</span></td><td class="csp-style-037">Enterprise</td></tr>
-            <tr class="csp-style-035"><td class="csp-style-044"><code>purge_sessions</code></td><td>Sessions</td><td><span class="tag tag-free">Free</span></td><td class="csp-style-037">Enterprise</td></tr>
-            <tr><td class="csp-style-044"><code>save_custom_rules</code></td><td>Governance</td><td><span class="tag tag-free">Free</span></td><td class="csp-style-037">Enterprise</td></tr>
+            <tr class="csp-style-035"><td class="csp-style-044"><code>optimize_prompt</code></td><td>Analysis</td><td><span class="tag tag-free">Included</span></td><td>All users</td></tr>
+            <tr class="csp-style-035"><td class="csp-style-044"><code>check_prompt</code></td><td>Analysis</td><td><span class="tag tag-free">Free</span></td><td>All users</td></tr>
+            <tr class="csp-style-035"><td class="csp-style-044"><code>classify_task</code></td><td>Analysis</td><td><span class="tag tag-free">Free</span></td><td>All users</td></tr>
+            <tr class="csp-style-035"><td class="csp-style-044"><code>route_model</code></td><td>Routing</td><td><span class="tag tag-free">Free</span></td><td>All users</td></tr>
+            <tr class="csp-style-035"><td class="csp-style-044"><code>pre_flight</code></td><td>Routing</td><td><span class="tag tag-free">Included</span></td><td>All users</td></tr>
+            <tr class="csp-style-035"><td class="csp-style-044"><code>refine_prompt</code></td><td>Refinement</td><td><span class="tag tag-free">Included</span></td><td>All users</td></tr>
+            <tr class="csp-style-035"><td class="csp-style-044"><code>approve_prompt</code></td><td>Refinement</td><td><span class="tag tag-free">Free</span></td><td>All users</td></tr>
+            <tr class="csp-style-035"><td class="csp-style-044"><code>estimate_cost</code></td><td>Cost</td><td><span class="tag tag-free">Free</span></td><td>All users</td></tr>
+            <tr class="csp-style-035"><td class="csp-style-044"><code>compress_context</code></td><td>Cost</td><td><span class="tag tag-free">Free</span></td><td>All users</td></tr>
+            <tr class="csp-style-035"><td class="csp-style-044"><code>prune_tools</code></td><td>Cost</td><td><span class="tag tag-free">Free</span></td><td>All users</td></tr>
+            <tr class="csp-style-035"><td class="csp-style-044"><code>configure_optimizer</code></td><td>Config</td><td><span class="tag tag-free">Free</span></td><td>All users</td></tr>
+            <tr class="csp-style-035"><td class="csp-style-044"><code>get_usage</code></td><td>Config</td><td><span class="tag tag-free">Free</span></td><td>All users</td></tr>
+            <tr class="csp-style-035"><td class="csp-style-044"><code>prompt_stats</code></td><td>Config</td><td><span class="tag tag-free">Free</span></td><td>All users</td></tr>
+            <tr class="csp-style-035"><td class="csp-style-044"><code>set_license</code></td><td>License</td><td><span class="tag tag-free">Free</span></td><td>All users</td></tr>
+            <tr class="csp-style-035"><td class="csp-style-044"><code>license_status</code></td><td>License</td><td><span class="tag tag-free">Free</span></td><td>All users</td></tr>
+            <tr class="csp-style-035"><td class="csp-style-044"><code>list_sessions</code></td><td>Sessions</td><td><span class="tag tag-free">Free</span></td><td class="csp-style-037">All users</td></tr>
+            <tr class="csp-style-035"><td class="csp-style-044"><code>export_session</code></td><td>Sessions</td><td><span class="tag tag-free">Free</span></td><td class="csp-style-037">All users</td></tr>
+            <tr class="csp-style-035"><td class="csp-style-044"><code>delete_session</code></td><td>Sessions</td><td><span class="tag tag-free">Free</span></td><td class="csp-style-037">All users</td></tr>
+            <tr class="csp-style-035"><td class="csp-style-044"><code>purge_sessions</code></td><td>Sessions</td><td><span class="tag tag-free">Free</span></td><td class="csp-style-037">All users</td></tr>
+            <tr><td class="csp-style-044"><code>save_custom_rules</code></td><td>Governance</td><td><span class="tag tag-free">Free</span></td><td class="csp-style-037">All users</td></tr>
           </tbody>
         </table>
-        <p class="csp-style-051">*configure_optimizer: Enterprise settings (policy_mode, audit_log, config lock, session_retention_days) require Enterprise tier.</p>
+        <p class="csp-style-051">*configure_optimizer: All governance settings are available to all users; no license is required.</p>
       </div>
 
       <!-- ── Analysis ────────────────────────────────────────────────────── -->
@@ -512,8 +512,8 @@ pcp hook install --threshold 70</div>
       <div class="tool-card">
         <div class="tool-card-header">
           <span class="tool-name">optimize_prompt</span>
-          <span class="tag tag-metered">Metered</span>
-          <span class="tag tag-free">All Plans</span>
+          <span class="tag tag-free">Included</span>
+          <span class="tag tag-free">All users</span>
         </div>
         <p class="tool-desc">The main entry point. Analyzes a raw prompt, detects ambiguities, compiles an optimized version, scores quality, and estimates cost across providers. Returns a PreviewPack for review.</p>
         <div class="tool-params">
@@ -531,7 +531,7 @@ pcp hook install --threshold 70</div>
         <div class="tool-card-header">
           <span class="tool-name">check_prompt</span>
           <span class="tag tag-free">Free</span>
-          <span class="tag tag-free">All Plans</span>
+          <span class="tag tag-free">All users</span>
         </div>
         <p class="tool-desc">Quick pass/fail check of a prompt. Returns a quality score, the top issues detected, and a suggestion for improvement. No compilation, no session. Ideal for CI gates or lightweight checks.</p>
         <div class="tool-params">
@@ -548,7 +548,7 @@ pcp hook install --threshold 70</div>
         <div class="tool-card-header">
           <span class="tool-name">classify_task</span>
           <span class="tag tag-free">Free</span>
-          <span class="tag tag-free">All Plans</span>
+          <span class="tag tag-free">All users</span>
         </div>
         <p class="tool-desc">Classifies a prompt by task type (13 types), reasoning complexity (6 levels), dimensional risk score, and suggests an optimization profile. Useful for understanding a prompt before committing to optimization.</p>
         <div class="tool-params">
@@ -572,7 +572,7 @@ pcp hook install --threshold 70</div>
         <div class="tool-card-header">
           <span class="tool-name">route_model</span>
           <span class="tag tag-free">Free</span>
-          <span class="tag tag-free">All Plans</span>
+          <span class="tag tag-free">All users</span>
         </div>
         <p class="tool-desc">Routes to the optimal model based on task complexity, risk, budget, and latency preferences. Returns a full recommendation with a <code>decision_path</code> audit trail showing every routing decision. Two-step routing: (1) complexity + risk determine the default tier, (2) budget/latency overrides produce the final tier.</p>
         <div class="tool-params">
@@ -594,8 +594,8 @@ pcp hook install --threshold 70</div>
       <div class="tool-card">
         <div class="tool-card-header">
           <span class="tool-name">pre_flight</span>
-          <span class="tag tag-metered">Metered</span>
-          <span class="tag tag-free">All Plans</span>
+          <span class="tag tag-free">Included</span>
+          <span class="tag tag-free">All users</span>
         </div>
         <p class="tool-desc">Full pre-flight analysis in a single call: classifies task, assesses risk, routes model, and scores quality. Returns a complete decision bundle. Unlimited community use (does NOT call <code>optimize_prompt</code> internally).</p>
         <div class="tool-params">
@@ -622,8 +622,8 @@ pcp hook install --threshold 70</div>
       <div class="tool-card">
         <div class="tool-card-header">
           <span class="tool-name">refine_prompt</span>
-          <span class="tag tag-metered">Metered</span>
-          <span class="tag tag-free">All Plans</span>
+          <span class="tag tag-free">Included</span>
+          <span class="tag tag-free">All users</span>
         </div>
         <p class="tool-desc">Refines a prompt by answering blocking questions or providing manual edits. Re-runs the full analysis pipeline and returns an updated PreviewPack.</p>
         <div class="tool-params">
@@ -642,9 +642,9 @@ pcp hook install --threshold 70</div>
         <div class="tool-card-header">
           <span class="tool-name">approve_prompt</span>
           <span class="tag tag-free">Free</span>
-          <span class="tag tag-free">All Plans</span>
+          <span class="tag tag-free">All users</span>
         </div>
-        <p class="tool-desc">Sign-off gate. Approves the compiled prompt and returns the final optimized prompt ready for use. Fails if blocking questions remain. In Enterprise enforce mode, runs a policy enforcement check before allowing approval.</p>
+        <p class="tool-desc">Sign-off gate. Approves the compiled prompt and returns the final optimized prompt ready for use. Fails if blocking questions remain. When enforce mode is enabled, runs a policy enforcement check before allowing approval.</p>
         <div class="tool-params">
           <div class="tool-params-title">Parameters</div>
           <div class="param-row"><span class="param-name">session_id</span> <span class="param-type">string</span> <span class="param-required">required</span> <span class="param-desc">Session ID from optimize_prompt</span></div>
@@ -665,7 +665,7 @@ pcp hook install --threshold 70</div>
         <div class="tool-card-header">
           <span class="tool-name">estimate_cost</span>
           <span class="tag tag-free">Free</span>
-          <span class="tag tag-free">All Plans</span>
+          <span class="tag tag-free">All users</span>
         </div>
         <p class="tool-desc">Estimates token count and cost across PCP’s maintained 21-model catalog for any prompt text. No session needed. Prompt checks and compilation remain model agnostic; these optional estimates cover Anthropic, OpenAI, Google, and Perplexity.</p>
         <div class="tool-params">
@@ -683,7 +683,7 @@ pcp hook install --threshold 70</div>
         <div class="tool-card-header">
           <span class="tool-name">compress_context</span>
           <span class="tag tag-free">Free</span>
-          <span class="tag tag-free">All Plans</span>
+          <span class="tag tag-free">All users</span>
         </div>
         <p class="tool-desc">Compresses context (code, docs) by removing irrelevant sections while respecting protected zones (fenced code, tables, lists, JSON, YAML). Multi-stage pipeline intelligently removes boilerplate while preserving meaningful content.</p>
         <div class="tool-params">
@@ -700,7 +700,7 @@ pcp hook install --threshold 70</div>
         <div class="tool-card-header">
           <span class="tool-name">prune_tools</span>
           <span class="tag tag-free">Free</span>
-          <span class="tag tag-free">All Plans</span>
+          <span class="tag tag-free">All users</span>
         </div>
         <p class="tool-desc">Scores and ranks MCP tools by relevance to a task intent. In prune mode, marks the lowest-scoring tools for removal to save context tokens. Respects mention protection and the always-relevant tool set (search, read, write, edit, bash).</p>
         <div class="tool-params">
@@ -726,9 +726,9 @@ pcp hook install --threshold 70</div>
         <div class="tool-card-header">
           <span class="tool-name">configure_optimizer</span>
           <span class="tag tag-free">Free</span>
-          <span class="tag tag-free">All Plans</span>
+          <span class="tag tag-free">All users</span>
         </div>
-        <p class="tool-desc">Configures optimizer behavior. Supports mode, threshold, strictness, default target, ephemeral mode, session limits, and Enterprise features (policy mode, audit log, config lock with passphrase protection).</p>
+        <p class="tool-desc">Configures optimizer behavior. Supports mode, threshold, strictness, default target, ephemeral mode, session limits, and governance features (policy mode, audit log, config lock with passphrase protection).</p>
         <div class="tool-params">
           <div class="tool-params-title">Parameters</div>
           <div class="param-row"><span class="param-name">mode</span> <span class="param-type">"manual" | "always_on"</span> <span class="param-desc">Optimization mode</span></div>
@@ -740,11 +740,11 @@ pcp hook install --threshold 70</div>
           <div class="param-row"><span class="param-name">max_sessions</span> <span class="param-type">number (1-10000)</span> <span class="param-desc">Max session count</span></div>
           <div class="param-row"><span class="param-name">max_session_size_kb</span> <span class="param-type">number (1-1024)</span> <span class="param-desc">Max session size in KB</span></div>
           <div class="param-row"><span class="param-name">max_session_dir_mb</span> <span class="param-type">number (1-100)</span> <span class="param-desc">Max session directory size in MB</span></div>
-          <div class="param-row"><span class="param-name">session_retention_days</span> <span class="param-type">number (1-365)</span> <span class="param-desc">Auto-purge sessions older than N days <span class="tag-enterprise">Enterprise</span></span></div>
-          <div class="param-row"><span class="param-name">policy_mode</span> <span class="param-type">"advisory" | "enforce"</span> <span class="param-desc">Policy enforcement mode <span class="tag-enterprise">Enterprise</span></span></div>
-          <div class="param-row"><span class="param-name">audit_log</span> <span class="param-type">boolean</span> <span class="param-desc">Enable append-only JSONL audit trail <span class="tag-enterprise">Enterprise</span></span></div>
-          <div class="param-row"><span class="param-name">lock</span> <span class="param-type">boolean</span> <span class="param-desc">Lock config (requires lock_secret) <span class="tag-enterprise">Enterprise</span></span></div>
-          <div class="param-row"><span class="param-name">unlock</span> <span class="param-type">boolean</span> <span class="param-desc">Unlock config (requires same lock_secret) <span class="tag-enterprise">Enterprise</span></span></div>
+          <div class="param-row"><span class="param-name">session_retention_days</span> <span class="param-type">number (1-365)</span> <span class="param-desc">Auto-purge sessions older than N days <span class="tag tag-free">Included</span></span></div>
+          <div class="param-row"><span class="param-name">policy_mode</span> <span class="param-type">"advisory" | "enforce"</span> <span class="param-desc">Policy enforcement mode <span class="tag tag-free">Included</span></span></div>
+          <div class="param-row"><span class="param-name">audit_log</span> <span class="param-type">boolean</span> <span class="param-desc">Enable append-only JSONL audit trail <span class="tag tag-free">Included</span></span></div>
+          <div class="param-row"><span class="param-name">lock</span> <span class="param-type">boolean</span> <span class="param-desc">Lock config (requires lock_secret) <span class="tag tag-free">Included</span></span></div>
+          <div class="param-row"><span class="param-name">unlock</span> <span class="param-type">boolean</span> <span class="param-desc">Unlock config (requires same lock_secret) <span class="tag tag-free">Included</span></span></div>
           <div class="param-row"><span class="param-name">lock_secret</span> <span class="param-type">string (4-128)</span> <span class="param-desc">Passphrase for lock/unlock (stored as SHA-256 hash only)</span></div>
         </div>
         <div class="tool-output">Returns</div>
@@ -756,15 +756,15 @@ pcp hook install --threshold 70</div>
         <div class="tool-card-header">
           <span class="tool-name">get_usage</span>
           <span class="tag tag-free">Free</span>
-          <span class="tag tag-free">All Plans</span>
+          <span class="tag tag-free">All users</span>
         </div>
-        <p class="tool-desc">Returns current usage count, plan limits, remaining quota, tier information, and first/last used timestamps.</p>
+        <p class="tool-desc">Returns local usage counters and timestamps for diagnostics. The legacy tier and limit fields remain for compatibility; no monthly or lifetime quota is enforced.</p>
         <div class="tool-params">
           <div class="tool-params-title">Parameters</div>
           <div class="param-row"><span class="param-desc">No parameters required.</span></div>
         </div>
         <div class="tool-output">Returns</div>
-        <p class="tool-output-desc"><code>total_optimizations</code>, <code>limits</code> (TierLimits), <code>remaining</code> (lifetime + monthly), <code>tier</code>, <code>first_used_at</code>, <code>last_used_at</code>.</p>
+        <p class="tool-output-desc"><code>total_optimizations</code>, <code>limits</code> (unlimited), <code>remaining</code> (unlimited), <code>tier</code> (legacy metadata), <code>first_used_at</code>, <code>last_used_at</code>.</p>
       </div>
 
       <!-- prompt_stats -->
@@ -772,7 +772,7 @@ pcp hook install --threshold 70</div>
         <div class="tool-card-header">
           <span class="tool-name">prompt_stats</span>
           <span class="tag tag-free">Free</span>
-          <span class="tag tag-free">All Plans</span>
+          <span class="tag tag-free">All users</span>
         </div>
         <p class="tool-desc">Returns aggregated optimization statistics: total optimized, total approved, average quality score, top task types, blocking question frequency, and estimated cost savings in USD.</p>
         <div class="tool-params">
@@ -786,8 +786,8 @@ pcp hook install --threshold 70</div>
       <!-- ── License ─────────────────────────────────────────────────────── -->
       <div class="tool-category" id="tools-license">
         <span class="tool-category-icon">&#x1F511;</span>
-        <span class="tool-category-name">License</span>
-        <span class="tool-category-count">2 tools</span>
+        <span class="tool-category-name">Legacy license metadata</span>
+        <span class="tool-category-count">2 compatibility tools</span>
       </div>
 
       <!-- set_license -->
@@ -795,15 +795,15 @@ pcp hook install --threshold 70</div>
         <div class="tool-card-header">
           <span class="tool-name">set_license</span>
           <span class="tag tag-free">Free</span>
-          <span class="tag tag-free">All Plans</span>
+          <span class="tag tag-free">All users</span>
         </div>
-        <p class="tool-desc">Checks a legacy Enterprise license key; licenses do not gate open-source features. Uses Ed25519 asymmetric signature verification (public key only, offline, zero dependencies). The license payload contains tier, issued_at, expires_at, and license_id: no PII.</p>
+        <p class="tool-desc">Validates a legacy license key for metadata compatibility. It does not unlock or restrict features. Uses Ed25519 asymmetric signature verification (public key only, offline, zero dependencies). The legacy payload contains tier, issued_at, expires_at, and license_id: no PII. New users do not need a key.</p>
         <div class="tool-params">
           <div class="tool-params-title">Parameters</div>
           <div class="param-row"><span class="param-name">license_key</span> <span class="param-type">string</span> <span class="param-required">required</span> <span class="param-desc">License key string (starts with pcp_)</span></div>
         </div>
         <div class="tool-output">Returns</div>
-        <p class="tool-output-desc"><code>status</code> ("activated"), <code>tier</code>, <code>expires_at</code>, <code>license_id</code>, and <code>limits</code> for the activated tier.</p>
+        <p class="tool-output-desc"><code>legacy metadata status, tier, expiry, and license ID. This does not activate or restrict features.</p>
       </div>
 
       <!-- license_status -->
@@ -811,15 +811,15 @@ pcp hook install --threshold 70</div>
         <div class="tool-card-header">
           <span class="tool-name">license_status</span>
           <span class="tag tag-free">Free</span>
-          <span class="tag tag-free">All Plans</span>
+          <span class="tag tag-free">All users</span>
         </div>
-        <p class="tool-desc">Checks current license status, tier, and expiry. Re-validates expiry on every read. Returns purchase URLs if no license is active.</p>
+        <p class="tool-desc">Returns any legacy license metadata. No license is needed to use any PCP feature.</p>
         <div class="tool-params">
           <div class="tool-params-title">Parameters</div>
           <div class="param-row"><span class="param-desc">No parameters required.</span></div>
         </div>
         <div class="tool-output">Returns</div>
-        <p class="tool-output-desc">License details (or null with purchase links if inactive): <code>tier</code>, <code>issued_at</code>, <code>expires_at</code>, <code>license_id</code>, <code>valid</code>, <code>validation_error</code> (if expired).</p>
+        <p class="tool-output-desc">Legacy license details (or null if none is stored): <code>tier</code>, <code>issued_at</code>, <code>expires_at</code>, <code>license_id</code>, <code>valid</code>, <code>validation_error</code> (if expired).</p>
       </div>
 
       <!-- ── Sessions ────────────────────────────────────────────────────── -->
@@ -834,7 +834,7 @@ pcp hook install --threshold 70</div>
         <div class="tool-card-header">
           <span class="tool-name">list_sessions</span>
           <span class="tag tag-free">Free</span>
-          <span class="tag csp-style-053">Enterprise</span>
+          <span class="tag csp-style-053">Included</span>
         </div>
         <p class="tool-desc">Lists all optimization sessions with metadata (no raw prompts). Returns newest-first, with task type, quality score, state, and prompt hash.</p>
         <div class="tool-params">
@@ -852,7 +852,7 @@ pcp hook install --threshold 70</div>
         <div class="tool-card-header">
           <span class="tool-name">export_session</span>
           <span class="tag tag-free">Free</span>
-          <span class="tag csp-style-053">Enterprise</span>
+          <span class="tag csp-style-053">Included</span>
         </div>
         <p class="tool-desc">Exports full session details including raw prompt, compiled prompt, and reproducibility metadata. Auto-calculates rule_set_hash, rule_set_version, risk_score, and custom_rules_applied.</p>
         <div class="tool-params">
@@ -868,9 +868,9 @@ pcp hook install --threshold 70</div>
         <div class="tool-card-header">
           <span class="tool-name">delete_session</span>
           <span class="tag tag-free">Free</span>
-          <span class="tag csp-style-053">Enterprise</span>
+          <span class="tag csp-style-053">Included</span>
         </div>
-        <p class="tool-desc">Deletes a single optimization session by ID. Audit-logged in Enterprise tier.</p>
+        <p class="tool-desc">Deletes a single optimization session by ID. Audit-logged when the audit trail is enabled.</p>
         <div class="tool-params">
           <div class="tool-params-title">Parameters</div>
           <div class="param-row"><span class="param-name">session_id</span> <span class="param-type">string</span> <span class="param-required">required</span> <span class="param-desc">Session ID to delete</span></div>
@@ -884,7 +884,7 @@ pcp hook install --threshold 70</div>
         <div class="tool-card-header">
           <span class="tool-name">purge_sessions</span>
           <span class="tag tag-free">Free</span>
-          <span class="tag csp-style-053">Enterprise</span>
+          <span class="tag csp-style-053">Included</span>
         </div>
         <p class="tool-desc">Bulk-purges optimization sessions by age policy or deletes all. Safe-by-default: requires explicit parameters. Supports dry_run preview, keep_last protection, and config-based session_retention_days fallback.</p>
         <div class="tool-params">
@@ -902,10 +902,10 @@ pcp hook install --threshold 70</div>
       <!-- ════════════════════════════════════════════════════════════════════ -->
       <!-- ENTERPRISE FEATURES                                                 -->
       <!-- ════════════════════════════════════════════════════════════════════ -->
-      <h2 id="enterprise">Enterprise Features</h2>
-      <p>Enterprise tier unlocks governance features designed for regulated environments. All features are local-only, deterministic, and require no external services.</p>
+      <h2 id="enterprise">Governance Features</h2>
+      <p>All users can configure governance features designed for regulated environments. All features are local-only, deterministic, and require no external services.</p>
 
-      <!-- Enterprise Governance Flow SVG -->
+      <!-- Governance Flow SVG -->
       <h3>Governance Flow</h3>
       <p>Every prompt runs through a layered decision stack. Custom rules fire first, then the risk scorer, then the policy gate: in that order, deterministically.</p>
       <div class="csp-style-054">
@@ -1033,7 +1033,7 @@ pcp hook install --threshold 70</div>
         </svg>
       </div>
 
-      <h3>Policy Enforcement <span class="tag-enterprise">Enterprise</span></h3>
+      <h3>Policy Enforcement <span class="tag tag-free">Included</span></h3>
       <p>Switch from advisory mode, where issues are reported, to enforce mode, where BLOCKING rules gate every prompt operation.</p>
       <h4>Setup</h4>
       <div class="code-block">configure_optimizer({
@@ -1047,7 +1047,7 @@ pcp hook install --threshold 70</div>
       <h4>When violations are found</h4>
       <p>In enforce mode, <code>approve_prompt</code> returns an error with <code>policy_violations</code> listing each triggered BLOCKING rule (rule_id, description, severity, risk_dimension). The user must resolve the issues via <code>refine_prompt</code> or adjust the prompt before re-attempting approval.</p>
 
-      <h3>Audit Logging <span class="tag-enterprise">Enterprise</span></h3>
+      <h3>Audit Logging <span class="tag tag-free">Included</span></h3>
       <p>Append-only, hash-chained JSONL audit trail. Every significant action generates an entry with SHA-256 hash chaining.</p>
       <h4>Enable</h4>
       <div class="code-block">configure_optimizer({
@@ -1073,7 +1073,7 @@ pcp hook install --threshold 70</div>
         <p><strong>Privacy invariant:</strong> The audit log never stores raw_prompt, compiled_prompt, or prompt_preview content. Only metadata (event type, session ID, risk score, outcome) is recorded.</p>
       </div>
 
-      <h3>Config Lock <span class="tag-enterprise">Enterprise</span></h3>
+      <h3>Config Lock <span class="tag tag-free">Included</span></h3>
       <p>Lock your governance configuration with a passphrase. Once locked, no one can change policy, strictness, or audit settings without the correct secret.</p>
       <h4>Lock</h4>
       <div class="code-block">configure_optimizer({
@@ -1087,7 +1087,7 @@ pcp hook install --threshold 70</div>
 })</div>
       <p>The passphrase is stored as a SHA-256 hash only: never in plaintext. Every lock/unlock attempt (successful or blocked) is audit-logged if the audit trail is enabled.</p>
 
-      <h3>Custom Rules <span class="tag-enterprise">Enterprise</span></h3>
+      <h3>Custom Rules <span class="tag tag-free">Included</span></h3>
       <p>Define organization-specific prompt governance rules that run alongside the built-in rule engine.</p>
       <h4>JSON Schema</h4>
       <p>Place your rules in <code>~/.prompt-control-plane/custom-rules.json</code>:</p>
@@ -1125,7 +1125,7 @@ pcp hook install --threshold 70</div>
       <h4>Validate custom rules</h4>
       <div class="code-block">pcp doctor</div>
 
-      <h3>Session Retention <span class="tag-enterprise">Enterprise</span></h3>
+      <h3>Session Retention <span class="tag tag-free">Included</span></h3>
       <p>Configure automatic session cleanup by age policy.</p>
       <h4>Set retention</h4>
       <div class="code-block">configure_optimizer({
@@ -1219,7 +1219,7 @@ pcp optimize --file prompt.txt --json --target claude</div>
       <p>All <code>--json</code> output follows a consistent envelope:</p>
       <div class="code-block">{
   <span class="string">"request_id"</span>: <span class="string">"uuid-v4"</span>,
-  <span class="string">"version"</span>: <span class="string">"5.3.4"</span>,
+  <span class="string">"version"</span>: <span class="string">"5.4.0"</span>,
   <span class="string">"schema_version"</span>: 1,
   <span class="string">"subcommand"</span>: <span class="string">"preflight"</span>,
   <span class="string">"policy_mode"</span>: <span class="string">"advisory"</span>,
@@ -1227,14 +1227,14 @@ pcp optimize --file prompt.txt --json --target claude</div>
 }</div>
 
       <h3>Policy Enforcement</h3>
-      <p>The CLI respects the same governance config as the MCP. When the Enterprise Console sets <code>policy_mode</code> to <code>"enforce"</code>, the CLI blocks prompts that violate BLOCKING rules or exceed risk thresholds: returning exit code 3 with violation details.</p>
+      <p>The CLI respects the same governance config as the MCP. When the Governance Console sets <code>policy_mode</code> to <code>"enforce"</code>, the CLI blocks prompts that violate BLOCKING rules or exceed risk thresholds: returning exit code 3 with violation details.</p>
       <div class="code-block"><span class="comment"># Console writes enforce config, CLI respects it</span>
 pcp config --show --json   <span class="comment"># verify policy_mode</span>
 pcp preflight <span class="string">"vague prompt"</span> --json  <span class="comment"># exit 3 if blocked</span></div>
 
       <h3>CI Usage</h3>
       <div class="code-block"><span class="comment"># In your CI pipeline</span>
-npm install -g pcp-engine
+npm install -g github:rishi-banerjee1/prompt-control-plane#v5.4.0
 pcp check --file <span class="string">"prompts/**/*.md"</span> --strict --json
 
 <span class="comment"># Read from stdin</span>
@@ -1282,7 +1282,7 @@ pcp hook uninstall --global  <span class="comment"># remove global hook</span></
       <p>Both are cleaned up completely by <code>uninstall</code>.</p>
 
       <h3>Governance Integration</h3>
-      <p>Hooks respect the same config that the CLI and MCP read. If the Enterprise Console sets a higher strictness level, the hook&rsquo;s default threshold adjusts automatically on next install.</p>
+      <p>Hooks respect the same config that the CLI and MCP read. If the Governance Console sets a higher strictness level, the hook&rsquo;s default threshold adjusts automatically on next install.</p>
 
 
       <!-- ════════════════════════════════════════════════════════════════════ -->
@@ -1381,7 +1381,7 @@ console.<span class="fn">log</span>(result.cost.costs);         <span class="com
           <tr><td>Cost</td><td>Token estimation, cost calculation, model routing</td></tr>
           <tr><td>Risk</td><td>Rule evaluation, risk scoring, risk level derivation</td></tr>
           <tr><td>Profiles</td><td>Optimization profile resolution and suggestions</td></tr>
-          <tr><td>Enterprise</td><td>Policy evaluation, audit logging, session management</td></tr>
+          <tr><td>All users</td><td>Policy evaluation, audit logging, session management</td></tr>
           <tr><td>Custom Rules</td><td>Custom rule loading, validation, hash calculation</td></tr>
           <tr><td>Types</td><td>All TypeScript interfaces and types</td></tr>
         </tbody>
@@ -1448,7 +1448,7 @@ pcp benchmark --json</div>
 
       <h3>CI Integration</h3>
       <div class="code-block"><span class="comment"># Add to your CI pipeline as a regression guard</span>
-npm install -g pcp-engine
+npm install -g github:rishi-banerjee1/prompt-control-plane#v5.4.0
 pcp benchmark --json
 <span class="comment"># Exit code 1 if any prompt regresses beyond tolerance</span></div>
 
@@ -1479,16 +1479,16 @@ pcp benchmark --json
       <h3>Directory Layout</h3>
       <div class="dir-tree"><span class="dir">~/.prompt-control-plane/</span>
   <span class="file">config.json</span>           <span class="desc"># OptimizerConfig (mode, threshold, strictness, etc.)</span>
-  <span class="file">usage.json</span>            <span class="desc"># Usage counters (total, period, tier)</span>
+  <span class="file">usage.json</span>            <span class="desc"># Local diagnostic counters (no quota)</span>
   <span class="file">stats.json</span>            <span class="desc"># Aggregated statistics</span>
   <span class="file">license.json</span>          <span class="desc"># License data (chmod 600 on POSIX)</span>
-  <span class="file">audit.log</span>             <span class="desc"># Append-only audit trail (Enterprise)</span>
-  <span class="file">custom-rules.json</span>     <span class="desc"># Custom governance rules (Enterprise)</span>
+  <span class="file">audit.log</span>             <span class="desc"># Append-only audit trail (included)</span>
+  <span class="file">custom-rules.json</span>     <span class="desc"># Custom governance rules (included)</span>
   <span class="dir">sessions/</span>
     <span class="file">{session-id}.json</span>   <span class="desc"># Individual session files</span></div>
 
       <h3>Storage Health</h3>
-      <p>Every metered tool response includes a <code>storage_health</code> field: <code>"ok"</code> or <code>"degraded"</code>. In degraded mode, the pipeline continues with fail-open semantics. Data remains safe, and usage persistence may resume after filesystem recovery.</p>
+      <p>Every tool response includes a <code>storage_health</code> field: <code>"ok"</code> or <code>"degraded"</code>. In degraded mode, the pipeline continues with fail-open semantics. Data remains safe, and usage persistence may resume after filesystem recovery.</p>
 
       <h3>Session Limits</h3>
       <table class="data-table">

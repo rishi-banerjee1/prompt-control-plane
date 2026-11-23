@@ -1,17 +1,17 @@
 {
   "$schema": "https://static.modelcontextprotocol.io/schemas/2025-12-11/server.schema.json",
   "name": "io.github.rishi-banerjee1/pcp-engine",
-  "description": "Prompt Control Plane: deterministic prompt linting, scoring, policy enforcement & audit. Zero AI calls inside. Freemium.",
+  "description": "Prompt Control Plane: open-source deterministic prompt scoring, policy enforcement, and audit. Unlimited use under Apache-2.0; no license key required.",
   "repository": {
     "url": "https://github.com/rishi-banerjee1/prompt-control-plane",
     "source": "github"
   },
-  "version": "5.3.0",
+  "version": "5.4.0",
   "packages": [
     {
       "registryType": "npm",
       "identifier": "pcp-engine",
-      "version": "5.3.0",
+      "version": "5.4.0",
       "transport": {
         "type": "stdio"
       },

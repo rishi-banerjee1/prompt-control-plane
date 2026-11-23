@@ -40,8 +40,8 @@ echo -e "${GREEN}✓${NC} npm $(npm -v)"
 
 # ─── Install ──────────────────────────────────────────────────────────────────
 echo ""
-echo -e "Installing ${BOLD}pcp-engine${NC} globally..."
-npm install -g pcp-engine
+echo -e "Installing ${BOLD}pcp-engine v5.4.0 (Apache-2.0)${NC} from GitHub..."
+npm install -g github:rishi-banerjee1/prompt-control-plane#v5.4.0
 
 echo ""
 echo -e "${GREEN}${BOLD}✓ Installed successfully!${NC}"
@@ -65,7 +65,7 @@ cat << 'CONFIG'
   "mcpServers": {
     "prompt-optimizer": {
       "command": "npx",
-      "args": ["-y", "pcp-engine"]
+      "args": ["-y", "github:rishi-banerjee1/prompt-control-plane#v5.4.0"]
     }
   }
 }

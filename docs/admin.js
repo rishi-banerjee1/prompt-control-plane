@@ -36,13 +36,13 @@ function updatePolicyCmd() {
 }
 function genLock() {
   var pw = document.getElementById('pol-pass').value.trim();
-  if (!pw) { alert('Log in with your enterprise license first: the passphrase is derived automatically.'); return; }
+  if (!pw) { alert('Enter a passphrase in the console first.'); return; }
   document.getElementById('policy-cmd').textContent =
     'Please lock the optimizer configuration with the passphrase: ' + pw;
 }
 function genUnlock() {
   var pw = document.getElementById('pol-pass').value.trim();
-  if (!pw) { alert('Log in with your enterprise license first: the passphrase is derived automatically.'); return; }
+  if (!pw) { alert('Enter a passphrase in the console first.'); return; }
   document.getElementById('policy-cmd').textContent =
     'Please unlock the optimizer configuration with the passphrase: ' + pw;
 }
@@ -343,7 +343,7 @@ async function validateLicenseKey(key) {
   }
   // Tier check: enterprise only
   if (p.tier !== 'enterprise') {
-    return { valid: false, error: 'This console requires an Enterprise license. Your key is ' + p.tier + ' tier. Contact sales to upgrade.' };
+    return { valid: false, error: 'Legacy license tier is ' + p.tier + ' tier.; no license is required to use this console.' };
   }
   // Expiry check
   if (p.expires_at !== 'never') {

@@ -1,20 +1,22 @@
 # Changelog
 
-## Unreleased
+## [5.4.0] - 2026-11-23
 
-- Re-license PCP under Apache-2.0, remove community optimization quotas and paid individual tiers; reserve enterprise governance for commercial licensing.
+- License the complete PCP project under Apache-2.0; all features are open source and no monthly quota or feature key is required.
+- Remove Pro/Power checkout and Enterprise feature gates. Enterprise offerings are optional services and support.
+- Update MCP metadata, website, docs, and contribution guidance.
+- Add direct GitHub-tag installation while npm publishing is pending account recovery.
 - Reframed the product around model-agnostic prompt checks, measured token deltas, and clearly scoped catalog-based routing and cost estimates.
 - Replaced the website explainer with the five-minute styled narration-synced video.
 
-## Unreleased
-
 - Added the five-minute narrated explainer with the approved male voice, screen-aligned passages, and music ducking.
 - Corrected misleading explainer statistics and output scoring labels.
-
 - Patched vulnerable MCP SDK, Hono, Zod, proxy-addr, body-parser, ip-address, and fast-uri dependencies.
 - Updated the matched Remotion toolchain to 4.0.545 and refreshed video transitive dependencies.
 - Updated immutable setup-node, upload-artifact, and CodeQL action pins.
 - Grouped dependency security updates and CodeQL workflow updates for coordinated verification.
+
+> npm registry publishing is pending account recovery; v5.4.0 is available as a GitHub source release.
 
 ## [5.3.4] - 2026-06-18
 

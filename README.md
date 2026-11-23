@@ -1,6 +1,6 @@
 # Prompt Control Plane
 
-Open-source prompt governance for any model. Unlimited community use; enterprise services and support available by inquiry.
+Open-source prompt governance for any model. Every feature is available under Apache-2.0, with no monthly quota or license key.
 
 [![CI](https://github.com/rishi-banerjee1/prompt-control-plane/actions/workflows/ci.yml/badge.svg)](https://github.com/rishi-banerjee1/prompt-control-plane/actions/workflows/ci.yml)
 [![npm version](https://img.shields.io/npm/v/pcp-engine)](https://www.npmjs.com/package/pcp-engine)
@@ -14,9 +14,11 @@ Open-source prompt governance for any model. Unlimited community use; enterprise
 
 ## Quick Start
 
+> **v5.4.0 source release:** the public npm registry is still at v5.3.3 (Elastic-2.0). Install v5.4.0 from GitHub below for the Apache-2.0 release. npm publishing will follow once registry access is restored.
+
 ```bash
-# Install globally (requires Node.js 20+)
-npm install -g pcp-engine
+# Install the Apache-2.0 release from GitHub (requires Node.js 20+)
+npm install -g github:rishi-banerjee1/prompt-control-plane#v5.4.0
 
 # Pre-flight: classify, score, route, and enforce policy in one call
 pcp preflight "your prompt here" --json
@@ -41,7 +43,7 @@ pcp demo
 | `pcp cost "prompt"` | Cost estimate across the maintained 21-model catalog |
 | `pcp benchmark` | Run 15-prompt regression suite |
 
-Free forever: unlimited individual and community use.
+Free forever: all features are Apache-2.0 licensed, with no monthly quotas or feature keys.
 
 ## Try It
 
@@ -116,8 +118,8 @@ jobs:
 ```
 
 **Notes:**
-- The action installs `pcp` via `npm install --prefix` into `$RUNNER_TEMP`, then runs the binary. Falls back to `prompt-lint` for v4 installs.
-- Action tag `@v5` maps to npm `@5` (latest 5.x). Use `@v5.0.0` for exact pinning.
+- The action installs its CLI dependencies into `$RUNNER_TEMP`, then runs the binary. Use a v5.4.0 Git tag for the Apache-2.0 source release.
+- Use the `@v5.4.0` action tag for the Apache-2.0 source release. The floating `@v5` tag is updated with this release.
 - `subcommand` input accepts `check` (default), `preflight`, `optimize`, or `score`. Use `preflight` for CI gates.
 - `comment: 'true'` posts results as a PR comment (requires `pull-requests: write` permission).
 - Exit code 2 means no files matched or invalid input: not "all passed." Zero matched files is always an error.
@@ -442,15 +444,16 @@ When a prompt scores below the threshold, inline feedback is injected into the c
 
 | Method | Command |
 |--------|---------|
-| **npm global** (recommended) | `npm install -g pcp-engine` |
+| **GitHub source release** (current Apache-2.0) | `npm install -g github:rishi-banerjee1/prompt-control-plane#v5.4.0` |
+| **npm global** (older v5.3.3 registry package; Elastic-2.0) | `npm install -g pcp-engine` |
 | **curl** | `curl -fsSL https://getpcp.site/install.sh \| bash` |
 
 ```bash
-npm install -g pcp-engine
+npm install -g github:rishi-banerjee1/prompt-control-plane#v5.4.0
 pcp preflight "Your prompt here" --json
 ```
 
-Free forever: unlimited individual and community use.
+Free forever: all features are Apache-2.0 licensed, with no monthly quotas or feature keys.
 
 <details>
 <summary><strong>Add MCP integration (optional: for AI-assisted workflows)</strong></summary>
@@ -462,7 +465,7 @@ Add to your project's `.mcp.json` (or `~/.claude/settings.json` for global acces
   "mcpServers": {
     "prompt-optimizer": {
       "command": "npx",
-      "args": ["-y", "pcp-engine"]
+      "args": ["-y", "github:rishi-banerjee1/prompt-control-plane#v5.4.0"]
     }
   }
 }
@@ -514,7 +517,7 @@ The `optimize()` function runs the exact same pipeline as the `optimize_prompt` 
 | `generateChecklist(compiledPrompt)` | Compiled prompt → structural coverage |
 | `estimateCost(text, taskType, riskLevel, target?)` | Text → `CostEstimate` (maintained 21-model catalog) |
 | `compressContext(context, intent)` | Strip irrelevant context, report savings |
-| `validateLicenseKey(key)` | Ed25519 offline license validation |
+| `validateLicenseKey(key)` | Legacy Ed25519 license metadata validation (optional; not needed to use PCP) |
 
 **Targets:** `'claude'` (XML), `'openai'` (System/User), `'generic'` (Markdown). Default is `'claude'`. Generic compilation and deterministic prompt checks can be used before any model or provider; model-specific recommendations and cost estimates are limited to the maintained catalog.
 
@@ -541,66 +544,49 @@ console.log(withCtx.cost);   // Higher token count (context included)
 | Quick quality check | Ask Claude: "Use check_prompt on: [your prompt]": lightweight pass/fail |
 | Estimate cost for any text | Ask Claude: "Use estimate_cost on this prompt: [text]" |
 | Compress context before sending | Ask Claude: "Use compress_context on this code for [intent]" |
-| Check usage & limits | Ask Claude: "Use get_usage to check my remaining optimizations" |
+| Check local usage counters | Ask Claude: "Use get_usage to inspect local diagnostic counters" |
 | View stats | Ask Claude: "Use prompt_stats to see my optimization history" |
 | Use governance tools | No license key required |
-| Check license status | Ask Claude: "Use license_status" |
+| Read legacy license metadata (optional) | Ask Claude: "Use license_status" |
 
 ## 20 Capabilities
 
-| # | Tool | Free/Metered | Purpose |
+| # | Tool | Availability | Purpose |
 |---|------|-------------|---------|
-| 1 | **`pre_flight`** | **Metered** | **The lead tool.** Classify, assess risk, route model, score quality: one call, full analysis |
-| 2 | **`optimize_prompt`** | **Metered** | **Full pipeline.** Analyze, score, compile, estimate cost, surface blocking questions, return PreviewPack |
-| 3 | `refine_prompt` | **Metered** | Iterative: answer questions, add edits, get updated PreviewPack |
-| 4 | `approve_prompt` | Free | Sign-off gate: returns final compiled prompt |
-| 5 | `check_prompt` | Free | Lightweight pass/fail + score + top 2 issues |
-| 6 | `estimate_cost` | Free | Multi-provider token + cost estimator (Anthropic, OpenAI, Google, Perplexity) |
-| 7 | `compress_context` | Free | Prune irrelevant context, report token savings |
-| 8 | `classify_task` | Free | Classify prompt by task type, reasoning complexity, risk, and suggested profile |
-| 9 | `route_model` | Free | Route to optimal model with `decision_path` audit trail |
-| 10 | `prune_tools` | Free | Score and rank MCP tools by task relevance, optionally prune low-relevance tools |
-| 11 | `configure_optimizer` | Free | Set mode, threshold, strictness, target, lock/unlock config with passphrase |
-| 12 | `get_usage` | Free | Usage count, limits, remaining, tier info |
-| 13 | `prompt_stats` | Free | Aggregates: total optimized, avg score, top task types, cost savings |
-| 14 | `set_license` | Free | Check legacy license status (Ed25519 offline validation) |
-| 15 | `license_status` | Free | Check license status, tier, expiry. Shows enterprise contact information when inactive. |
-| 16 | `list_sessions` | Free | List session history (metadata only, no raw prompts) |
-| 17 | `export_session` | Free | Full session export with rule-set hash + policy hash for reproducibility |
-| 18 | `delete_session` | Free | Delete a single session by ID |
-| 19 | `purge_sessions` | Free | Bulk purge by age policy, with dry-run + keep_last safety |
-| 20 | `save_custom_rules` | Free (Enterprise) | Save custom governance rules built in the Enterprise Console |
+| 1 | **`pre_flight`** | **Included** | **The lead tool.** Classify, assess risk, route model, score quality: one call, full analysis |
+| 2 | **`optimize_prompt`** | **Included** | **Full pipeline.** Analyze, score, compile, estimate cost, surface blocking questions, return PreviewPack |
+| 3 | `refine_prompt` | **Included** | Iterative: answer questions, add edits, get updated PreviewPack |
+| 4 | `approve_prompt` | Included | Sign-off gate: returns final compiled prompt |
+| 5 | `check_prompt` | Included | Lightweight pass/fail + score + top 2 issues |
+| 6 | `estimate_cost` | Included | Multi-provider token + cost estimator (Anthropic, OpenAI, Google, Perplexity) |
+| 7 | `compress_context` | Included | Prune irrelevant context, report token savings |
+| 8 | `classify_task` | Included | Classify prompt by task type, reasoning complexity, risk, and suggested profile |
+| 9 | `route_model` | Included | Route to optimal model with `decision_path` audit trail |
+| 10 | `prune_tools` | Included | Score and rank MCP tools by task relevance, optionally prune low-relevance tools |
+| 11 | `configure_optimizer` | Included | Set mode, threshold, strictness, target, lock/unlock config with passphrase |
+| 12 | `get_usage` | Included | Local usage counters for diagnostics; no quota enforcement |
+| 13 | `prompt_stats` | Included | Aggregates: total optimized, avg score, top task types, cost savings |
+| 14 | `set_license` | Included | Check legacy license status (Ed25519 offline validation) |
+| 15 | `license_status` | Included | Read legacy license metadata; no key is needed for any feature |
+| 16 | `list_sessions` | Included | List session history (metadata only, no raw prompts) |
+| 17 | `export_session` | Included | Full session export with rule-set hash + policy hash for reproducibility |
+| 18 | `delete_session` | Included | Delete a single session by ID |
+| 19 | `purge_sessions` | Included | Bulk purge by age policy, with dry-run + keep_last safety |
+| 20 | `save_custom_rules` | Included | Save custom governance rules using the Governance Console or API |
 
-## Pricing
+## Pricing and licensing
 
-| | Community | Enterprise |
-|---|---|---|
-| **Price** | Free | Custom |
-| **Optimizations** | Unlimited | Unlimited |
-| **Rate limit** | 60/min | 120/min |
-| **Always-on mode** | ✓ | ✓ |
-| **All community tools** | ✓ | ✓ |
-| **Enterprise Console** | ✓ | ✓ |
-| **Policy Enforcement** | ✓ | ✓ |
-| **Custom Governance Rules** | ✓ | ✓ |
-| **Hash-Chained Audit Trail** | ✓ | ✓ |
-| **Config Lock Mode** | ✓ | ✓ |
-| **Support** | Community | Paid services available |
-| **SLA** | None | Custom services |
-
-**Community edition**: all core features, unlimited, free, and open source under Apache-2.0.
-
-All software capabilities are open source under Apache-2.0. Optional enterprise support, service levels, and custom implementation are available by inquiry.
+The complete software is free under Apache-2.0. There are no paid software tiers, monthly quotas, or license-key gates. Optional enterprise support, service levels, and custom implementation are available by inquiry.
 
 ### Licensing
 
 All repository features are Apache-2.0 licensed. No license key or account is required. [Contact us](https://getpcp.site/contact.html) for optional enterprise support and services.
 
-## Enterprise Features
+## Governance Features
 
-All governance features are available in the open-source software. Configure them through the **[Enterprise Console](https://getpcp.site/admin.html)**: a web-based admin interface with one-click toggles.
+All governance features are available in the open-source software. Configure them through the **[Governance Console](https://getpcp.site/admin.html)**: a web-based admin interface with one-click toggles.
 
-### Enterprise Console
+### Governance Console
 
 A browser-based admin panel that provides full visibility and control over your Prompt Control Plane deployment. Configure policies, build custom rules, manage audit settings, and deploy governance changes: all without touching configuration files.
 
@@ -618,7 +604,7 @@ Every governance action generates a JSONL audit entry with integrity verificatio
 
 ### Custom Governance Rules
 
-Build custom regex-based rules in the Enterprise Console with a visual editor. Define match patterns, negative patterns, risk dimensions, severity levels (BLOCKING or NON-BLOCKING), and risk weights. Deploy rules directly to your Prompt Control Plane with one click via the `save_custom_rules` tool: they take effect on the next optimization. Up to 25 rules per deployment.
+Build custom regex-based rules in the Governance Console with a visual editor. Define match patterns, negative patterns, risk dimensions, severity levels (BLOCKING or NON-BLOCKING), and risk weights. Deploy rules directly to your Prompt Control Plane with one click via the `save_custom_rules` tool: they take effect on the next optimization. Up to 25 rules per deployment.
 
 ### Session & Data Lifecycle
 
@@ -1177,7 +1163,7 @@ Reason:         Balanced task: Sonnet offers the best
 | Issue | Fix |
 |-------|-----|
 | Tools don't appear in Claude Code | Verify your `.mcp.json` or settings file is valid JSON. Restart Claude Code after changes. |
-| `npx` hangs or is slow | First run downloads the package. Use `npm install -g pcp-engine` for instant startup. |
+| `npx` hangs or is slow | First run downloads the package. Use `npm install -g github:rishi-banerjee1/prompt-control-plane#v5.4.0` for instant startup. |
 | `Cannot find module` error (source install) | Run `npm run build` first. The `dist/` directory must exist. |
 | Session expired | Sessions have a 30-minute TTL. Call `optimize_prompt` again to start a new session. |
 | False positive on blocking questions | The detection rules are context-dependent. Refine your prompt to be more specific, or use Enterprise custom rules to tune detection for your workflow. |
@@ -1202,10 +1188,10 @@ Reason:         Balanced task: Sonnet offers the best
 - [x] Structured audience/tone/platform detection: 19 audience patterns, 9 platforms, tone signals
 - [x] Multi-LLM output targets: Claude (XML), OpenAI (system/user), Generic (Markdown)
 - [x] Persistent file-based storage (`~/.prompt-control-plane/`)
-- [x] Open-source software: all features available without license keys
+- [x] v5.4.0: full project open-sourced under Apache-2.0, all features available without license keys
 - [x] Ed25519 offline license key activation: no phone-home, no backend
 - [x] Monthly usage enforcement with calendar-month reset
-- [x] Rate limiting: tier-keyed sliding window (5/30/60 per minute)
+- [x] Rate limiting: shared local request throttle (60 per minute)
 - [x] v2.0 11 MCP tools including `check_prompt`, `configure_optimizer`, `get_usage`, `prompt_stats`, `set_license`, `license_status`
 - [x] Usage metering, statistics tracking, and cost savings aggregation
 - [x] Programmatic API: `import { optimize } from 'pcp-engine'` for library use
@@ -1239,4 +1225,4 @@ Built on the [Model Context Protocol](https://modelcontextprotocol.io) by **[Ant
 
 ## License
 
-Apache-2.0. Use, modify, and redistribute the community software under its license. All software is licensed under Apache-2.0. The PCP name and logo are trademarks.
+All v5.4.0 source is licensed under Apache-2.0. Use, modify, host, and redistribute it under the license terms. The PCP name and logo are trademarks. The npm registry package remains v5.3.3 under its existing Elastic-2.0 terms until the Apache-2.0 version is published.

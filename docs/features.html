@@ -135,7 +135,7 @@
           <div><strong>Risk Detection:</strong> Catches scope explosion, missing constraints, hallucination risk, and underspecified prompts before they reach an LLM.</div>
           <div><strong>Safe Compression:</strong> Guaranteed to never increase token count. Structured content (code, tables, lists) is always protected.</div>
           <div><strong>Multi-Provider:</strong> Routes to the right model at the right price, with a full decision trail explaining why.</div>
-          <div><strong>Auditable:</strong> Every decision is logged with hash-chained integrity. Enterprise teams get cryptographic proof of compliance.</div>
+          <div><strong>Auditable:</strong> Every decision is logged with hash-chained integrity. All teams can verify the hash-chained audit trail.</div>
         </div>
         <p class="csp-style-059">Fully offline. Zero LLM calls. Extensively tested. Run the suite yourself to verify.</p>
       </div>
@@ -168,15 +168,15 @@
           <text x="450" y="97" text-anchor="middle" fill="var(--text-muted)" font-size="10" font-weight="600">STEP 1</text>
           <text x="450" y="112" text-anchor="middle" fill="var(--text)" font-size="12" font-weight="600">Input Hardening</text>
           <line x1="450" y1="124" x2="450" y2="154" stroke="var(--accent)" stroke-width="1.5" marker-end="url(#arr)"/>
-          <!-- Freemium Gate -->
+          <!-- Usage Throttle -->
           <polygon points="450,154 550,184 450,214 350,184" fill="var(--surface)" stroke="var(--orange)" stroke-width="1.5"/>
-          <text x="450" y="181" text-anchor="middle" fill="var(--orange)" font-size="11" font-weight="600">Freemium</text>
-          <text x="450" y="196" text-anchor="middle" fill="var(--orange)" font-size="11" font-weight="600">Gate</text>
+          <text x="450" y="181" text-anchor="middle" fill="var(--orange)" font-size="11" font-weight="600">Rate</text>
+          <text x="450" y="196" text-anchor="middle" fill="var(--orange)" font-size="11" font-weight="600">Limit</text>
           <!-- Blocked left -->
           <line x1="350" y1="184" x2="200" y2="184" stroke="var(--red)" stroke-width="1.5" marker-end="url(#arr-r)"/>
           <rect x="80" y="164" width="120" height="40" rx="8" fill="var(--surface)" stroke="var(--red)" stroke-width="1"/>
           <text x="140" y="182" text-anchor="middle" fill="var(--red)" font-size="11" font-weight="600">BLOCKED</text>
-          <text x="140" y="196" text-anchor="middle" fill="var(--red)" font-size="10">quota exceeded</text>
+          <text x="140" y="196" text-anchor="middle" fill="var(--red)" font-size="10">rate limit</text>
           <text x="270" y="178" fill="var(--red)" font-size="10">denied</text>
           <!-- Allowed -->
           <line x1="450" y1="214" x2="450" y2="244" stroke="var(--green)" stroke-width="1.5" marker-end="url(#arr-g)"/>
@@ -230,7 +230,7 @@
   <section class="section section-alt">
     <div class="container-wide">
       <h2 class="section-title text-center">Complete Capability Reference</h2>
-      <p class="section-subtitle text-center">20 capabilities across every tier: 17 always free, 3 metered. Enterprise governance unlocks with the Enterprise plan.</p>
+      <p class="section-subtitle text-center">All 20 capabilities are included under Apache-2.0. No feature license or monthly quota is required.</p>
 
       <table class="data-table">
         <thead>
@@ -248,20 +248,20 @@
           <tr>
             <td>1</td>
             <td>Optimize</td>
-            <td><span class="tag tag-metered">Metered</span></td>
-            <td>Full analysis: score, compile, and estimate cost in one pass. <strong>Enterprise:</strong> blocked if policy violations are detected in enforce mode</td>
+            <td><span class="tag tag-free">Included</span></td>
+            <td>Full analysis: score, compile, and estimate cost in one pass. <strong>Policy:</strong> blocked if policy violations are detected in enforce mode</td>
           </tr>
           <tr>
             <td>2</td>
             <td>Refine</td>
-            <td><span class="tag tag-metered">Metered</span></td>
+            <td><span class="tag tag-free">Included</span></td>
             <td>Iterate on a result: answer blocking questions or add context to update the compiled output</td>
           </tr>
           <tr>
             <td>3</td>
             <td>Approve</td>
             <td><span class="tag tag-free">Free</span></td>
-            <td>Sign off on a result to get the final compiled prompt. <strong>Enterprise:</strong> blocked on violations or high risk score in enforce mode</td>
+            <td>Sign off on a result to get the final compiled prompt. <strong>Policy:</strong> blocked on violations or high risk score in enforce mode</td>
           </tr>
 
           <tr class="group-header">
@@ -288,14 +288,14 @@
           <tr>
             <td>7</td>
             <td>Configure</td>
-            <td><span class="tag tag-free">Free</span> <span class="tag tag-enterprise">Enterprise</span></td>
-            <td>Set mode, thresholds, and output target. <strong>Enterprise:</strong> policy enforcement mode, audit trail, config lock, retention policy</td>
+            <td><span class="tag tag-free">Included</span></td>
+            <td>Set mode, thresholds, and output target. Policy enforcement mode, audit trail, config lock, and retention policy</td>
           </tr>
           <tr>
             <td>8</td>
             <td>View Usage</td>
             <td><span class="tag tag-free">Free</span></td>
-            <td>Check how many optimizations you've used, your limits, and what's remaining</td>
+            <td>Check optimization totals and activity statistics</td>
           </tr>
           <tr>
             <td>9</td>
@@ -322,7 +322,7 @@
           <tr>
             <td>12</td>
             <td>Pre-flight</td>
-            <td><span class="tag tag-metered">Metered</span></td>
+            <td><span class="tag tag-free">Included</span></td>
             <td>One-shot analysis: classify, assess risk, route model, and score quality: before committing to a full optimization</td>
           </tr>
 
@@ -345,7 +345,7 @@
             <td>15</td>
             <td>Export Session</td>
             <td><span class="tag tag-free">Free</span></td>
-            <td>Full session export with reproducibility hash. <strong>Enterprise:</strong> includes policy enforcement data and custom rule metadata</td>
+            <td>Full session export with reproducibility hash. <strong>Policy:</strong> includes policy enforcement data and custom rule metadata</td>
           </tr>
           <tr>
             <td>16</td>
@@ -361,29 +361,29 @@
           </tr>
 
           <tr class="group-header">
-            <td colspan="4">Account &amp; Licensing</td>
+            <td colspan="4">Usage &amp; Compatibility</td>
           </tr>
           <tr>
             <td>18</td>
             <td>Activate License</td>
             <td><span class="tag tag-free">Free</span></td>
-            <td>Enter your Pro, Power, or Enterprise license key to unlock your tier: validated offline, no account required</td>
+            <td>Legacy license metadata only; all features are available without activation</td>
           </tr>
           <tr>
             <td>19</td>
             <td>View License Status</td>
             <td><span class="tag tag-free">Free</span></td>
-            <td>See your current tier, license expiry date, and where to upgrade if needed</td>
+            <td>Inspect legacy license metadata; no license is needed to use PCP</td>
           </tr>
 
           <tr class="group-header">
-            <td colspan="4">Enterprise Governance</td>
+            <td colspan="4">Open Governance</td>
           </tr>
           <tr>
             <td>20</td>
             <td>Save Custom Rules</td>
-            <td><span class="tag tag-free">Free</span> <span class="tag tag-enterprise">Enterprise</span></td>
-            <td>Deploy custom governance rules built in the Enterprise Console directly to your Prompt Control Plane</td>
+            <td><span class="tag tag-free">Included</span></td>
+            <td>Deploy custom governance rules built in the Governance Console directly to your Prompt Control Plane</td>
           </tr>
         </tbody>
       </table>
@@ -485,24 +485,24 @@
   </section>
 
   <!-- ════════════════════════════════════════════════════════════════════════
-       Enterprise Governance
+       Open Governance
        ════════════════════════════════════════════════════════════════════════ -->
   <section class="section section-alt">
     <div class="container">
-      <span class="badge badge-accent csp-style-079">Enterprise</span>
+      <span class="badge badge-accent csp-style-079">Open source</span>
       <h2 class="section-title text-center">Governance Controls</h2>
-      <p class="section-subtitle text-center">Enterprise-only capabilities that turn scoring into enforcement</p>
+      <p class="section-subtitle text-center">Open-source governance controls included in PCP</p>
 
       <div class="grid-2 csp-style-080">
         <div class="card csp-style-061">
-          <h3>&#x1F3DB;&#xFE0F; Enterprise Console</h3>
-          <p>A browser-based admin panel for managing your entire governance configuration. Build custom rules with a visual editor, toggle policies, configure audit settings, and deploy changes: all gated by your Enterprise license key.</p>
-          <p class="csp-style-081"><a href="admin.html" class="csp-style-001">Open Enterprise Console &rarr;</a></p>
+          <h3>&#x1F3DB;&#xFE0F; Governance Console</h3>
+          <p>A browser-based admin panel for managing your entire governance configuration. Build custom rules with a visual editor, toggle policies, configure audit settings, and deploy changes: with no license key required.</p>
+          <p class="csp-style-081"><a href="admin.html" class="csp-style-001">Open Governance Console &rarr;</a></p>
         </div>
         <div class="card csp-style-061">
           <h3>&#x1F6E1;&#xFE0F; Policy Enforcement</h3>
           <p>Switch between <strong>advisory</strong> and <strong>enforce</strong> mode. In enforce mode, prompts that fail quality rules or exceed risk thresholds are blocked before they reach any LLM. Both built-in and custom rules are enforced.</p>
-          <p class="csp-style-081">Configure via Enterprise Console &rarr; Advisory warns, Enforce blocks</p>
+          <p class="csp-style-081">Configure via Governance Console &rarr; Advisory warns, Enforce blocks</p>
         </div>
         <div class="card csp-style-061">
           <h3>&#x1F512; Config Lock</h3>
@@ -516,13 +516,13 @@
         </div>
         <div class="card csp-style-061">
           <h3>&#x1F4CF; Custom Governance Rules</h3>
-          <p>Build up to 25 organization-specific rules in the Enterprise Console with a visual editor. Define match patterns, risk dimensions, severity levels (blocking or non-blocking), and weights. Deploy with one click: rules take effect on the next optimization.</p>
-          <p class="csp-style-081">Deploy via the Enterprise Console or CLI</p>
+          <p>Build up to 25 organization-specific rules in the Governance Console with a visual editor. Define match patterns, risk dimensions, severity levels (blocking or non-blocking), and weights. Deploy with one click: rules take effect on the next optimization.</p>
+          <p class="csp-style-081">Deploy via the Governance Console or CLI</p>
         </div>
         <div class="card csp-style-061">
           <h3>&#x23F1;&#xFE0F; Session Retention</h3>
           <p>Automatic session cleanup with configurable retention policies. Set how long optimization sessions are kept before they're purged. Supports dry-run to preview what would be deleted before committing.</p>
-          <p class="csp-style-081">Configure retention window via Enterprise Console</p>
+          <p class="csp-style-081">Configure retention window via Governance Console</p>
         </div>
         <div class="card csp-style-061">
           <h3>&#x2696;&#xFE0F; Risk Threshold Gating</h3>
@@ -732,7 +732,7 @@
 
       <div class="install mb-32">
         <div class="install-label">Install</div>
-        <code>npm install pcp-engine</code>
+        <code>npm install github:rishi-banerjee1/prompt-control-plane#v5.4.0</code>
       </div>
 
       <div class="code-block mb-32"><span class="keyword">import</span> { optimize } <span class="keyword">from</span> <span class="string">'pcp-engine'</span>;

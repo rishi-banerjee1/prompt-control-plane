@@ -39,7 +39,7 @@ jobs:
         run: npm test
 
   lint-and-audit:
-    name: Enterprise Security Gates
+    name: Security and Supply Chain Gates
     runs-on: ubuntu-latest
 
     steps:

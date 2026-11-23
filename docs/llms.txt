@@ -14,7 +14,7 @@ Prompt Control Plane is a governance engine that enforces structure on every pro
 - Custom rules with regex patterns and risk dimensions
 - Ships as CLI (`pcp` with 15 subcommands), MCP server (20 tools), auto-check hooks, and GitHub Action
 - Works with any codebase (Python, Java, Go, Rust, etc.)
-- Free community edition; licensed Enterprise governance
+- Full open-source project under Apache-2.0, including governance features; no license keys or monthly quotas
 
 ## Pages
 - Homepage: https://getpcp.site/
@@ -26,6 +26,6 @@ Prompt Control Plane is a governance engine that enforces structure on every pro
 - Changelog: https://getpcp.site/changelog.html
 
 ## Install
-npm: pcp-engine
+GitHub source release: v5.4.0 (Apache-2.0). npm registry currently remains at v5.3.3 (Elastic-2.0) until republishing.
 GitHub: https://github.com/rishi-banerjee1/prompt-control-plane
 GitHub Action: https://github.com/marketplace/actions/prompt-control-plane

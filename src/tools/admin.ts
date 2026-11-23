@@ -268,7 +268,7 @@ export function registerAdminTools(
 
   server.tool(
     'set_license',
-    'Activate a Pro or Power license key. Validates the Ed25519 signature offline and unlocks the corresponding tier.',
+    'Read legacy license metadata. No license key is required; all PCP features are available under Apache-2.0.',
     {
       license_key: z.string().min(10).max(2048).describe('License key string (starts with pcp_)'),
     },

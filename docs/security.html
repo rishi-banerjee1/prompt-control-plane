@@ -9,20 +9,20 @@
   <link rel="apple-touch-icon" sizes="180x180" href="apple-touch-icon.png">
   <link rel="manifest" href="site.webmanifest">
   <title>Security: Prompt Control Plane | Built for Teams That Take Security Seriously</title>
-  <meta name="description" content="Security architecture of Prompt Control Plane. Zero external calls, local-only storage, Ed25519 license keys, hash-chained audit trail, minimal dependencies. Built for enterprise security review.">
+  <meta name="description" content="Security architecture of Prompt Control Plane. Zero external calls, local-only storage, Apache-2.0 licensing, hash-chained audit trail, minimal dependencies. Built for enterprise security review.">
   <meta name="robots" content="index, follow">
   <link rel="canonical" href="https://getpcp.site/security.html">
 
   <!-- Open Graph -->
   <meta property="og:title" content="Security: Prompt Control Plane">
-  <meta property="og:description" content="Zero external calls during operation. Local-only storage. Ed25519 license keys. Hash-chained audit trail. Built for enterprise security review.">
+  <meta property="og:description" content="Zero external calls during operation. Local-only storage. Apache-2.0 license. Hash-chained audit trail. Built for enterprise security review.">
   <meta property="og:type" content="website">
   <meta property="og:url" content="https://getpcp.site/security.html">
 
   <!-- Twitter Card -->
   <meta name="twitter:card" content="summary_large_image">
   <meta name="twitter:title" content="Security: Prompt Control Plane">
-  <meta name="twitter:description" content="Zero external calls during operation. Local-only storage. Ed25519 license keys. Hash-chained audit trail.">
+  <meta name="twitter:description" content="Zero external calls during operation. Local-only storage. Apache-2.0 license. Hash-chained audit trail.">
 
   <script type="application/ld+json">
   {
@@ -96,7 +96,7 @@
       <!-- Architecture -->
       <div class="sec-card">
         <h2>Architecture</h2>
-        <p>Prompt Control Plane makes zero external network calls during operation. After installation via npm, the software runs entirely on your local machine. There are no analytics endpoints, no telemetry beacons, no license server calls, and no update checks.</p>
+        <p>Prompt Control Plane makes zero external network calls during operation. After installation via npm, the software runs entirely on your local machine. There are no analytics endpoints, no telemetry beacons, no license checks, and no update checks.</p>
         <p>All processing is deterministic and reproducible. The same input always produces the same output: same score, same routing decision, same cost estimate, same compiled prompt. There is no randomness, no sampling, and no external state that could affect results.</p>
         <p>No data leaves your machine. Prompts, configurations, session history, and audit trails are all stored locally and never transmitted to any server or third party.</p>
 
@@ -147,31 +147,11 @@
         </div>
       </div>
 
-      <!-- License Keys -->
+      <!-- Open Source License -->
       <div class="sec-card">
-        <h2>License Keys</h2>
-        <p>License keys use Ed25519 asymmetric signatures for cryptographic verification. The private signing key is held exclusively by the licensor and is never included in the software distribution, source code, or any published artifact.</p>
-        <p>License validation is performed entirely offline. There is no license server, no activation endpoint, and no network call. The public key embedded in the software verifies the signature locally. This means license validation works in air-gapped environments with no internet access.</p>
-        <p>License keys contain no personally identifiable information. The payload includes only four fields: the tier (Free, Pro, Power, or Enterprise), the issuance date, the expiration date, and a unique license identifier. No name, no email, no organization, no payment details.</p>
-
-        <div class="prop-grid">
-          <div class="prop-item">
-            <div class="label">Algorithm</div>
-            <div class="value">Ed25519 asymmetric signatures</div>
-          </div>
-          <div class="prop-item">
-            <div class="label">Validation</div>
-            <div class="value">Offline only, no server call</div>
-          </div>
-          <div class="prop-item">
-            <div class="label">Private key</div>
-            <div class="value">Never leaves the licensor</div>
-          </div>
-          <div class="prop-item">
-            <div class="label">PII in keys</div>
-            <div class="value">None (tier, dates, ID only)</div>
-          </div>
-        </div>
+        <h2>Open-Source License</h2>
+        <p>The v5.4.0 GitHub source release is licensed under Apache-2.0, including policy enforcement, config lock, audit logging, and custom rules. No license key, account, or activation server is needed.</p>
+        <p>The public npm package remains at v5.3.3 under its existing Elastic-2.0 terms until the Apache-2.0 source release is published to npm.</p>
       </div>
 
       <!-- Supply Chain -->

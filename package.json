@@ -1,6 +1,6 @@
 {
   "name": "pcp-engine",
-  "version": "5.3.4",
+  "version": "5.4.0",
   "type": "module",
   "description": "Open-source prompt governance engine. Deterministic scoring, compilation, cost estimates, and policy controls for any model.",
   "main": "dist/src/api.js",
@@ -43,7 +43,8 @@
     "security:audit": "npm audit --audit-level=moderate",
     "security:audit:video": "npm audit --audit-level=moderate --prefix video-explainer",
     "security:all": "npm run security:audit && npm run security:audit:video && npm run security:sast && npm run security:dast && npm run security:zap && npm run security:html-parser",
-    "prepublishOnly": "npm run build"
+    "prepublishOnly": "npm run build",
+    "prepare": "npm run build"
   },
   "keywords": [
     "mcp",

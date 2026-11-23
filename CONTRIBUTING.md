@@ -15,7 +15,7 @@ npm test
 1. Create a feature branch from `main`
 2. Make changes in `src/`
 3. Run `npm run build` to compile TypeScript
-4. Run `npm test` to verify (797+ tests must pass)
+4. Run `npm test` to verify the full suite passes
 5. Run `npx tsc --noEmit` for type checking
 6. Submit a pull request
 
@@ -56,7 +56,7 @@ src/
 └── deltas.ts         # Compression delta calculations
 
 test/
-├── *.test.ts         # 36 test files, 797+ tests
+├── *.test.ts         # TypeScript unit and integration tests
 ├── fixtures/         # Test fixture files
 └── helpers/          # Test helper utilities
 
@@ -102,4 +102,4 @@ We believe in giving credit where it's due. Your contribution matters.
 
 ## License
 
-Elastic License 2.0 -- see [LICENSE](./LICENSE).
+Apache License 2.0 -- see [LICENSE](./LICENSE). All governance features are included; no commercial license is required to use or modify the software.

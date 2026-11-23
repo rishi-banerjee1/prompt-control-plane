@@ -20,7 +20,7 @@ inputs:
     required: false
     default: 'standard'
   version:
-    description: 'npm version to install (optional). If omitted, uses the action tag reference.'
+    description: 'GitHub release version to install (optional). If omitted, uses the action tag reference.'
     required: false
   comment:
     description: 'Post results as a PR comment. Requires pull-requests: write permission.'
@@ -49,7 +49,7 @@ runs:
       run: |
         VERSION="${{ inputs.version }}"
         if [ -z "$VERSION" ]; then VERSION="${{ github.action_ref }}"; fi
-        # Strip leading 'v' (git tag v2.3.0 → npm 2.3.0)
+        # Strip leading 'v' (e.g. v5.4.0 → 5.4.0)
         VERSION="${VERSION#v}"
         # Build CLI args with proper quoting (bash array)
         SUBCMD="${{ inputs.subcommand }}"
@@ -125,18 +125,18 @@ runs:
         fi
         # Fail fast on empty version
         if [ -z "$VERSION" ]; then
-          echo "::error::Could not resolve npm version. Set the 'version' input explicitly (e.g., version: '5.0.0')."
+          echo "::error::Could not resolve release version. Set the 'version' input explicitly (e.g., version: '5.0.0')."
           exit 2
         fi
         # Accept only: major (5), or exact semver (5.0.0). Reject partial (5.0) and SHAs.
         if ! echo "$VERSION" | grep -qE '^([0-9]+|[0-9]+\.[0-9]+\.[0-9]+)$'; then
-          echo "::error::Invalid version '${VERSION}'. Use a tag like @v5 or @v5.0.0, or set 'version' input (e.g., version: '5.0.0')."
+          echo "::error::Invalid version '${VERSION}'. Use a tag like @v5 or @v5.4.0, or set 'version' input (e.g., version: '5.0.0')."
           exit 2
         fi
         # Install to deterministic path and use node_modules/.bin
         INSTALL_DIR="${RUNNER_TEMP:-/tmp}/pcp-$$"
         rm -rf "$INSTALL_DIR"
-        npm install --prefix "$INSTALL_DIR" "pcp-engine@${VERSION}" --no-save --ignore-scripts 2>&1
+        npm install --prefix "$INSTALL_DIR" "github:rishi-banerjee1/prompt-control-plane#v${VERSION}" --no-save 2>&1
         # Try pcp first (v5+), fall back to prompt-lint (v4)
         if [ -x "$INSTALL_DIR/node_modules/.bin/pcp" ]; then
           run_pcp "$INSTALL_DIR/node_modules/.bin/pcp" "${ARGS[@]}"

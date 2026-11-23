@@ -34,11 +34,11 @@
     "applicationCategory": "DeveloperApplication",
     "operatingSystem": "Cross-platform",
     "offers": [
-      { "@type": "Offer", "price": "0", "priceCurrency": "INR", "description": "Community edition: unlimited optimizations" },
+      { "@type": "Offer", "price": "0", "priceCurrency": "INR", "description": "Full open-source software: all features, unlimited use, Apache-2.0" },
       { "@type": "Offer", "priceCurrency": "INR", "description": "Optional paid enterprise services and support" }
     ],
     "url": "https://getpcp.site/",
-    "downloadUrl": "https://www.npmjs.com/package/pcp-engine"
+    "downloadUrl": "https://github.com/rishi-banerjee1/prompt-control-plane/releases/tag/v5.4.0"
   }
   </script>
 
@@ -228,16 +228,16 @@
     </div>
   </section>
 
-  <!-- Enterprise Controls -->
+  <!-- Governance Controls -->
   <section class="section section-alt" id="enterprise-controls">
     <div class="container">
-      <h2 class="section-title">Enterprise Controls</h2>
+      <h2 class="section-title">Governance Controls</h2>
       <p class="section-subtitle">The governance layer you need before approving AI in production. All available in the open-source <a href="admin.html" class="csp-style-037">Governance Console</a>.</p>
       <div>
         <div class="flow-step">
           <div class="flow-num csp-style-095">&#x1f5a5;</div>
           <div class="flow-content">
-            <h3>Enterprise Console</h3>
+            <h3>Governance Console</h3>
             <p>An open-source governance control panel. Configure policy, inspect audit logs, build custom rules, and manage session retention locally, with no license key required.</p>
           </div>
         </div>
@@ -259,7 +259,7 @@
           <div class="flow-num csp-style-095">&#x1f4dc;</div>
           <div class="flow-content">
             <h3>Hash-Chained Audit Trail</h3>
-            <p>Every action generates a JSONL audit entry with SHA-256 hash chaining. If any line is deleted or modified, the chain breaks. Local-only, opt-in, never stores prompt content. Explore and verify your audit logs visually in the Enterprise Console.</p>
+            <p>Every action generates a JSONL audit entry with SHA-256 hash chaining. If any line is deleted or modified, the chain breaks. Local-only, opt-in, never stores prompt content. Explore and verify your audit logs visually in the Governance Console.</p>
           </div>
         </div>
         <div class="flow-step">
@@ -415,13 +415,13 @@
   <section class="section" id="pricing">
     <div class="container-wide text-center">
       <h2 class="section-title">Pricing</h2>
-      <p class="section-subtitle">The complete open-source project is free: unlimited optimizations, scoring, and all 20 tools. Enterprise support and custom services are available by inquiry.</p>
+      <p class="section-subtitle">All features are free and open source under Apache-2.0. Optional enterprise support and custom services are available by inquiry.</p>
 
       <div class="pricing-grid">
         <div class="pricing-card">
-          <div class="tier">Free</div>
-          <div class="price">&#x20b9;0 <span class="csp-style-104">/ $0</span></div>
-          <div class="price-note">forever</div>
+          <div class="tier">Open source</div>
+          <div class="price">Free</div>
+          <div class="price-note">Apache-2.0</div>
           <ul>
             <li>Unlimited optimizations</li>
             <li>Unlimited scoring &amp; checking</li>
@@ -432,15 +432,14 @@
           <a href="https://github.com/rishi-banerjee1/prompt-control-plane" class="btn btn-secondary">Get Started</a>
         </div>
         <div class="pricing-card">
-          <div class="tier">Enterprise</div>
+          <div class="tier">Enterprise services</div>
           <div class="price">Custom</div>
           <div class="price-note">contact us</div>
           <ul>
             <li>Unlimited optimizations</li>
-            <li>60 requests per minute</li>
-            <li>Policy enforcement + config lock</li>
-            <li>Hash-chained audit logging</li>
-            <li>Custom rules + session retention</li>
+            <li>Optional implementation and support</li>
+            <li>Custom service levels</li>
+            <li>Software remains Apache-2.0</li>
             <li>Dedicated support &amp; SLA</li>
           </ul>
           <a href="contact.html" class="btn btn-secondary">Contact Sales</a>
@@ -497,11 +496,11 @@
 
       <!-- Console → CLI governance flow -->
       <div class="csp-style-113">
-        <h3 class="csp-style-114">Enterprise Console writes config: CLI enforces it</h3>
+        <h3 class="csp-style-114">Governance Console writes config: CLI enforces it</h3>
         <div class="csp-style-115">
           <div class="csp-style-116">
             <div class="csp-style-117">&#x1F5A5;</div>
-            <div class="csp-style-118">Enterprise Console</div>
+            <div class="csp-style-118">Governance Console</div>
             <div class="csp-style-119">Governance authority</div>
             <div class="csp-style-120">Writes config, locks policy</div>
           </div>
@@ -538,14 +537,14 @@
       <h2 class="section-title">Install in 10 seconds</h2>
       <p class="section-subtitle">Works with any codebase: Python, Java, Go, Rust, or any language.</p>
       <div class="install csp-style-127">
-        <div class="install-label">npm global (recommended)</div>
-        <code>npm install -g pcp-engine && pcp preflight "Your prompt"</code>
+        <div class="install-label">GitHub source release (Apache-2.0)</div>
+        <code>npm install -g github:rishi-banerjee1/prompt-control-plane#v5.4.0 && pcp preflight "Your prompt"</code>
       </div>
       <div class="install">
         <div class="install-label">Or add MCP integration for AI-assisted workflows</div>
         <code>{ "mcpServers": { "prompt-optimizer": {
     "command": "npx",
-    "args": ["-y", "pcp-engine"]
+    "args": ["-y", "github:rishi-banerjee1/prompt-control-plane#v5.4.0"]
   }}}</code>
       </div>
       <div class="install">
