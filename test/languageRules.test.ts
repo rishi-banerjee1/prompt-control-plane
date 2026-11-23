@@ -14,7 +14,6 @@ const publicRoots = [
   'CHANGELOG.md',
   'package.json',
   'server.json',
-  'docs',
 ];
 
 const textExtensions = new Set(['.html', '.css', '.js', '.json', '.md', '.sh']);
