@@ -7,12 +7,12 @@
     "url": "https://github.com/rishi-banerjee1/prompt-control-plane",
     "source": "github"
   },
-  "version": "5.4.0",
+  "version": "5.4.1",
   "packages": [
     {
       "registryType": "mcpb",
-      "identifier": "https://github.com/rishi-banerjee1/prompt-control-plane/releases/download/v5.4.0/pcp-engine-v5.4.0.mcpb",
-      "fileSha256": "c458dac9952a20c6f05fa514e5cefded9996dd52c9398d0473c6687d1e1656a5",
+      "identifier": "https://github.com/rishi-banerjee1/prompt-control-plane/releases/download/v5.4.1/pcp-engine-v5.4.1.mcpb",
+      "fileSha256": "7c3bdd0487c662e457fe62450aa27718c8cf21dfce8067dba4d435642c05a39d",
       "transport": {
         "type": "stdio"
       }
