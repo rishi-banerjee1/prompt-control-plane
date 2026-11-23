@@ -1,0 +1,113 @@
+name: Publish MCP bundle and registry metadata
+
+on:
+  release:
+    types: [published]
+  workflow_dispatch:
+    inputs:
+      tag:
+        description: Existing GitHub release tag to package and publish
+        required: true
+        type: string
+
+permissions:
+  contents: write
+  id-token: write
+
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Select release tag
+        id: release
+        env:
+          EVENT_TAG: ${{ github.event.release.tag_name }}
+          INPUT_TAG: ${{ inputs.tag }}
+        run: |
+          tag="${INPUT_TAG:-$EVENT_TAG}"
+          if [[ ! "$tag" =~ ^v[0-9]+\.[0-9]+\.[0-9]+(-[0-9A-Za-z.-]+)?$ ]]; then
+            echo "Expected a version tag such as v5.4.0; got: $tag" >&2
+            exit 1
+          fi
+          echo "tag=$tag" >> "$GITHUB_OUTPUT"
+          echo "version=${tag#v}" >> "$GITHUB_OUTPUT"
+
+      - uses: actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803 # v6
+        with:
+          ref: ${{ github.event_name == 'release' && github.event.release.tag_name || github.ref }}
+
+      - uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7.1.0
+        with:
+          node-version: 22
+          cache: npm
+
+      - name: Install and build PCP
+        run: |
+          npm ci
+          npm run build
+          test "$(node -p 'require("./package.json").version')" = "${{ steps.release.outputs.version }}"
+
+      - name: Prepare MCPB bundle
+        env:
+          VERSION: ${{ steps.release.outputs.version }}
+        run: |
+          node scripts/prepare-mcpb.mjs "$VERSION" "$RUNNER_TEMP/pcp-mcpb" "$RUNNER_TEMP/pcp-engine-v${VERSION}.mcpb"
+          npm exec --yes --package=@anthropic-ai/mcpb@2.1.2 -- mcpb validate "$RUNNER_TEMP/pcp-mcpb/manifest.json"
+          npm exec --yes --package=@anthropic-ai/mcpb@2.1.2 -- mcpb info "$RUNNER_TEMP/pcp-engine-v${VERSION}.mcpb"
+
+      - name: Attach MCPB to the GitHub release
+        env:
+          GH_TOKEN: ${{ github.token }}
+          TAG: ${{ steps.release.outputs.tag }}
+          VERSION: ${{ steps.release.outputs.version }}
+        run: |
+          if ! gh release view "$TAG" --repo "$GITHUB_REPOSITORY" >/dev/null 2>&1; then
+            gh release create "$TAG" --repo "$GITHUB_REPOSITORY" --title "$TAG" --notes "Prompt Control Plane MCP bundle release."
+          fi
+          gh release upload "$TAG" "$RUNNER_TEMP/pcp-engine-v${VERSION}.mcpb" --repo "$GITHUB_REPOSITORY" --clobber
+
+      - name: Prepare registry metadata
+        id: metadata
+        env:
+          VERSION: ${{ steps.release.outputs.version }}
+        run: |
+          sha256="$(sha256sum "$RUNNER_TEMP/pcp-engine-v${VERSION}.mcpb" | cut -d ' ' -f 1)"
+          echo "sha256=$sha256" >> "$GITHUB_OUTPUT"
+          node scripts/create-mcp-registry-entry.mjs "$VERSION" "$sha256" "$GITHUB_REPOSITORY" "$RUNNER_TEMP/server.json"
+
+      - name: Install pinned MCP registry publisher
+        run: |
+          curl --fail --silent --show-error --location \
+            https://github.com/modelcontextprotocol/registry/releases/download/v1.8.9/mcp-publisher_linux_amd64.tar.gz \
+            --output "$RUNNER_TEMP/mcp-publisher.tar.gz"
+          echo '4d527ca8f1ced0394c962dc925c2a4a4addef441cbefd62501c875e9481823a8  '"$RUNNER_TEMP/mcp-publisher.tar.gz" | sha256sum --check
+          tar -xzf "$RUNNER_TEMP/mcp-publisher.tar.gz" -C "$RUNNER_TEMP" mcp-publisher
+
+      - name: Publish to the official MCP Registry
+        env:
+          VERSION: ${{ steps.release.outputs.version }}
+        run: |
+          server_name='io.github.rishi-banerjee1%2Fpcp-engine'
+          if curl --fail --silent --show-error \
+            "https://registry.modelcontextprotocol.io/v0.1/servers/${server_name}/versions/${VERSION}" \
+            --output "$RUNNER_TEMP/already-published.json"; then
+            echo "Registry entry $VERSION already exists; leaving its immutable version unchanged."
+            exit 0
+          fi
+          "$RUNNER_TEMP/mcp-publisher" login github-oidc
+          "$RUNNER_TEMP/mcp-publisher" publish "$RUNNER_TEMP/server.json"
+
+      - name: Keep the checked-in registry metadata current
+        env:
+          VERSION: ${{ steps.release.outputs.version }}
+        run: |
+          git fetch origin main
+          git switch --create registry-metadata origin/main
+          cp "$RUNNER_TEMP/server.json" server.json
+          git add server.json
+          if ! git diff --cached --quiet; then
+            git config user.name "github-actions[bot]"
+            git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+            git commit -m "chore: sync MCP registry metadata for v${VERSION} [skip ci]"
+            git push origin HEAD:main
+          fi
