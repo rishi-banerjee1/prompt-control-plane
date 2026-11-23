@@ -2,6 +2,10 @@
 
 ## Unreleased
 
+- Replaced the website explainer with the five-minute styled narration-synced video.
+
+## Unreleased
+
 - Added the five-minute narrated explainer with the approved male voice, screen-aligned passages, and music ducking.
 - Corrected misleading explainer statistics and output scoring labels.
 
