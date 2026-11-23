@@ -1,0 +1,26 @@
+{
+  "duration": 300,
+  "model": "kittentts",
+  "voice": "expr-voice-2-m",
+  "speed": 1.0,
+  "segments": [
+    {"id":"01","start":1,"end":10,"text":"Before you send a prompt, check what it leaves unsaid. Missing context. Unclear constraints. No definition of done."},
+    {"id":"02b","start":12.5,"end":17.5,"text":"Make it better. Better how? What must stay the same?"},
+    {"id":"03","start":21,"end":29,"text":"Prompt Control Plane helps you catch those gaps before a model starts working. Clearer requests. Repeatable checks."},
+    {"id":"04","start":31,"end":42,"text":"Prompt Control Plane, or P C P, is a deterministic prompt governance engine. It checks requests before they reach a language model."},
+    {"id":"05","start":45,"end":60,"text":"Scoring, routing, and analysis run locally, with zero model calls inside the engine. Use the terminal commands, or connect its tools to a compatible assistant. Each surface shares the same underlying rules."},
+    {"id":"06","start":63,"end":88,"text":"The workflow starts with your prompt. P C P scores its structure, classifies the task, and returns a recommendation with issues you can inspect. Add the missing context and constraints before you proceed. The same input, rules, and configuration produce the same result. You still review the model's answer."},
+    {"id":"07","start":91,"end":97,"text":"Two commands make a useful starting point: preflight and optimize."},
+    {"id":"08","start":99,"end":120,"text":"Preflight classifies the task, assesses prompt risk, recommends a model, and scores the request in one call. Read the result before you send the prompt. Routing uses deterministic rules, while cost estimates help compare options. Actual cost depends on your workload and usage."},
+    {"id":"09b","start":128,"end":148,"text":"Optimize prepares a structured request. Here, an authentication bug becomes an explicit goal with constraints: find the root cause, preserve compatibility, and add a regression test. The input gets a quality score. The output gets a structural checklist. Review the changes before approving them."},
+    {"id":"10","start":151,"end":157,"text":"Bring the same checks into the workflow your team already uses."},
+    {"id":"11","start":159,"end":180,"text":"The GitHub Action checks prompt files during a pull request. Configure a threshold and publish feedback alongside the code review. A developer can read the issues, fill the gaps, and run the check again. That gives maintained prompts a repeatable review step before they ship."},
+    {"id":"12","start":184,"end":208,"text":"For an application, use the lightweight validate API. Pass in the prompt and your quality threshold, then inspect the result. Your application decides how to handle a failed check. You can return feedback for revision or block the next step. The API uses the same deterministic scoring engine as the command line."},
+    {"id":"13","start":211,"end":217,"text":"Choose the integration that fits where your team works."},
+    {"id":"14","start":219,"end":231.5,"text":"With an MCP client, add the P C P server to your configuration. Compatible assistants can then use its analysis, compilation, and governance tools."},
+    {"id":"15","start":235,"end":249,"text":"In the terminal, install the package and start with preflight. Check a request, inspect the feedback, and refine it. Supported hooks can bring prompt checks into your editing workflow."},
+    {"id":"16b","start":253,"end":268,"text":"Use the programmatic API when the check belongs inside your application. Import the function, pass in a request, and inspect the result. Your code decides what happens next. Bring consistent prompt checks into your existing application."},
+    {"id":"17b","start":271.5,"end":279.5,"text":"Zero model calls inside the engine. Terminal commands and assistant integrations. Repeatable checks before generation."},
+    {"id":"18b","start":283,"end":298,"text":"Start with a prompt your team uses every day. Run preflight. Read the feedback. Fill the gaps. Prompt Control Plane. Governance before generation. Get P C P dot site."}
+  ]
+}

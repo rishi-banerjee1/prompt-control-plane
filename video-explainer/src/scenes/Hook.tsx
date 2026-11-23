@@ -42,9 +42,9 @@ export const Hook: React.FC = () => {
         }}
       />
 
-      {/* Opening statistic */}
-      <Sequence from={0} durationInFrames={FPS * 12}>
-        <FadeIn delay={5}>
+      {/* Opening problem statement */}
+      <Sequence from={0} durationInFrames={FPS * 8}>
+        <FadeIn delay={5} style={{position: 'absolute', inset: 0, display: 'flex', alignItems: 'center', justifyContent: 'center', padding: 80}}>
           <div style={{textAlign: 'center'}}>
             <div
               style={{
@@ -55,10 +55,10 @@ export const Hook: React.FC = () => {
                 marginBottom: 40,
               }}
             >
-              The hidden cost of AI
+              Before you send a prompt
             </div>
             <div style={{fontSize: 96, fontWeight: 800, color: theme.white, lineHeight: 1.1}}>
-              <GlowText color={theme.accentRed}>73%</GlowText> of prompts
+              <GlowText color={theme.accentRed}>Unclear</GlowText> prompts
             </div>
             <div
               style={{
@@ -68,7 +68,7 @@ export const Hook: React.FC = () => {
                 fontWeight: 300,
               }}
             >
-              are vague, unstructured, or risky
+              leave important decisions unstated
             </div>
           </div>
         </FadeIn>
@@ -76,7 +76,7 @@ export const Hook: React.FC = () => {
 
       {/* Bad prompt example */}
       <Sequence from={FPS * 8} durationInFrames={FPS * 10}>
-        <FadeIn delay={0} style={{position: 'absolute', top: '15%', width: '80%'}}>
+        <FadeIn delay={0} style={{position: 'absolute', top: '15%', left: '10%', width: '80%'}}>
           <div style={{textAlign: 'center', marginBottom: 40}}>
             <span style={{fontSize: 22, color: theme.textDim, letterSpacing: 2, textTransform: 'uppercase'}}>
               Sound familiar?
@@ -105,7 +105,7 @@ export const Hook: React.FC = () => {
 
       {/* Transition — "What if..." */}
       <Sequence from={FPS * 20} durationInFrames={FPS * 10}>
-        <FadeIn delay={0} style={{position: 'absolute', bottom: '15%'}}>
+        <FadeIn delay={0} style={{position: 'absolute', bottom: '15%', left: 0, width: '100%'}}>
           <div style={{textAlign: 'center'}}>
             <div style={{fontSize: 52, fontWeight: 700, color: theme.white}}>
               What if you could <GlowText color={theme.accent}>catch this</GlowText>

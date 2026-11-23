@@ -1,0 +1,20 @@
+[
+  {"start":0,"end":12,"clips":["01"],"screen":"Opening problem statement followed by vague-prompt example"},
+  {"start":12,"end":18,"clips":["02b"],"screen":"Completed make-it-better example"},
+  {"start":20,"end":30,"clips":["03"],"screen":"Catch gaps before the model"},
+  {"start":30,"end":45,"clips":["04"],"screen":"Product introduction"},
+  {"start":42,"end":62,"clips":["05"],"screen":"Local engine, CLI, MCP pillars"},
+  {"start":60,"end":90,"clips":["06"],"screen":"Prompt to engine to decision pipeline"},
+  {"start":90,"end":98,"clips":["07"],"screen":"Two command names"},
+  {"start":97,"end":122,"clips":["08"],"screen":"Preflight demonstration"},
+  {"start":127,"end":150,"clips":["09b"],"screen":"Optimize output and constraints visible"},
+  {"start":150,"end":158,"clips":["10"],"screen":"CI integration title"},
+  {"start":157,"end":182,"clips":["11"],"screen":"GitHub Action and PR feedback"},
+  {"start":184,"end":210,"clips":["12"],"screen":"Validate API code visible"},
+  {"start":210,"end":218,"clips":["13"],"screen":"Three ways to adopt"},
+  {"start":217,"end":232,"clips":["14"],"screen":"MCP configuration"},
+  {"start":232,"end":250,"clips":["15"],"screen":"CLI installation and result"},
+  {"start":252,"end":270,"clips":["16b"],"screen":"Programmatic API code visible"},
+  {"start":270,"end":280,"clips":["17b"],"screen":"Engine, tools, commands, providers recap"},
+  {"start":280,"end":300,"clips":["18b"],"screen":"Call to action, installation, website"}
+]

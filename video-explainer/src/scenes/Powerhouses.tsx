@@ -29,7 +29,7 @@ export const Powerhouses: React.FC = () => {
                 <GlowText color={theme.primary}>optimize</GlowText>
               </div>
               <div style={{fontSize: 24, color: theme.textMuted, marginTop: 20}}>
-                90% of use cases covered by just two commands
+                Inspect the request. Review the proposed changes.
               </div>
             </div>
           </FadeIn>
@@ -59,8 +59,8 @@ export const Powerhouses: React.FC = () => {
                 {text: '  "pqs": 42,', color: theme.accentYellow, delay: FPS * 4},
                 {text: '  "risk_level": "low",', color: theme.accentGreen, delay: FPS * 5},
                 {text: '  "task_type": "question",', color: theme.text, delay: FPS * 6},
-                {text: '  "recommended_model": "haiku",', color: theme.accentGreen, delay: FPS * 7},
-                {text: '  "savings": "63% cheaper than gpt-4o"', color: theme.accent, delay: FPS * 8},
+                {text: '  "recommended_model": "claude-haiku-4-5",', color: theme.accentGreen, delay: FPS * 7},
+                {text: '  // Illustrative output; estimates depend on the request', color: theme.accent, delay: FPS * 8},
               ]}
             />
           </FadeIn>
@@ -162,9 +162,9 @@ export const Powerhouses: React.FC = () => {
           {/* Score transformation centered */}
           <FadeIn delay={FPS * 12} style={{marginTop: 30}}>
             <div style={{display: 'flex', gap: 24, alignItems: 'center', justifyContent: 'center'}}>
-              <ScoreBadge label="45" sublabel="Before" color={theme.accentRed} />
+              <ScoreBadge label="Input" sublabel="Quality score" color={theme.accentRed} />
               <div style={{fontSize: 32, color: theme.accent}}>&#10132;</div>
-              <ScoreBadge label="82" sublabel="After" color={theme.accentGreen} />
+              <ScoreBadge label="Output" sublabel="Structural checklist" color={theme.accentGreen} />
             </div>
           </FadeIn>
         </AbsoluteFill>
