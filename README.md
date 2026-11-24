@@ -11,7 +11,7 @@ Core analysis and generic compilation are model-agnostic. Provider-specific comp
 Requires Node.js 20 or later.
 
 ```sh
-npm install -g github:rishi-banerjee1/prompt-control-plane#v5.4.3
+npm install -g https://github.com/rishi-banerjee1/prompt-control-plane/releases/download/v5.4.3/pcp-engine-5.4.3.tgz
 pcp optimize --file prompts/review-auth.md --json
 ```
 

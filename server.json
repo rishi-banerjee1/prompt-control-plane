@@ -12,7 +12,7 @@
     {
       "registryType": "mcpb",
       "identifier": "https://github.com/rishi-banerjee1/prompt-control-plane/releases/download/v5.4.3/pcp-engine-v5.4.3.mcpb",
-      "fileSha256": "204d3e53215430453879cb6091882cac49232cc260ee3efa214061ab80918faf",
+      "fileSha256": "4284e7b62941e7e8bcb5cb55347e9fe9e45122317493b8d359291907e3c38c57",
       "transport": {
         "type": "stdio"
       }

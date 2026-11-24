@@ -49,14 +49,15 @@ jobs:
       - name: Run tests
         run: npm test
 
-      - name: Verify production Git source installation
-        env:
-          GITHUB_SHA: ${{ github.sha }}
+      - name: Verify production tarball installation
         run: |
-          install_dir="$RUNNER_TEMP/pcp-git-install"
-          npm install --prefix "$install_dir" --omit=dev --no-audit --no-fund \
-            "git+file://${GITHUB_WORKSPACE}#${GITHUB_SHA}"
-          "$install_dir/node_modules/.bin/pcp" --version
+          npm pack --ignore-scripts --pack-destination "$RUNNER_TEMP"
+          install_dir="$RUNNER_TEMP/pcp-global"
+          npm install --global --prefix "$install_dir" --omit=dev --no-audit --no-fund \
+            "$RUNNER_TEMP/pcp-engine-$(node -p 'require("./package.json").version').tgz"
+          "$install_dir/bin/pcp" --version
+          "$install_dir/bin/pcp" optimize 'Review the authentication module and preserve its public API.' --json \
+            | node -e "let s='';process.stdin.on('data',d=>s+=d).on('end',()=>{const r=JSON.parse(s);if(r.subcommand!=='optimize'||!r.compiled_prompt)process.exit(1);console.log('Global optimize smoke check passed')})"
 
   lint-and-audit:
     name: Security and Supply Chain Gates

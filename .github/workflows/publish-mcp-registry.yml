@@ -45,6 +45,7 @@ jobs:
         run: |
           npm ci
           npm run build
+          npm pack --ignore-scripts --pack-destination "$RUNNER_TEMP"
           test "$(node -p 'require("./package.json").version')" = "${{ steps.release.outputs.version }}"
 
       - name: Prepare MCPB bundle
@@ -64,7 +65,12 @@ jobs:
           if ! gh release view "$TAG" --repo "$GITHUB_REPOSITORY" >/dev/null 2>&1; then
             gh release create "$TAG" --repo "$GITHUB_REPOSITORY" --title "$TAG" --notes "Prompt Control Plane MCP bundle release."
           fi
-          gh release upload "$TAG" "$RUNNER_TEMP/pcp-engine-v${VERSION}.mcpb" --repo "$GITHUB_REPOSITORY" --clobber
+          gh release upload "$TAG" \
+            "$RUNNER_TEMP/pcp-engine-${VERSION}.tgz" \
+            "$RUNNER_TEMP/pcp-engine-v${VERSION}.mcpb" \
+            --repo "$GITHUB_REPOSITORY" --clobber
+          gh release view "$TAG" --repo "$GITHUB_REPOSITORY" --json assets --jq '.assets[].name' \
+            | grep -Fx "pcp-engine-${VERSION}.tgz"
 
       - name: Prepare registry metadata
         id: metadata

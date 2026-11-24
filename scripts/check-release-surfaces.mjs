@@ -22,7 +22,7 @@ const [readme, changelog, actionYaml] = await Promise.all([
   readFile(new URL('../CHANGELOG.md', import.meta.url), 'utf8'),
   readFile(new URL('../action.yml', import.meta.url), 'utf8'),
 ]);
-assert.match(readme, new RegExp(`#v${version}\\b`), 'README install must use the current GitHub release');
+assert.ok(readme.includes(`/releases/download/v${version}/pcp-engine-${version}.tgz`), 'README install must use the current GitHub release tarball');
 assert.match(readme, new RegExp(`@v${version}\\b`), 'README Action example must use the current release');
 assert.match(changelog, new RegExp(`^## \\[${version}\\]`, 'm'), 'changelog must lead with the current version');
 
@@ -46,6 +46,10 @@ const registryIsCurrent = registryVersion === version;
 if (registryIsCurrent) {
   assert.equal(registryPayload.server.packages[0].identifier, server.packages[0].identifier, 'registry package URL must match server.json');
   assert.equal(registryPayload.server.packages[0].fileSha256, server.packages[0].fileSha256, 'registry checksum must match server.json');
+  const releaseResponse = await fetch(`https://api.github.com/repos/rishi-banerjee1/prompt-control-plane/releases/tags/v${version}`);
+  assert.ok(releaseResponse.ok, `GitHub release v${version} returned ${releaseResponse.status}`);
+  const release = await releaseResponse.json();
+  assert.ok(release.assets.some((asset) => asset.name === `pcp-engine-${version}.tgz`), 'GitHub release must include the installable npm tarball');
 } else {
   const [registryMajor, registryMinor, registryPatch] = registryVersion.split('.').map(Number);
   const [currentMajor, currentMinor, currentPatch] = version.split('.').map(Number);
@@ -67,7 +71,7 @@ assert.equal(marketplace.action.description.trim(), actionDescription, 'Marketpl
 assert.ok(marketplace.readmeHtml.includes('subcommand: optimize'), 'Marketplace README must position optimize as the primary Action command');
 if (registryIsCurrent) {
   assert.ok(marketplace.readmeHtml.includes(`@v${version}`), 'Marketplace README must show the current Action version');
-  assert.ok(marketplace.readmeHtml.includes(`#v${version}`), 'Marketplace README must show the current source install');
+  assert.ok(marketplace.readmeHtml.includes(`/releases/download/v${version}/pcp-engine-${version}.tgz`), 'Marketplace README must show the current source tarball');
 }
 assert.ok(!marketplace.readmeHtml.includes('maintained privately'), 'Marketplace README must not disclose private maintenance');
 assert.ok(!pkg.scripts.prepare, 'Git source install must not require an install-time build');
