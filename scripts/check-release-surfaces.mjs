@@ -69,7 +69,7 @@ const marketplace = JSON.parse(embedded).payload;
 assert.equal(marketplace.action.description.trim(), actionDescription, 'Marketplace description must match action.yml');
 assert.equal(marketplace.releaseData.latestRelease?.tagName, `v${version}`, 'Marketplace latest release must match package.json');
 assert.ok(marketplace.readmeHtml.includes('subcommand: optimize'), 'Marketplace README must position optimize as the primary Action command');
-assert.ok(marketplace.readmeHtml.includes('registry.modelcontextprotocol.io'), 'Marketplace README must link to the active official MCP Registry listing');
+assert.ok(marketplace.readmeHtml.includes('href="https://registry.modelcontextprotocol.io/v0.1/servers/io.github.rishi-banerjee1%2Fpcp-engine/versions/latest"'), 'Marketplace README must link to the active official MCP Registry listing');
 assert.ok(marketplace.readmeHtml.includes('not searchable in GitHub'), 'Marketplace README must disclose that GitHub MCP Registry curation is pending');
 if (registryIsCurrent) {
   assert.ok(marketplace.readmeHtml.includes(`@v${version}`), 'Marketplace README must show the current Action version');
