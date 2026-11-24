@@ -2,7 +2,7 @@
   "name": "pcp-engine",
   "version": "5.4.2",
   "type": "module",
-  "description": "Open-source prompt governance engine. Deterministic scoring, compilation, cost estimates, and policy controls for any model.",
+  "description": "Deterministic prompt governance before inference. Analyze, score, apply policy, and compile prompts without LLM calls.",
   "main": "dist/src/api.js",
   "types": "dist/src/api.d.ts",
   "exports": {

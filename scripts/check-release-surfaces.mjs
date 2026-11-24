@@ -24,7 +24,10 @@ assert.match(readme, new RegExp(`#v${version}\\b`), 'README install must use the
 assert.match(readme, new RegExp(`@v${version}\\b`), 'README Action example must use the current release');
 assert.match(changelog, new RegExp(`^## \\[${version}\\]`, 'm'), 'changelog must lead with the current version');
 
-assert.ok(readme.includes('pcp optimize "Review the auth module.'), 'README install example must lead with the full optimize pipeline');
+assert.ok(readme.includes('governs prompts before they reach a model'), 'README must lead with governance before inference');
+assert.ok(readme.includes('pcp optimize --file prompts/review-auth.md'), 'README must show the full optimize pipeline');
+assert.ok(readme.includes('threshold gate across prompt files'), 'README must distinguish the CI threshold gate');
+assert.ok(readme.includes('does not evaluate model outputs'), 'README must define PCP scope accurately');
 assert.ok(readme.includes('subcommand: optimize'), 'README Action example must lead with optimize');
 
 const actionDescription = actionYaml.match(/^description:\s*'([^']*)'/m)?.[1]?.trim();

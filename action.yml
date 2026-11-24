@@ -1,22 +1,22 @@
 name: 'Prompt Control Plane'
-description: 'Full prompt optimization in CI for any model. Analyze, score, compile, and assess risk with zero LLM calls'
+description: 'Deterministic prompt governance in CI. Analyze, score, apply policy, and compile prompts before inference, with zero LLM calls'
 author: 'Rishi Banerjee'
 branding:
   icon: 'check-circle'
   color: 'purple'
 inputs:
   subcommand:
-    description: 'PCP command: check (default), score, preflight, or optimize'
+    description: 'PCP command: check (default threshold gate), optimize (full analysis and compilation), preflight (compact summary), or score'
     required: false
     default: 'check'
   files:
-    description: 'Glob pattern for prompt files to lint (.txt and .md files only). Examples: "prompts/*.txt", "**/*.md"'
+    description: 'Prompt file path; check accepts glob patterns (.txt and .md). optimize accepts one prompt file.'
     required: true
   threshold:
-    description: 'Minimum quality score (0-100). Optional; overrides strictness if set.'
+    description: 'Minimum score for check (0-100); overrides strictness. Other subcommands may ignore it.'
     required: false
   strictness:
-    description: 'Preset: standard (60), strict (75), relaxed (40). Ignored if threshold is set.'
+    description: 'check threshold preset: standard (60), strict (75), relaxed (40). Ignored if threshold is set.'
     required: false
     default: 'standard'
   version:
