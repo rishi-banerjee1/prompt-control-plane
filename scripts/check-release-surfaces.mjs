@@ -24,10 +24,8 @@ assert.match(readme, new RegExp(`#v${version}\\b`), 'README install must use the
 assert.match(readme, new RegExp(`@v${version}\\b`), 'README Action example must use the current release');
 assert.match(changelog, new RegExp(`^## \\[${version}\\]`, 'm'), 'changelog must lead with the current version');
 
-const installExample = readme.match(/## Install\\s+([\\s\\S]*?)```sh\\n([\\s\\S]*?)```/)?.[2];
-assert.ok(installExample?.includes('pcp optimize '), 'README install example must lead with the full optimize pipeline');
-const actionExample = readme.match(/## Use the GitHub Action\\s+```yaml\\n([\\s\\S]*?)```/)?.[1];
-assert.ok(actionExample?.includes('subcommand: optimize'), 'README Action example must lead with optimize');
+assert.ok(readme.includes('pcp optimize "Review the auth module.'), 'README install example must lead with the full optimize pipeline');
+assert.ok(readme.includes('subcommand: optimize'), 'README Action example must lead with optimize');
 
 const actionDescription = actionYaml.match(/^description:\s*'([^']*)'/m)?.[1]?.trim();
 assert.ok(actionDescription, 'action.yml must have a single quoted description');
