@@ -32,6 +32,7 @@ assert.ok(readme.includes('subcommand: optimize'), 'README Action example must l
 
 const actionDescription = actionYaml.match(/^description:\s*'([^']*)'/m)?.[1]?.trim();
 assert.ok(actionDescription, 'action.yml must have a single quoted description');
+assert.ok(actionDescription.length <= 125, 'Marketplace Action description must fit GitHub’s 125-character limit');
 
 const registryUrl = 'https://registry.modelcontextprotocol.io/v0.1/servers/io.github.rishi-banerjee1%2Fpcp-engine/versions/latest';
 const registryResponse = await fetch(registryUrl);

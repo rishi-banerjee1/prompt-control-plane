@@ -1,5 +1,5 @@
 name: 'Prompt Control Plane'
-description: 'Deterministic prompt governance in CI. Analyze, score, apply policy, and compile prompts before inference, with zero LLM calls'
+description: 'Govern prompts before inference in CI with deterministic analysis, scoring, policy, and compilation. Zero LLM calls'
 author: 'Rishi Banerjee'
 branding:
   icon: 'check-circle'
