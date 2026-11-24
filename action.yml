@@ -1,5 +1,5 @@
 name: 'Prompt Control Plane'
-description: 'Full prompt optimization in CI for any model. Analyze, score, compile, and assess risk with zero LLM calls.'
+description: 'Full prompt optimization in CI for any model. Analyze, score, compile, and assess risk with zero LLM calls'
 author: 'Rishi Banerjee'
 branding:
   icon: 'check-circle'
