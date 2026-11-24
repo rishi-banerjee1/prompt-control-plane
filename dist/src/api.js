@@ -1,0 +1,74 @@
+// src/api.ts — Programmatic API barrel export (v3.3).
+// Pure, synchronous, zero side effects. Safe for library use.
+// Does NOT start the MCP server (use `pcp-engine/server` for that).
+// v3 additions: classifyComplexity, routeModel, computeRiskScore, PROFILES, TIER_MODELS.
+// v3.1 additions: pruner, tokenizer, zones, preservePatterns, deltas, constants.
+// v3.3 additions: policy, auditLog, sessionHistory.
+// ─── Analyzer ────────────────────────────────────────────────────────────────
+export { analyzePrompt, detectTaskType, classifyComplexity } from './analyzer.js';
+// ─── Scorer ──────────────────────────────────────────────────────────────────
+export { scorePrompt } from './scorer.js';
+// ─── Checklist (operates on *compiled* output, not raw prompt) ───────────────
+export { generateChecklist } from './scorer.js';
+// ─── Compiler ────────────────────────────────────────────────────────────────
+export { compilePrompt, compressContext } from './compiler.js';
+// ─── Cost Estimator + Model Routing ─────────────────────────────────────────
+export { estimateCost, estimateTokens, estimateCostForText, PRICING_DATA, routeModel, TIER_MODELS, RESEARCH_INTENT_RE, } from './estimator.js';
+// ─── Rules Engine ────────────────────────────────────────────────────────────
+export { runRules, extractBlockingQuestions, extractAssumptions, getElevatedRisk, computeRiskScore, computeRiskScoreWithCustomRules, RISK_WEIGHTS, RISK_ESCALATION_THRESHOLD, deriveRiskLevel, RULES_VERSION, calculateBuiltInRuleSetHash, } from './rules.js';
+// ─── Profiles ────────────────────────────────────────────────────────────────
+export { PROFILES, suggestProfile, resolveProfile } from './profiles.js';
+// ─── License Validation ──────────────────────────────────────────────────────
+export { validateLicenseKey, canonicalizePayload, PRODUCTION_PUBLIC_KEY_PEM } from './license.js';
+// ─── v3.1: Compression Pipeline ─────────────────────────────────────────────
+export { estimatePromptTokens, estimateToolTokens, estimateOutputTokens } from './tokenizer.js';
+export { scanZones, isLineInZone, isLinePreserved, getZonesInRange } from './zones.js';
+export { markPreservedLines } from './preservePatterns.js';
+export { scoreAllTools, rankTools, pruneTools, scoreTool, rankMode, pruneMode } from './pruner.js';
+export { calculateCompressionDelta, calculateToolPruningDelta, calculatePreFlightDeltas, formatDelta, formatPreFlightDeltas, } from './deltas.js';
+export { PRUNE_THRESHOLD, SIGNALS_CAP, LICENSE_SCAN_LINES, STRONG_LEGAL_TOKENS, ALWAYS_RELEVANT_TOOLS, TASK_REQUIRED_TOOLS, TASK_NEGATIVE_TOOLS, TASK_TOOL_KEYWORDS, stableStringify, } from './constants.js';
+// ─── v3.3: Policy Enforcement ─────────────────────────────────────────────
+export { evaluatePolicyViolations, checkRiskThreshold, buildPolicyEnforcementSummary, calculatePolicyHash, STRICTNESS_THRESHOLDS, } from './policy.js';
+// ─── v3.3: Audit Logger ──────────────────────────────────────────────────
+export { AuditLogger, auditLogger, GENESIS_HASH } from './auditLog.js';
+// ─── v3.3: Session History ───────────────────────────────────────────────
+export { SessionHistoryManager, sessionHistory } from './sessionHistory.js';
+// ─── v3.3: Custom Rules (v4.1: saveRules via CustomRulesManager) ────────
+export { CustomRulesManager, customRules } from './customRules.js';
+export { isCodeTask, isProseTask, PLAN_LIMITS } from './types.js';
+// ─── Purchase URLs (canonical source) ────────────────────────────────────────
+export { PRO_PURCHASE_URL, POWER_PURCHASE_URL } from './tools/index.js';
+// ─── Convenience: optimize() ─────────────────────────────────────────────────
+import { analyzePrompt } from './analyzer.js';
+import { scorePrompt, generateChecklist } from './scorer.js';
+import { compilePrompt } from './compiler.js';
+import { estimateCost } from './estimator.js';
+/**
+ * Run the full optimization pipeline on a prompt.
+ *
+ * Mirrors the exact production chain from the `optimize_prompt` MCP tool:
+ *   analyzePrompt → scorePrompt → compilePrompt → generateChecklist → estimateCost
+ *
+ * Pure, synchronous, deterministic. No I/O, no side effects.
+ *
+ * @param prompt  - The raw prompt to optimize.
+ * @param context - Optional context string (code, docs, etc.).
+ * @param target  - Target platform/provider: 'claude' (XML), 'openai' (System/User), or 'google'/'perplexity'/'generic' (Markdown).
+ */
+export function optimize(prompt, context, target = 'claude') {
+    // 1. Analyze raw prompt → structured intent
+    const intent = analyzePrompt(prompt, context);
+    // 2. Score the raw prompt's quality (pre-compilation)
+    const quality = scorePrompt(intent, context);
+    // 3. Compile into target format
+    const { prompt: compiled, changes } = compilePrompt(intent, context, target);
+    // 4. Checklist: structural coverage of the compiled output
+    const checklist = generateChecklist(compiled);
+    // 5. Estimate cost — join prompt+context with delimiter (not naive concatenation)
+    const costInput = context
+        ? `${compiled}\n\n---\n\n${context}`
+        : compiled;
+    const cost = estimateCost(costInput, intent.task_type, intent.risk_level, target);
+    return { intent, quality, compiled, changes, checklist, cost };
+}
+//# sourceMappingURL=api.js.map

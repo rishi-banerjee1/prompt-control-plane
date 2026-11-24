@@ -1,6 +1,9 @@
-# Build output
-dist/
+# Local dependencies
 node_modules/
+
+# Build verification output that is not part of the installable runtime
+dist/test/
+**/*.js.map
 
 # Environment files
 .env

@@ -1,0 +1,609 @@
+// rules.ts — Deterministic ambiguity detection rules. No LLM calls.
+// Rules are task-type aware: code-only rules skip for prose/research tasks.
+import { createHash } from 'node:crypto';
+import { isCodeTask, isProseTask } from './types.js';
+import { customRules } from './customRules.js';
+// ─── Pattern Libraries ────────────────────────────────────────────────────────
+const VAGUE_CODE_PATTERNS = [
+    /\bmake\s+it\s+(better|work|good|nice|faster|cleaner)\b/i,
+    /\b(improve|enhance|optimize|update|change|fix|tweak)\b(?!.*\b(in|at|for|the file|function|class|module|component)\b)/i,
+    /\bdo\s+something\s+(about|with)\b/i,
+    /\bhandle\s+this\b/i,
+];
+const FILE_PATH_PATTERNS = [
+    /\b[\w\-./]+\.(ts|js|tsx|jsx|py|go|rs|java|rb|css|html|json|yaml|yml|md|sql|sh)\b/,
+    /\b(src|lib|app|pages|components|utils|test|spec)\//,
+    /\.\//,
+];
+const CODE_REF_PATTERNS = [
+    /\b(function|class|method|interface|type|enum|const|let|var|def|fn)\s+\w+/i,
+    /\b\w+\(\)/,
+    /\b\w+\.\w+\(/,
+];
+const SCOPE_EXPLOSION_CODE = [
+    /\b(everything|entire|whole)\b(?![\w\s]{0,50}\b(files?|functions?|class(?:es)?|tests?|modules?|components?|endpoints?|routes?)\b)/i,
+    /\b(all|every)\b(?![\w\s]{0,50}\b(files?|functions?|class(?:es)?|tests?|modules?|components?|endpoints?|routes?|the)\b)/i,
+    /\bacross\s+the\s+(codebase|project|repo)\b/i,
+];
+const HIGH_RISK_KEYWORDS = [
+    /\b(auth|authentication|authorization|login|password|credential|secret|token|api[_\s]?key)\b/i,
+    /\b(payment|billing|invoice|credit\s*card|stripe|transaction|checkout)\b/i,
+    /\b(database|migration|schema|drop|truncate|delete\s+from|alter\s+table)\b/i,
+    /\b(production|prod|deploy|release|publish|live)\b/i,
+    /\b(delete|remove|destroy|purge|wipe|reset)\b/i,
+    /\b(security|encryption|certificate|ssl|tls|cors|csrf|xss|injection)\b/i,
+];
+const FORMAT_REFS = [
+    /\b(json|yaml|xml|csv|graphql)\b/i,
+    /\breturn\s+(a|the)?\s*(json|object|array|list|table|schema)\b/i,
+];
+const TASK_SEPARATORS = [
+    /\b(also|and\s+also|additionally|plus|on\s+top\s+of\s+that|while\s+you['']?re\s+at\s+it)\b/i,
+    /\b(first|second|third|then|after\s+that|next|finally)\b/i,
+    /\d+\.\s+\w/g,
+];
+const VAGUE_GENERIC_PATTERNS = [
+    /\bmake\s+it\s+(better|work|good|nice|faster|cleaner|right)\b/i,
+    /\bdo\s+something\s+(about|with)\b/i,
+    /\bhandle\s+this\b/i,
+    /\bjust\s+(fix|do|make|change)\s+(it|this|that)\b/i,
+];
+const SPECIFICS_PATTERNS = [
+    ...FILE_PATH_PATTERNS,
+    ...CODE_REF_PATTERNS,
+    /\b(for|to)\s+(my\s+)?(team|colleagues?|manager|stakeholders?|customers?|users?)\b/i,
+    /\b(slack|email|blog|linkedin|twitter|report|post|article|doc)\b/i,
+    /\b(the|this|our|my)\s+\w+\s+(function|module|service|page|feature|bug|issue|api|component|system|pipeline|process|database|report|dashboard)\b/i,
+];
+function NOT_TRIGGERED(ruleName) {
+    return { rule_name: ruleName, severity: 'blocking', triggered: false, message: '' };
+}
+// ─── Rule Implementations ─────────────────────────────────────────────────────
+const rules = [
+    // ── Code-only rules ─────────────────────────────────────────────────────
+    {
+        name: 'vague_objective',
+        applies_to: 'code',
+        check(prompt) {
+            const hasVague = VAGUE_CODE_PATTERNS.some(p => p.test(prompt));
+            const hasTarget = FILE_PATH_PATTERNS.some(p => p.test(prompt))
+                || CODE_REF_PATTERNS.some(p => p.test(prompt));
+            return {
+                rule_name: 'vague_objective',
+                severity: 'blocking',
+                triggered: hasVague && !hasTarget,
+                message: 'Objective is vague without a specific target. What exactly should be changed and where?',
+                question: hasVague && !hasTarget ? {
+                    id: 'q_vague_objective',
+                    question: 'What specific file, function, or component should be changed?',
+                    reason: 'The prompt uses vague terms without pointing to a specific target.',
+                    blocking: true,
+                } : undefined,
+            };
+        },
+    },
+    {
+        name: 'missing_target',
+        applies_to: 'code',
+        check(prompt) {
+            const isCode = /\b(code|implement|build|write|create|add|remove|refactor|fix|debug|test)\b/i.test(prompt);
+            const hasTarget = FILE_PATH_PATTERNS.some(p => p.test(prompt))
+                || CODE_REF_PATTERNS.some(p => p.test(prompt))
+                || /\b(the|this|that)\s+(component|module|service|page|endpoint|route|handler|hook|util)\b/i.test(prompt);
+            return {
+                rule_name: 'missing_target',
+                severity: 'blocking',
+                triggered: isCode && !hasTarget,
+                message: 'Code task detected but no target file, function, or module specified.',
+                question: isCode && !hasTarget ? {
+                    id: 'q_missing_target',
+                    question: 'Which file(s) or module(s) should this change apply to?',
+                    reason: 'A code change was requested but no target location was specified.',
+                    blocking: true,
+                } : undefined,
+            };
+        },
+    },
+    {
+        name: 'scope_explosion',
+        applies_to: 'code',
+        check(prompt) {
+            const hasExplosion = SCOPE_EXPLOSION_CODE.some(p => p.test(prompt));
+            return {
+                rule_name: 'scope_explosion',
+                severity: 'blocking',
+                triggered: hasExplosion,
+                message: 'Scope is extremely broad. Consider narrowing to specific files or modules.',
+                question: hasExplosion ? {
+                    id: 'q_scope_explosion',
+                    question: 'Can you narrow the scope? Which specific area should be the focus?',
+                    reason: 'Terms like "all", "everything", or "entire codebase" suggest an unbounded scope.',
+                    blocking: true,
+                } : undefined,
+            };
+        },
+    },
+    {
+        name: 'high_risk_domain',
+        applies_to: 'code',
+        check(prompt) {
+            const matchedDomains = [];
+            for (const pattern of HIGH_RISK_KEYWORDS) {
+                const match = prompt.match(pattern);
+                if (match)
+                    matchedDomains.push(match[0]);
+            }
+            return {
+                rule_name: 'high_risk_domain',
+                severity: 'non_blocking',
+                triggered: matchedDomains.length > 0,
+                message: `High-risk domain detected: ${matchedDomains.join(', ')}. Extra caution warranted.`,
+                risk_elevation: matchedDomains.length > 0 ? 'high' : undefined,
+            };
+        },
+    },
+    {
+        name: 'no_constraints_high_risk',
+        applies_to: 'code',
+        check(prompt) {
+            const isHighRisk = HIGH_RISK_KEYWORDS.some(p => p.test(prompt));
+            const hasConstraints = /\b(don['']?t|do\s+not|never|avoid|skip|only|except|without|must\s+not|should\s+not)\b/i.test(prompt)
+                || /\b(constraint|limit|boundary|scope|restrict)\b/i.test(prompt);
+            return {
+                rule_name: 'no_constraints_high_risk',
+                severity: 'blocking',
+                triggered: isHighRisk && !hasConstraints,
+                message: 'High-risk task with no constraints specified. What should NOT be changed or affected?',
+                question: isHighRisk && !hasConstraints ? {
+                    id: 'q_no_constraints',
+                    question: 'This touches a sensitive area. What are the boundaries — what should NOT be changed?',
+                    reason: 'High-risk domain detected but no constraints or safety boundaries were mentioned.',
+                    blocking: true,
+                } : undefined,
+            };
+        },
+    },
+    // ── Universal rules (all task types) ────────────────────────────────────
+    {
+        name: 'format_ambiguity',
+        applies_to: 'all',
+        check(prompt) {
+            const mentionsFormat = FORMAT_REFS.some(p => p.test(prompt));
+            const hasSchema = /\b(schema|structure|shape|fields?|columns?|properties)\b/i.test(prompt)
+                || /\{[\s\S]*:[\s\S]*\}/.test(prompt);
+            return {
+                rule_name: 'format_ambiguity',
+                severity: 'non_blocking',
+                triggered: mentionsFormat && !hasSchema,
+                message: 'A structured format was mentioned but no schema was provided.',
+                assumption: mentionsFormat && !hasSchema ? {
+                    id: 'a_format_flexible',
+                    assumption: 'Output format will be inferred from context. No strict schema enforced.',
+                    confidence: 'medium',
+                    impact: 'low',
+                    reversible: true,
+                } : undefined,
+            };
+        },
+    },
+    {
+        name: 'multi_task_overload',
+        applies_to: 'all',
+        check(prompt) {
+            let taskCount = 0;
+            for (const pattern of TASK_SEPARATORS) {
+                const matches = prompt.match(pattern);
+                if (matches)
+                    taskCount += matches.length;
+            }
+            const overloaded = taskCount >= 3;
+            return {
+                rule_name: 'multi_task_overload',
+                severity: 'non_blocking',
+                triggered: overloaded,
+                message: `Multiple tasks detected in one prompt (~${taskCount} task indicators). Consider splitting for better results.`,
+                assumption: overloaded ? {
+                    id: 'a_multi_task',
+                    assumption: 'All tasks will be addressed in sequence. Consider splitting into separate prompts for better focus.',
+                    confidence: 'medium',
+                    impact: 'medium',
+                    reversible: true,
+                } : undefined,
+            };
+        },
+    },
+    {
+        name: 'generic_vague_ask',
+        applies_to: 'all',
+        check(prompt) {
+            const hasCodeTarget = FILE_PATH_PATTERNS.some(p => p.test(prompt))
+                || CODE_REF_PATTERNS.some(p => p.test(prompt));
+            if (hasCodeTarget)
+                return NOT_TRIGGERED('generic_vague_ask');
+            const isVague = VAGUE_GENERIC_PATTERNS.some(p => p.test(prompt));
+            const hasAnySpecifics = SPECIFICS_PATTERNS.some(p => p.test(prompt));
+            const triggered = isVague && !hasAnySpecifics;
+            return {
+                rule_name: 'generic_vague_ask',
+                severity: 'blocking',
+                triggered,
+                message: 'The prompt is too vague to act on. What specifically should be done?',
+                question: triggered ? {
+                    id: 'q_generic_vague',
+                    question: 'Can you be more specific? What exactly do you want changed and what does "done" look like?',
+                    reason: 'The prompt lacks enough detail to determine what action to take.',
+                    blocking: true,
+                } : undefined,
+            };
+        },
+    },
+    // ── Prose-only rules ────────────────────────────────────────────────────
+    {
+        name: 'missing_audience',
+        applies_to: 'prose',
+        check(prompt) {
+            const hasAudience = /\b(for|to|with)\s+(my\s+)?(team|colleagues?|manager|stakeholders?|engineers?|designers?|leadership|exec|board|customers?|users?|clients?|public|community|audience|channel|everyone)\b/i.test(prompt)
+                || /\b(slack|email|blog|twitter|linkedin|newsletter|internal|external)\b/i.test(prompt);
+            return {
+                rule_name: 'missing_audience',
+                severity: 'non_blocking',
+                triggered: !hasAudience,
+                message: 'No target audience specified. Who will read this?',
+                assumption: !hasAudience ? {
+                    id: 'a_general_audience',
+                    assumption: 'Writing for a general professional audience. Tone: clear and neutral.',
+                    confidence: 'medium',
+                    impact: 'low',
+                    reversible: true,
+                } : undefined,
+            };
+        },
+    },
+    {
+        name: 'no_clear_ask',
+        applies_to: 'prose',
+        check(prompt) {
+            const hasClearPurpose = /\b(announce|share|ask|request|inform|update|pitch|propose|convince|explain|feedback|review)\b/i.test(prompt);
+            return {
+                rule_name: 'no_clear_ask',
+                severity: 'non_blocking',
+                triggered: !hasClearPurpose,
+                message: 'No clear communication goal detected. What should the reader do after reading this?',
+                assumption: !hasClearPurpose ? {
+                    id: 'a_informational',
+                    assumption: 'Message is informational — no specific action required from the reader.',
+                    confidence: 'medium',
+                    impact: 'low',
+                    reversible: true,
+                } : undefined,
+            };
+        },
+    },
+    // ── v3.1.0: New risk rules ──────────────────────────────────────────────
+    {
+        name: 'hallucination_risk',
+        applies_to: 'all',
+        // ⚠ If you change regexes below, update inlineFingerprints in calculateBuiltInRuleSetHash().
+        check(prompt) {
+            // Detects prompts requesting ungrounded factual claims (stats, dates, quotes)
+            // without providing source context
+            const requestsFactual = /\b(exact|specific|precise)\s+(number|statistic|figure|date|quote|citation|data\s*point)/i.test(prompt)
+                || /\b(give\s+me\s+the\s+(exact|real|actual)|cite\s+(the|a)\s+source|what\s+is\s+the\s+exact)\b/i.test(prompt)
+                || /\b(list\s+all\s+(the\s+)?(facts|statistics|data\s*points)\s+(about|for|on))\b/i.test(prompt);
+            const hasGrounding = /\b(based\s+on|according\s+to|from\s+(the|this)|given\s+(the|this)|using\s+(the|this)|reference|context|source|document)\b/i.test(prompt);
+            const triggered = requestsFactual && !hasGrounding;
+            return {
+                rule_name: 'hallucination_risk',
+                severity: 'non_blocking',
+                triggered,
+                message: 'Prompt requests specific factual claims without grounding context. Risk of hallucinated data.',
+                assumption: triggered ? {
+                    id: 'a_hallucination_risk',
+                    assumption: 'Factual claims will be qualified with uncertainty. Provide source context to improve accuracy.',
+                    confidence: 'low',
+                    impact: 'high',
+                    reversible: true,
+                } : undefined,
+                risk_elevation: triggered ? 'medium' : undefined,
+            };
+        },
+    },
+    {
+        name: 'agent_underspec',
+        applies_to: 'all',
+        // ⚠ If you change regexes below, update inlineFingerprints in calculateBuiltInRuleSetHash().
+        check(prompt) {
+            // Detects prompts that request autonomous agent behavior without constraints
+            const requestsAgent = /\b(autonomous(ly)?|agent|auto[\s-]?(run|execute|deploy)|run\s+without\s+(me|supervision|oversight)|unattended|hands[\s-]?off)\b/i.test(prompt);
+            const hasConstraints = /\b(limit|budget|max|cap|stop\s+after|timeout|abort|fallback|rollback|don['']?t|do\s+not|never|only)\b/i.test(prompt);
+            const triggered = requestsAgent && !hasConstraints;
+            return {
+                rule_name: 'agent_underspec',
+                severity: 'blocking',
+                triggered,
+                message: 'Autonomous execution requested without safety constraints (limits, fallbacks, stop conditions).',
+                question: triggered ? {
+                    id: 'q_agent_underspec',
+                    question: 'What are the safety boundaries? (max iterations, timeout, stop conditions, rollback plan)',
+                    reason: 'Autonomous agent behavior was requested but no guardrails were specified.',
+                    blocking: true,
+                } : undefined,
+                risk_elevation: triggered ? 'high' : undefined,
+            };
+        },
+    },
+    {
+        name: 'conflicting_constraints',
+        applies_to: 'all',
+        // ⚠ If you change regexes below, update inlineFingerprints in calculateBuiltInRuleSetHash().
+        check(prompt) {
+            // Detects contradictory constraint patterns
+            const hasOnlyX = /\b(only|exclusively|solely)\s+(modify|change|update|touch|edit)\b/i.test(prompt);
+            const hasAlsoY = /\b(also|and\s+also|plus|additionally)\s+(modify|change|update|touch|edit|refactor)\b/i.test(prompt);
+            const hasMustNot = prompt.match(/\b(must\s+not|don['']?t|do\s+not|never)\s+(\w+)/gi) || [];
+            const hasMust = prompt.match(/\b(must|always|ensure)\s+(\w+)/gi) || [];
+            // Check for direct contradictions in must/must-not pairs
+            let hasContradiction = false;
+            for (const mustNot of hasMustNot) {
+                const verb = mustNot.replace(/^(must\s+not|don['']?t|do\s+not|never)\s+/i, '').toLowerCase();
+                for (const must of hasMust) {
+                    const mustVerb = must.replace(/^(must|always|ensure)\s+/i, '').toLowerCase();
+                    if (verb === mustVerb) {
+                        hasContradiction = true;
+                        break;
+                    }
+                }
+            }
+            const triggered = (hasOnlyX && hasAlsoY) || hasContradiction;
+            return {
+                rule_name: 'conflicting_constraints',
+                severity: 'blocking',
+                triggered,
+                message: 'Contradictory constraints detected. The prompt contains conflicting instructions.',
+                question: triggered ? {
+                    id: 'q_conflicting_constraints',
+                    question: 'The constraints appear to conflict. Which takes priority?',
+                    reason: 'The prompt contains instructions that contradict each other.',
+                    blocking: true,
+                } : undefined,
+            };
+        },
+    },
+    {
+        name: 'token_budget_mismatch',
+        applies_to: 'all',
+        // ⚠ If you change regexes below, update inlineFingerprints in calculateBuiltInRuleSetHash().
+        check(prompt) {
+            // Detects prompts requesting large output with a small/fast model mention
+            const mentionsSmallModel = /\b(haiku|luna|gpt[\s-]?4o[\s-]?mini|flash(?:[\s-]?lite)?|nano|small\s+model|fast\s+model|cheap\s+model)\b/i.test(prompt);
+            const requestsLargeOutput = /\b(comprehensive|exhaustive|detailed\s+analysis|full\s+(report|audit|review)|in[\s-]?depth|thorough|complete\s+(list|overview|breakdown))\b/i.test(prompt);
+            const mentionsLargeContext = /\b(entire\s+(codebase|repo|project|file)|all\s+(files|modules|endpoints)|every\s+(file|function|class))\b/i.test(prompt);
+            const triggered = mentionsSmallModel && (requestsLargeOutput || mentionsLargeContext);
+            return {
+                rule_name: 'token_budget_mismatch',
+                severity: 'non_blocking',
+                triggered,
+                message: 'The requested output scope may exceed the referenced model\'s token budget.',
+                assumption: triggered ? {
+                    id: 'a_token_budget_mismatch',
+                    assumption: 'Output will be truncated or summarized to fit model context limits. Consider a larger model or narrower scope.',
+                    confidence: 'medium',
+                    impact: 'medium',
+                    reversible: true,
+                } : undefined,
+            };
+        },
+    },
+];
+// ─── Public API ───────────────────────────────────────────────────────────────
+/** Run applicable ambiguity rules against a prompt. Task-type aware. */
+export function runRules(prompt, context, taskType) {
+    return rules
+        .filter(rule => {
+        if (rule.applies_to === 'all')
+            return true;
+        if (rule.applies_to === 'code' && taskType && isCodeTask(taskType))
+            return true;
+        if (rule.applies_to === 'prose' && taskType && isProseTask(taskType))
+            return true;
+        if (!taskType)
+            return true; // backward compat: no type = run all
+        return false;
+    })
+        .map(rule => rule.check(prompt, context))
+        .filter(result => result.triggered);
+}
+/** Extract blocking questions from rule results. Capped at 3.
+ *  @param answeredIds — IDs of questions already answered (skipped during refine)
+ */
+export function extractBlockingQuestions(results, answeredIds) {
+    return results
+        .filter(r => r.question?.blocking)
+        .filter(r => !answeredIds || !answeredIds.has(r.question.id))
+        .map(r => r.question)
+        .slice(0, 3);
+}
+/** Extract assumptions from rule results. Capped at 5. */
+export function extractAssumptions(results) {
+    return results
+        .filter(r => r.assumption)
+        .map(r => r.assumption)
+        .slice(0, 5);
+}
+/** Determine if any rule elevates risk level. */
+export function getElevatedRisk(results) {
+    const elevations = results
+        .filter(r => r.risk_elevation)
+        .map(r => r.risk_elevation);
+    if (elevations.includes('high'))
+        return 'high';
+    if (elevations.includes('medium'))
+        return 'medium';
+    return undefined;
+}
+// ─── Risk Scoring (v3 Decision Engine) ──────────────────────────────────────
+/** Threshold at which risk escalates routing tier (G11: no magic numbers). */
+export const RISK_ESCALATION_THRESHOLD = 40;
+/** Built-in rules version. Rule count derived from the rules array — never hardcoded. */
+export const RULES_VERSION = `4.0.0-${rules.length}r`;
+/**
+ * Deterministic SHA-256 hash of all built-in rules.
+ *
+ * Hash input per rule: name + applies_to + RISK_WEIGHTS entry (or 'elevation').
+ * Plus a global fingerprint of all shared pattern libraries and v3.1 inline regex
+ * sources. Uses RegExp.toString() (ECMA-262 §22.2.5.12, spec-stable across V8
+ * versions) instead of Function.toString() (V8-dependent whitespace/comments).
+ *
+ * Sorted by rule name → joined with \n → SHA-256 UTF-8 hex lowercase.
+ */
+export function calculateBuiltInRuleSetHash() {
+    // 1. Per-rule metadata (name + applies_to + weight signature)
+    const sorted = [...rules].sort((a, b) => a.name.localeCompare(b.name));
+    const ruleMetadata = sorted
+        .map(r => {
+        const weight = RISK_WEIGHTS[r.name];
+        const weightSig = weight
+            ? `${weight.dimension}:${weight.base}:${weight.blockingMultiplier}`
+            : 'elevation';
+        return `${r.name}\n${r.applies_to}\n${weightSig}`;
+    })
+        .join('\n');
+    // 2. Shared pattern library fingerprint (RegExp.toString() is spec-stable)
+    const sharedPatterns = [
+        VAGUE_CODE_PATTERNS, FILE_PATH_PATTERNS, CODE_REF_PATTERNS,
+        SCOPE_EXPLOSION_CODE, HIGH_RISK_KEYWORDS, FORMAT_REFS,
+        TASK_SEPARATORS, VAGUE_GENERIC_PATTERNS, SPECIFICS_PATTERNS,
+    ].flat().map(r => r.toString()).join(',');
+    // 3. v3.1 inline regex fingerprints (not in shared libraries — listed explicitly)
+    //    Update these when the corresponding rule's trigger logic changes.
+    const inlineFingerprints = [
+        'hallucination_risk:exact|specific|precise,give\\s+me\\s+the,list\\s+all,based\\s+on|according\\s+to',
+        'agent_underspec:autonomous|agent|auto[\\s-]?,limit|budget|max|cap|stop\\s+after',
+        'conflicting_constraints:only|exclusively|solely,also|additionally,must\\s+not|never,must|always|ensure',
+        'token_budget_mismatch:haiku|luna|gpt.*mini|flash|nano,comprehensive|exhaustive|detailed\\s+analysis,entire|all|every',
+    ].join('\n');
+    const hashInput = `${ruleMetadata}\n---\n${sharedPatterns}\n---\n${inlineFingerprints}`;
+    return createHash('sha256').update(hashInput, 'utf8').digest('hex');
+}
+/** Explicit risk weights for each rule. Dimension + base + blocking multiplier.
+ *  G4: unknown rules are ignored with a decision_path warning. */
+export const RISK_WEIGHTS = {
+    vague_objective: { dimension: 'underspec', base: 15, blockingMultiplier: 1.5 },
+    missing_target: { dimension: 'underspec', base: 12, blockingMultiplier: 1.5 },
+    scope_explosion: { dimension: 'scope', base: 20, blockingMultiplier: 1.5 },
+    high_risk_domain: { dimension: 'constraint', base: 10, blockingMultiplier: 1.0 },
+    no_constraints_high_risk: { dimension: 'constraint', base: 18, blockingMultiplier: 1.5 },
+    format_ambiguity: { dimension: 'underspec', base: 5, blockingMultiplier: 1.0 },
+    multi_task_overload: { dimension: 'scope', base: 8, blockingMultiplier: 1.0 },
+    generic_vague_ask: { dimension: 'underspec', base: 15, blockingMultiplier: 1.5 },
+    missing_audience: { dimension: 'underspec', base: 3, blockingMultiplier: 1.0 },
+    no_clear_ask: { dimension: 'underspec', base: 8, blockingMultiplier: 1.0 },
+};
+/** Derive RiskLevel from numeric score (G14: score drives routing, level is display-only). */
+export function deriveRiskLevel(score) {
+    if (score >= 60)
+        return 'high';
+    if (score >= 30)
+        return 'medium';
+    return 'low';
+}
+/**
+ * Compute dimensional risk score from triggered rules.
+ * Score = sum of triggered rule weights (base × blockingMultiplier if blocking), capped at 100.
+ * Each dimension scored independently. All 4 dimensions always present (default 0).
+ *
+ * @param ruleResults - Triggered rule results from runRules()
+ * @param _intent - IntentSpec (reserved for future risk rules)
+ * @returns RiskScore with numeric score, dimensions, and derived level
+ */
+export function computeRiskScore(ruleResults, _intent) {
+    const dimensions = {
+        underspec: 0,
+        hallucination: 0,
+        scope: 0,
+        constraint: 0,
+    };
+    const missingRules = [];
+    for (const result of ruleResults) {
+        if (!result.triggered)
+            continue;
+        const weight = RISK_WEIGHTS[result.rule_name];
+        if (!weight) {
+            // G4: unknown rule — ignore + track for decision_path
+            missingRules.push(result.rule_name);
+            continue;
+        }
+        const isBlocking = result.severity === 'blocking';
+        const effectiveWeight = isBlocking
+            ? weight.base * weight.blockingMultiplier
+            : weight.base;
+        dimensions[weight.dimension] += effectiveWeight;
+    }
+    // Cap each dimension at 100
+    for (const key of Object.keys(dimensions)) {
+        dimensions[key] = Math.min(100, Math.round(dimensions[key]));
+    }
+    // Total score = sum of dimensions, capped at 100
+    const rawScore = dimensions.underspec + dimensions.hallucination + dimensions.scope + dimensions.constraint;
+    const score = Math.min(100, rawScore);
+    return {
+        score,
+        dimensions,
+        level: deriveRiskLevel(score),
+    };
+}
+// ─── Custom Rules Integration ────────────────────────────────────────────────
+/** Max custom rule annotations in decision_path (determinism cap). */
+const MAX_CUSTOM_DECISION_PATH = 5;
+/**
+ * Async wrapper: compute risk score from built-in rules, then augment with custom rules.
+ * Custom rule weights are additive via RuleMatch.custom_weight + risk_dimension.
+ * RISK_WEIGHTS is never mutated. Decision_path custom annotations capped at 5.
+ *
+ * @param ruleResults - Built-in triggered rule results from runRules()
+ * @param prompt - Raw prompt text (for custom rule evaluation)
+ * @param taskType - Detected task type (for custom rule filtering)
+ * @returns { riskScore, customRuleMatches }
+ */
+export async function computeRiskScoreWithCustomRules(ruleResults, prompt, taskType) {
+    // 1. Compute built-in risk score (sync, unchanged)
+    const baseRiskScore = computeRiskScore(ruleResults);
+    // 2. Load and evaluate custom rules
+    const applicableRules = await customRules.getRulesForTask(taskType);
+    const customRuleMatches = [];
+    for (const rule of applicableRules) {
+        const match = await customRules.evaluateRule(rule, prompt, taskType);
+        if (match && match.matched) {
+            customRuleMatches.push(match);
+        }
+    }
+    // 3. If no custom rules matched, return base score unchanged
+    if (customRuleMatches.length === 0) {
+        return { riskScore: baseRiskScore, customRuleMatches: [] };
+    }
+    // 4. Augment dimensions additively with custom rule weights (cap annotations at 5)
+    const augmentedDimensions = { ...baseRiskScore.dimensions };
+    const applied = customRuleMatches.slice(0, MAX_CUSTOM_DECISION_PATH);
+    for (const match of applied) {
+        if (match.custom_weight && match.risk_dimension) {
+            augmentedDimensions[match.risk_dimension] += match.custom_weight;
+        }
+    }
+    // Cap each dimension at 100
+    for (const key of Object.keys(augmentedDimensions)) {
+        augmentedDimensions[key] = Math.min(100, Math.round(augmentedDimensions[key]));
+    }
+    // Recalculate total score
+    const rawScore = augmentedDimensions.underspec + augmentedDimensions.hallucination
+        + augmentedDimensions.scope + augmentedDimensions.constraint;
+    const score = Math.min(100, rawScore);
+    return {
+        riskScore: {
+            score,
+            dimensions: augmentedDimensions,
+            level: deriveRiskLevel(score),
+        },
+        customRuleMatches: applied,
+    };
+}
+//# sourceMappingURL=rules.js.map

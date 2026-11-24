@@ -49,6 +49,15 @@ jobs:
       - name: Run tests
         run: npm test
 
+      - name: Verify production Git source installation
+        env:
+          GITHUB_SHA: ${{ github.sha }}
+        run: |
+          install_dir="$RUNNER_TEMP/pcp-git-install"
+          npm install --prefix "$install_dir" --omit=dev --no-audit --no-fund \
+            "git+file://${GITHUB_WORKSPACE}#${GITHUB_SHA}"
+          "$install_dir/node_modules/.bin/pcp" --version
+
   lint-and-audit:
     name: Security and Supply Chain Gates
     runs-on: ubuntu-latest

@@ -28,6 +28,9 @@ jobs:
           languages: javascript-typescript
           # Focus on security queries
           queries: security-extended
+          config: |
+            paths-ignore:
+              - dist/**
 
       - name: Autobuild
         uses: github/codeql-action/autobuild@33d7b85da1a04171e211befe2c739303b9a4c066 # v4.39.3

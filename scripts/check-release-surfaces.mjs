@@ -1,5 +1,5 @@
 import assert from 'node:assert/strict';
-import { readFile } from 'node:fs/promises';
+import { access, readFile } from 'node:fs/promises';
 
 const readJson = async (path) => JSON.parse(await readFile(new URL(`../${path}`, import.meta.url), 'utf8'));
 const pkg = await readJson('package.json');
@@ -14,6 +14,8 @@ assert.equal(manifest.version, version, 'MCPB manifest must match package.json')
 assert.equal(server.version, version, 'server.json must match package.json');
 assert.match(server.packages[0].identifier, new RegExp(`/v${version}/pcp-engine-v${version}\\.mcpb$`));
 assert.match(server.packages[0].fileSha256, /^[a-f0-9]{64}$/);
+assert.equal(pkg.scripts.prepare, undefined, 'GitHub source installs must not compile during npm prepare');
+await access(new URL('../dist/src/api.js', import.meta.url));
 
 const [readme, changelog, actionYaml] = await Promise.all([
   readFile(new URL('../README.md', import.meta.url), 'utf8'),
@@ -38,10 +40,22 @@ const registryUrl = 'https://registry.modelcontextprotocol.io/v0.1/servers/io.gi
 const registryResponse = await fetch(registryUrl);
 assert.ok(registryResponse.ok, `official MCP Registry returned ${registryResponse.status}`);
 const registryPayload = await registryResponse.json();
-assert.equal(registryPayload.server.version, version, 'official MCP Registry latest must match package.json');
-assert.equal(registryPayload.server.packages[0].identifier, server.packages[0].identifier, 'registry package URL must match server.json');
-assert.equal(registryPayload.server.packages[0].fileSha256, server.packages[0].fileSha256, 'registry checksum must match server.json');
 assert.equal(registryPayload._meta['io.modelcontextprotocol.registry/official'].status, 'active');
+const registryVersion = registryPayload.server.version;
+const registryIsCurrent = registryVersion === version;
+if (registryIsCurrent) {
+  assert.equal(registryPayload.server.packages[0].identifier, server.packages[0].identifier, 'registry package URL must match server.json');
+  assert.equal(registryPayload.server.packages[0].fileSha256, server.packages[0].fileSha256, 'registry checksum must match server.json');
+} else {
+  const [registryMajor, registryMinor, registryPatch] = registryVersion.split('.').map(Number);
+  const [currentMajor, currentMinor, currentPatch] = version.split('.').map(Number);
+  assert.ok(
+    registryMajor < currentMajor ||
+      (registryMajor === currentMajor && registryMinor < currentMinor) ||
+      (registryMajor === currentMajor && registryMinor === currentMinor && registryPatch < currentPatch),
+    `official MCP Registry latest (${registryVersion}) is newer than source (${version})`,
+  );
+}
 
 const marketplaceResponse = await fetch('https://github.com/marketplace/actions/prompt-control-plane');
 assert.ok(marketplaceResponse.ok, `GitHub Marketplace returned ${marketplaceResponse.status}`);
@@ -50,9 +64,13 @@ const embedded = marketplaceHtml.match(/data-target="react-app\.embeddedData">(.
 assert.ok(embedded, 'Marketplace metadata payload is missing');
 const marketplace = JSON.parse(embedded).payload;
 assert.equal(marketplace.action.description.trim(), actionDescription, 'Marketplace description must match action.yml');
-assert.ok(marketplace.readmeHtml.includes(`@v${version}`), 'Marketplace README must show the current Action version');
 assert.ok(marketplace.readmeHtml.includes('subcommand: optimize'), 'Marketplace README must position optimize as the primary Action command');
-assert.ok(marketplace.readmeHtml.includes(`#v${version}`), 'Marketplace README must show the current source install');
+if (registryIsCurrent) {
+  assert.ok(marketplace.readmeHtml.includes(`@v${version}`), 'Marketplace README must show the current Action version');
+  assert.ok(marketplace.readmeHtml.includes(`#v${version}`), 'Marketplace README must show the current source install');
+}
 assert.ok(!marketplace.readmeHtml.includes('maintained privately'), 'Marketplace README must not disclose private maintenance');
+assert.ok(!pkg.scripts.prepare, 'Git source install must not require an install-time build');
+await access(new URL('../dist/src/api.js', import.meta.url));
 
-console.log(`Release surfaces match v${version}; MCP Registry and Marketplace are current.`);
+console.log(`Release surfaces match v${version}; MCP Registry ${registryVersion} and Marketplace checked.`);

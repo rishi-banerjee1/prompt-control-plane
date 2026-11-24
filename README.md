@@ -11,7 +11,7 @@ Core analysis and generic compilation are model-agnostic. Provider-specific comp
 Requires Node.js 20 or later.
 
 ```sh
-npm install -g github:rishi-banerjee1/prompt-control-plane#v5.4.2
+npm install -g github:rishi-banerjee1/prompt-control-plane#v5.4.3
 pcp optimize --file prompts/review-auth.md --json
 ```
 
@@ -20,7 +20,7 @@ The GitHub release is Apache-2.0. The npm update to 5.4 is coming soon; the late
 ## Use the GitHub Action
 
 ```yaml
-- uses: rishi-banerjee1/prompt-control-plane@v5.4.2
+- uses: rishi-banerjee1/prompt-control-plane@v5.4.3
   with:
     subcommand: optimize
     files: "prompts/review-auth.md"

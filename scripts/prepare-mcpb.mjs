@@ -1,8 +1,8 @@
 #!/usr/bin/env node
 
 import { spawnSync } from 'node:child_process';
-import { cpSync, mkdirSync, readFileSync, rmSync, writeFileSync } from 'node:fs';
-import { dirname, resolve } from 'node:path';
+import { chmodSync, cpSync, lstatSync, mkdirSync, readdirSync, readFileSync, rmSync, utimesSync, writeFileSync } from 'node:fs';
+import { dirname, relative, resolve, sep } from 'node:path';
 import { fileURLToPath } from 'node:url';
 
 const root = resolve(dirname(fileURLToPath(import.meta.url)), '..');
@@ -48,10 +48,26 @@ const manifest = JSON.parse(readFileSync(resolve(root, 'mcpb/manifest.json'), 'u
 manifest.version = version;
 writeFileSync(resolve(stage, 'manifest.json'), `${JSON.stringify(manifest, null, 2)}\n`);
 
+const archiveEpoch = new Date('1980-01-01T00:00:00Z');
+const archiveFiles = [];
+const collectFiles = (directory) => {
+  for (const name of readdirSync(directory).sort()) {
+    const path = resolve(directory, name);
+    const info = lstatSync(path);
+    if (info.isDirectory()) {
+      collectFiles(path);
+    } else if (info.isFile()) {
+      chmodSync(path, 0o644);
+      utimesSync(path, archiveEpoch, archiveEpoch);
+      archiveFiles.push(relative(stage, path).split(sep).join('/'));
+    }
+  }
+};
+collectFiles(stage);
+
 const zip = spawnSync('zip', [
-  '-X', '-q', '-r', output,
-  'manifest.json', 'package.json', 'LICENSE', 'README.md', 'dist', 'node_modules',
-  '-x', '*.map', '*/.cache/*', '*/.DS_Store', '*/Thumbs.db',
+  '-X', '-q', '-D', output,
+  ...archiveFiles.sort(),
 ], { cwd: stage, stdio: 'inherit' });
 if (zip.error) throw zip.error;
 if (zip.status !== 0) process.exit(zip.status ?? 1);
