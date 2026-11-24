@@ -53,6 +53,6 @@ npm test
 npm audit --audit-level=moderate
 ```
 
-- Website: [getpcp.site](https://getpcp.site)
+- [Developer reference](https://getpcp.site/docs) for CLI commands, MCP client setup, GitHub Actions, and the Node.js API.
 - Security reports: [Security advisories](https://github.com/rishi-banerjee1/prompt-control-plane/security/advisories)
 - License: [Apache-2.0](LICENSE)
