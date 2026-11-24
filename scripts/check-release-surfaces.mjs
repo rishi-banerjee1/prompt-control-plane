@@ -67,7 +67,14 @@ const embedded = marketplaceHtml.match(/data-target="react-app\.embeddedData">(.
 assert.ok(embedded, 'Marketplace metadata payload is missing');
 const marketplace = JSON.parse(embedded).payload;
 assert.equal(marketplace.action.description.trim(), actionDescription, 'Marketplace description must match action.yml');
-assert.equal(marketplace.releaseData.latestRelease?.tagName, `v${version}`, 'Marketplace latest release must match package.json');
+const latestRelease = await fetch('https://github.com/rishi-banerjee1/prompt-control-plane/releases/latest', {
+  method: 'HEAD',
+  redirect: 'manual',
+});
+assert.equal(latestRelease.status, 302, 'GitHub latest release must redirect to its tag');
+const publishedTag = new URL(latestRelease.headers.get('location'), latestRelease.url).pathname.split('/').pop();
+assert.match(publishedTag, /^v\d+\.\d+\.\d+$/);
+assert.equal(marketplace.releaseData.latestRelease?.tagName, publishedTag, 'Marketplace must match the latest published GitHub release');
 assert.ok(marketplace.readmeHtml.includes('subcommand: optimize'), 'Marketplace README must position optimize as the primary Action command');
 assert.ok(marketplace.readmeHtml.includes('href="https://registry.modelcontextprotocol.io/v0.1/servers/io.github.rishi-banerjee1%2Fpcp-engine/versions/latest"'), 'Marketplace README must link to the active official MCP Registry listing');
 assert.ok(marketplace.readmeHtml.includes('not searchable in GitHub'), 'Marketplace README must disclose that GitHub MCP Registry curation is pending');
