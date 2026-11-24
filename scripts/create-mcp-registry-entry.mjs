@@ -13,6 +13,10 @@ if (!/^\d+\.\d+\.\d+(?:-[0-9A-Za-z.-]+)?$/.test(version ?? '') ||
 }
 
 const entry = JSON.parse(readFileSync(resolve(root, 'server.json'), 'utf8'));
+if (entry.description.length > 100) {
+  console.error(`MCP Registry description must be at most 100 characters; got ${entry.description.length}`);
+  process.exit(1);
+}
 entry.version = version;
 entry.packages = [{
   registryType: 'mcpb',
