@@ -26,7 +26,7 @@ assert.match(changelog, new RegExp(`^## \\[${version}\\]`, 'm'), 'changelog must
 
 assert.ok(readme.includes('governs prompts before they reach a model'), 'README must lead with governance before inference');
 assert.ok(readme.includes('pcp optimize --file prompts/review-auth.md'), 'README must show the full optimize pipeline');
-assert.ok(readme.includes('threshold gate across prompt files'), 'README must distinguish the CI threshold gate');
+assert.ok(readme.includes('pass/fail gate across prompt files'), 'README must distinguish the CI threshold gate');
 assert.ok(readme.includes('does not evaluate model outputs'), 'README must define PCP scope accurately');
 assert.ok(readme.includes('subcommand: optimize'), 'README Action example must lead with optimize');
 
