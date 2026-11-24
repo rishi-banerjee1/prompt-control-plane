@@ -12,6 +12,7 @@ assert.equal(lock.version, version, 'package-lock root version must match packag
 assert.equal(lock.packages[''].version, version, 'lockfile package entry must match package.json');
 assert.equal(manifest.version, version, 'MCPB manifest must match package.json');
 assert.equal(server.version, version, 'server.json must match package.json');
+assert.ok(server.description.length <= 100, 'MCP Registry description must fit its 100-character limit');
 assert.match(server.packages[0].identifier, new RegExp(`/v${version}/pcp-engine-v${version}\\.mcpb$`));
 assert.match(server.packages[0].fileSha256, /^[a-f0-9]{64}$/);
 assert.equal(pkg.scripts.prepare, undefined, 'GitHub source installs must not compile during npm prepare');
