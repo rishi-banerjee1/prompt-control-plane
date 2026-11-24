@@ -1,5 +1,11 @@
 # Changelog
 
+## [5.4.3] - 2026-11-24
+
+- Fix GitHub and curl installs on npm versions that do not expose development dependencies during Git dependency preparation.
+- Ship the compiled runtime in the source release and remove the install-time TypeScript build step.
+- Add a production-only Git source install to CI so the documented install path stays covered.
+
 ## [5.4.2] - 2026-11-24
 
 - Refresh the GitHub Action Marketplace description and align the release copy with current PCP capabilities.

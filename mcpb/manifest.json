@@ -1,7 +1,7 @@
 {
   "manifest_version": "0.3",
   "name": "prompt-control-plane",
-  "version": "5.4.2",
+  "version": "5.4.3",
   "description": "Deterministic prompt quality, policy, and governance tools for any model.",
   "author": {
     "name": "Prompt Control Plane contributors"

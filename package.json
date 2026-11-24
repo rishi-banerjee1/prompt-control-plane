@@ -1,6 +1,6 @@
 {
   "name": "pcp-engine",
-  "version": "5.4.2",
+  "version": "5.4.3",
   "type": "module",
   "description": "Deterministic prompt governance before inference. Analyze, score, apply policy, and compile prompts without LLM calls.",
   "main": "dist/src/api.js",
@@ -39,8 +39,7 @@
     "security:sast": "node scripts/security-sast.mjs",
     "security:audit": "npm audit --audit-level=moderate",
     "security:all": "npm run security:audit && npm run security:sast",
-    "prepublishOnly": "npm run build",
-    "prepare": "npm run build"
+    "prepublishOnly": "npm run build"
   },
   "keywords": [
     "mcp",

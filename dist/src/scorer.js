@@ -1,0 +1,278 @@
+// scorer.ts — Prompt quality scoring (0-100, scoring_version: 2).
+// Task-type aware: code tasks reward file paths, prose tasks reward audience/tone.
+// Max score 100/100 is achievable (v1 capped at 96).
+import { isCodeTask } from './types.js';
+import { estimateTokens } from './estimator.js';
+import { sortChecklist } from './sort.js';
+// ─── Vague terms that reduce clarity ──────────────────────────────────────────
+const VAGUE_TERMS = [
+    /\bmake\s+it\s+(better|work|good|nice|faster|cleaner)\b/i,
+    /\b(improve|enhance|optimize)\b(?!.*\b(in|at|for)\b)/i,
+    /\bdo\s+something\b/i,
+    /\bfix\s+it\b/i,
+    /\bsomehow\b/i,
+    /\bwhatever\b/i,
+    /\bstuff\b/i,
+    /\betc\.?\b/i,
+];
+// ─── Scoring Functions ────────────────────────────────────────────────────────
+function scoreClarity(spec) {
+    let score = 20;
+    const notes = [];
+    // Penalize vague terms
+    let vagueCount = 0;
+    for (const pattern of VAGUE_TERMS) {
+        if (pattern.test(spec.user_intent))
+            vagueCount++;
+    }
+    const vagueDeduction = Math.min(vagueCount * 5, 15);
+    score -= vagueDeduction;
+    if (vagueCount > 0)
+        notes.push(`${vagueCount} vague term(s) detected (-${vagueDeduction})`);
+    // Reward clear goal
+    if (spec.goal.length > 20 && spec.goal.length < 200) {
+        notes.push('Goal is well-scoped');
+    }
+    else if (spec.goal.length <= 20) {
+        score -= 5;
+        notes.push('Goal is very short — may be too terse (-5)');
+    }
+    return { name: 'Clarity', score: Math.max(0, score), max: 20, notes };
+}
+function scoreSpecificity(spec) {
+    let score = 5; // Start lower, earn points
+    const notes = [];
+    if (isCodeTask(spec.task_type)) {
+        // ── Code tasks: reward file paths, code blocks, URLs ──
+        const fileCount = spec.inputs_detected.filter(i => !i.startsWith('http') && i !== '[inline code block]').length;
+        const fileBonus = Math.min(fileCount * 5, 10);
+        score += fileBonus;
+        if (fileCount > 0)
+            notes.push(`${fileCount} file path(s) referenced (+${fileBonus})`);
+        if (spec.inputs_detected.includes('[inline code block]')) {
+            score += 3;
+            notes.push('Inline code provided (+3)');
+        }
+        const urlCount = spec.inputs_detected.filter(i => i.startsWith('http')).length;
+        if (urlCount > 0) {
+            score += 2;
+            notes.push(`${urlCount} URL(s) provided (+2)`);
+        }
+    }
+    else {
+        // ── Non-code tasks: reward audience, tone, platform, length constraints ──
+        const prompt = spec.user_intent;
+        // Audience specified?
+        if (/\b(for|to)\s+(my\s+)?(team|colleagues?|manager|stakeholders?|engineers?|designers?|leadership|customers?|users?|clients?|public|community|audience|everyone)\b/i.test(prompt)) {
+            score += 5;
+            notes.push('Target audience specified (+5)');
+        }
+        // Tone specified?
+        if (/\b(casual|formal|professional|friendly|technical|simple|concise|detailed|persuasive|neutral|enthusiastic|serious|conversational)\b/i.test(prompt)) {
+            score += 4;
+            notes.push('Tone/style specified (+4)');
+        }
+        // Platform/medium specified?
+        if (/\b(slack|email|blog|twitter|linkedin|newsletter|docs?|wiki|presentation|meeting|standup)\b/i.test(prompt)) {
+            score += 3;
+            notes.push('Platform/medium specified (+3)');
+        }
+        // Length constraint?
+        if (/\b(short|brief|concise|one[\s-]?liner|paragraph|under\s+\d+\s*words?|max\s+\d+)\b/i.test(prompt)) {
+            score += 3;
+            notes.push('Length constraint specified (+3)');
+        }
+        // Key points / examples mentioned?
+        if (/\b(include|mention|cover|highlight|reference|example)\b/i.test(prompt)) {
+            score += 2;
+            notes.push('Specific content requirements mentioned (+2)');
+        }
+    }
+    return { name: 'Specificity', score: Math.min(20, score), max: 20, notes };
+}
+function scoreCompleteness(spec) {
+    let score = 5;
+    const notes = [];
+    // Reward explicit success criteria (filter out all default DoD items)
+    const DEFAULT_DOD_PREFIXES = [
+        'Code compiles', 'Changes are minimal', 'Behavior is preserved',
+        'Root cause', 'Key findings', 'Actionable recommendations',
+        'Answer is', 'Task is',
+        // Non-code defaults
+        'Content is clear', 'Message is clear', 'Message achieves',
+        'Key information', 'Findings are organized', 'Sources are cited',
+        'Plan has clear', 'Dependencies and risks', 'Key insights',
+        'Data supports', 'Output format is correct', 'Edge cases',
+    ];
+    const explicitDoDCount = spec.definition_of_done.filter(d => !DEFAULT_DOD_PREFIXES.some(prefix => d.startsWith(prefix))).length;
+    if (explicitDoDCount >= 2) {
+        score += 10;
+        notes.push(`${explicitDoDCount} explicit success criteria (+10)`);
+    }
+    else if (explicitDoDCount === 1) {
+        score += 5;
+        notes.push('1 explicit success criterion (+5)');
+    }
+    else {
+        notes.push('No explicit success criteria (defaults applied)');
+    }
+    // Reward having a clear task type (not 'other')
+    if (spec.task_type !== 'other') {
+        score += 3;
+        notes.push(`Task type detected: ${spec.task_type} (+3)`);
+    }
+    // Reward output format specification
+    if (/JSON|YAML|Markdown|Table|list/i.test(spec.output_format)) {
+        score += 2;
+        notes.push('Output format specified (+2)');
+    }
+    return { name: 'Completeness', score: Math.min(20, score), max: 20, notes };
+}
+function scoreConstraints(spec) {
+    let score = 5;
+    const notes = [];
+    if (spec.constraints.scope.length > 0) {
+        score += 5;
+        notes.push(`${spec.constraints.scope.length} scope constraint(s) (+5)`);
+    }
+    if (spec.constraints.forbidden.length > 0) {
+        score += 5;
+        notes.push(`${spec.constraints.forbidden.length} forbidden action(s) (+5)`);
+    }
+    if (spec.constraints.time_budget) {
+        score += 3;
+        notes.push('Time budget specified (+3)');
+    }
+    // +2 for preservation instructions (makes 20/20 achievable)
+    const preservationPattern = /\b(preserve|keep\s+existing|maintain|backward\s+compatible|don'?t\s+break|backwards?\s+compat)/i;
+    const allConstraintText = [...spec.constraints.scope, ...spec.constraints.forbidden].join(' ');
+    if (preservationPattern.test(allConstraintText) || preservationPattern.test(spec.user_intent)) {
+        score += 2;
+        notes.push('Preservation instructions present (+2)');
+    }
+    // Penalize high risk with no constraints
+    if (spec.risk_level === 'high' && spec.constraints.scope.length === 0 && spec.constraints.forbidden.length === 0) {
+        score -= 5;
+        notes.push('High-risk task with no constraints (-5)');
+    }
+    if (spec.constraints.scope.length === 0 && spec.constraints.forbidden.length === 0) {
+        notes.push('No constraints specified');
+    }
+    return { name: 'Constraints', score: Math.max(0, Math.min(20, score)), max: 20, notes };
+}
+function scoreEfficiency(prompt, context) {
+    let score = 18; // Start at 18, can earn +2 for concise prompts (makes 20/20 achievable)
+    const notes = [];
+    const totalText = prompt + (context || '');
+    const tokens = estimateTokens(totalText);
+    // Penalize excessive length
+    if (tokens > 5000) {
+        const penalty = Math.min(Math.floor((tokens - 5000) / 1000) * 2, 12);
+        score -= penalty;
+        notes.push(`~${tokens} tokens total — large context (-${penalty})`);
+    }
+    else if (tokens > 2000) {
+        const penalty = Math.min(Math.floor((tokens - 2000) / 1000) * 1, 6);
+        score -= penalty;
+        notes.push(`~${tokens} tokens — moderate size (-${penalty})`);
+    }
+    else {
+        notes.push(`~${tokens} tokens — efficient`);
+    }
+    // Penalize repetition (crude: check for duplicate sentences)
+    const sentences = totalText.split(/[.!?\n]/).map(s => s.trim().toLowerCase()).filter(s => s.length > 20);
+    const uniqueSentences = new Set(sentences);
+    const hasDuplicates = sentences.length - uniqueSentences.size > 2;
+    if (hasDuplicates) {
+        score -= 4;
+        notes.push('Repetitive content detected (-4)');
+    }
+    // +2 bonus for concise prompts (<1000 tokens + no repetition)
+    if (tokens < 1000 && !hasDuplicates) {
+        score += 2;
+        notes.push('Concise and non-repetitive (+2)');
+    }
+    return { name: 'Efficiency', score: Math.max(0, Math.min(20, score)), max: 20, notes };
+}
+// ─── Public API ───────────────────────────────────────────────────────────────
+/** Score a prompt's quality based on its IntentSpec. Returns 0-100. */
+export function scorePrompt(spec, context) {
+    const dimensions = [
+        scoreClarity(spec),
+        scoreSpecificity(spec),
+        scoreCompleteness(spec),
+        scoreConstraints(spec),
+        scoreEfficiency(spec.user_intent, context),
+    ];
+    const total = dimensions.reduce((sum, d) => sum + d.score, 0);
+    // Confidence reflects how much room there is for improvement.
+    // High-scoring prompts are already well-structured — optimization adds scaffolding
+    // but the core quality is strong, so confidence in meaningful improvement is low.
+    const confidence = total >= 80 ? 'low' : total >= 50 ? 'medium' : 'high';
+    const confidence_note = total >= 80
+        ? 'Prompt is already well-structured — optimization will add scaffolding but core quality is strong.'
+        : total >= 50
+            ? 'Moderate improvement expected — optimization will add structure and fill gaps.'
+            : 'Significant improvement expected — prompt lacks structure, specificity, or constraints.';
+    return {
+        total,
+        max: 100,
+        dimensions,
+        confidence,
+        confidence_note,
+    };
+}
+/** Generate a compilation checklist showing structural coverage of the compiled prompt.
+ * This replaces the old scoreCompiledPrompt which was inaccurate (always ~90).
+ * Checklist is a separate concept from numeric score — never enters aggregates. */
+export function generateChecklist(compiledPrompt) {
+    const items = [
+        {
+            name: 'Role',
+            present: /<role>/.test(compiledPrompt) || /^(You are|## Role)/m.test(compiledPrompt),
+        },
+        {
+            name: 'Goal',
+            present: /<goal>/.test(compiledPrompt) || /^## (Goal|Task)/m.test(compiledPrompt),
+        },
+        {
+            name: 'Definition of Done',
+            present: /<definition_of_done>/.test(compiledPrompt) || /^## (Definition of Done|Success Criteria)/m.test(compiledPrompt),
+        },
+        {
+            name: 'Constraints',
+            present: /<constraints>/.test(compiledPrompt) || /^## Constraints/m.test(compiledPrompt),
+        },
+        {
+            name: 'Workflow',
+            present: /<workflow>/.test(compiledPrompt) || /^## (Workflow|Steps)/m.test(compiledPrompt),
+        },
+        {
+            name: 'Output Format',
+            present: /<output_format>/.test(compiledPrompt) || /^## Output/m.test(compiledPrompt),
+        },
+        {
+            name: 'Uncertainty Policy',
+            present: /<uncertainty_policy>/.test(compiledPrompt) || /^## Uncertainty/m.test(compiledPrompt),
+        },
+        {
+            name: 'Audience',
+            present: /<audience>/.test(compiledPrompt) || /^## Audience/m.test(compiledPrompt),
+            note: 'Optional — only present when audience was detected',
+        },
+        {
+            name: 'Platform Guidelines',
+            present: /<platform_guidelines/.test(compiledPrompt) || /^## Platform/m.test(compiledPrompt),
+            note: 'Optional — only present when platform was detected',
+        },
+    ];
+    // Sort in canonical order (deterministic)
+    const sorted = sortChecklist(items);
+    const presentCount = sorted.filter(i => i.present).length;
+    const totalCount = sorted.length;
+    return {
+        items: sorted,
+        summary: `${presentCount}/${totalCount} structural elements present`,
+    };
+}
+//# sourceMappingURL=scorer.js.map

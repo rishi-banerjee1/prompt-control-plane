@@ -45,6 +45,7 @@ jobs:
         run: |
           npm ci
           npm run build
+          npm pack --ignore-scripts --pack-destination "$RUNNER_TEMP"
           test "$(node -p 'require("./package.json").version')" = "${{ steps.release.outputs.version }}"
 
       - name: Prepare MCPB bundle
@@ -64,7 +65,12 @@ jobs:
           if ! gh release view "$TAG" --repo "$GITHUB_REPOSITORY" >/dev/null 2>&1; then
             gh release create "$TAG" --repo "$GITHUB_REPOSITORY" --title "$TAG" --notes "Prompt Control Plane MCP bundle release."
           fi
-          gh release upload "$TAG" "$RUNNER_TEMP/pcp-engine-v${VERSION}.mcpb" --repo "$GITHUB_REPOSITORY" --clobber
+          gh release upload "$TAG" \
+            "$RUNNER_TEMP/pcp-engine-${VERSION}.tgz" \
+            "$RUNNER_TEMP/pcp-engine-v${VERSION}.mcpb" \
+            --repo "$GITHUB_REPOSITORY" --clobber
+          gh release view "$TAG" --repo "$GITHUB_REPOSITORY" --json assets --jq '.assets[].name' \
+            | grep -Fx "pcp-engine-${VERSION}.tgz"
 
       - name: Prepare registry metadata
         id: metadata
@@ -96,3 +102,24 @@ jobs:
           fi
           "$RUNNER_TEMP/mcp-publisher" login github-oidc
           "$RUNNER_TEMP/mcp-publisher" publish "$RUNNER_TEMP/server.json"
+
+      - name: Verify the published MCP Registry version
+        env:
+          VERSION: ${{ steps.release.outputs.version }}
+          SHA256: ${{ steps.metadata.outputs.sha256 }}
+        run: |
+          url="https://registry.modelcontextprotocol.io/v0.1/servers/io.github.rishi-banerjee1%2Fpcp-engine/versions/${VERSION}"
+          for attempt in {1..20}; do
+            if curl --fail --silent --show-error "$url" --output "$RUNNER_TEMP/registry-version.json" && \
+              jq -e --arg version "$VERSION" --arg sha "$SHA256" '
+                .server.version == $version and
+                .server.packages[0].fileSha256 == $sha and
+                ._meta["io.modelcontextprotocol.registry/official"].status == "active"
+              ' "$RUNNER_TEMP/registry-version.json" >/dev/null; then
+              echo "MCP Registry version $VERSION is active with the expected bundle checksum."
+              exit 0
+            fi
+            sleep 2
+          done
+          echo "MCP Registry did not expose the expected active version $VERSION." >&2
+          exit 1
