@@ -10,7 +10,7 @@ Requires Node.js 20 or later.
 
 ```sh
 npm install -g github:rishi-banerjee1/prompt-control-plane#v5.4.2
-pcp preflight "Review the auth module. Preserve the public API and add tests." --json
+pcp optimize "Review the auth module. Preserve the public API and add tests." --json
 ```
 
 The GitHub release is Apache-2.0. The npm update to 5.4 is coming soon; the latest npm release is 5.3.3. Check the [getpcp.site changelog](https://getpcp.site/changelog.html) or [GitHub Releases](https://github.com/rishi-banerjee1/prompt-control-plane/releases) for version updates.
@@ -20,10 +20,11 @@ The GitHub release is Apache-2.0. The npm update to 5.4 is coming soon; the late
 ```yaml
 - uses: rishi-banerjee1/prompt-control-plane@v5.4.2
   with:
-    subcommand: preflight
-    files: "prompts/**/*.txt"
-    threshold: 70
+    subcommand: optimize
+    files: "prompts/review-auth.md"
 ```
+
+This runs PCP’s full pipeline: analyze, score, compile, and assess prompt risk. Use `preflight` when you want the faster score, risk, and model-routing summary without compiled output.
 
 See [`action.yml`](action.yml) for every input and output.
 
