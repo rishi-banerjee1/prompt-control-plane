@@ -29,6 +29,15 @@ https://github.com/user-attachments/assets/e2699dbf-284d-4430-ae4f-3aec9842e6f5
 
 </details>
 
+## Inside the governance console
+
+| Optimizer settings | Policy enforcement | Custom rule editor |
+| --- | --- | --- |
+| [![Optimizer set to Markdown output with a quality threshold of 70](assets/console/optimizer.png)](assets/console/optimizer.png) | [![Enforcement enabled with the standard risk threshold](assets/console/policy.png)](assets/console/policy.png) | [![Rule editor with a validated pattern for verbose debug output](assets/console/rule-editor.png)](assets/console/rule-editor.png) |
+| Choose an output format and quality threshold. | Set when a policy violation blocks approval. | Define a pattern, its severity, and its risk weight. |
+
+Select a screenshot to enlarge it, or [try the governance console](https://getpcp.site/admin).
+
 ## Install
 
 Requires Node.js 20 or later.
