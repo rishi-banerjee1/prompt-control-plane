@@ -50,8 +50,6 @@ npm test
 npm audit --audit-level=moderate
 ```
 
-The engine, CLI, MCP server, GitHub Action, and tests live in this repository. Product website, full documentation, explainers, and production materials are maintained privately.
-
 - Website: [getpcp.site](https://getpcp.site)
 - Security reports: [Security advisories](https://github.com/rishi-banerjee1/prompt-control-plane/security/advisories)
 - License: [Apache-2.0](LICENSE)
