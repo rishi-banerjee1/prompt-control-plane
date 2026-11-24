@@ -9,7 +9,7 @@ Deterministic prompt governance for any model or provider. PCP scores, validates
 Requires Node.js 20 or later.
 
 ```sh
-npm install -g github:rishi-banerjee1/prompt-control-plane#v5.4.1
+npm install -g github:rishi-banerjee1/prompt-control-plane#v5.4.2
 pcp preflight "Review the auth module. Preserve the public API and add tests." --json
 ```
 
@@ -18,7 +18,7 @@ The GitHub release is Apache-2.0. The npm update to 5.4 is coming soon; the late
 ## Use the GitHub Action
 
 ```yaml
-- uses: rishi-banerjee1/prompt-control-plane@v5.4.1
+- uses: rishi-banerjee1/prompt-control-plane@v5.4.2
   with:
     subcommand: preflight
     files: "prompts/**/*.txt"

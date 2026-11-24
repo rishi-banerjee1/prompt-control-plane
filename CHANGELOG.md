@@ -1,5 +1,12 @@
 # Changelog
 
+## [5.4.2] - 2026-11-24
+
+- Refresh the GitHub Action Marketplace description and align the release copy with current PCP capabilities.
+- Publish the matching MCP bundle and metadata to the official MCP Registry.
+- This GitHub release does not change npm; the latest npm version remains 5.3.3.
+
+
 ## [5.4.1] - 2026-11-24
 
 - Rebuilt the MCP bundle and refreshed its registry checksum after verifying a mismatch in the prior release asset.
