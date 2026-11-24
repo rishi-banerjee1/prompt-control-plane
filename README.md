@@ -32,7 +32,7 @@ See [`action.yml`](action.yml) for every input and output.
 
 ## Use PCP as an MCP server
 
-The MCP server exposes deterministic analysis, policy, compilation, and audit tools. Search the [GitHub MCP Registry](https://github.com/mcp?query=pcp-engine) for its listing. The [onboarding request](https://github.com/github/github-mcp-server/discussions/3934) is submitted and awaits manual curation.
+The MCP server exposes deterministic analysis, policy, compilation, and audit tools. PCP is active in the [official MCP Registry](https://registry.modelcontextprotocol.io/v0.1/servers/io.github.rishi-banerjee1%2Fpcp-engine/versions/latest). Its request to join the [GitHub MCP Registry](https://github.com/github/github-mcp-server/discussions/3934) is awaiting initial manual curation, so PCP is not searchable in GitHub’s registry yet. The release workflow publishes each new MCPB version to the official Registry automatically; GitHub can sync future versions after initial curation.
 
 ## Use the TypeScript API
 
