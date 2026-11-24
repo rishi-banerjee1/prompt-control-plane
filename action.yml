@@ -1,19 +1,19 @@
 name: 'Prompt Control Plane'
-description: 'Lint AI prompts for quality — deterministic scoring, classification, routing, and policy enforcement. Zero LLM calls.'
+description: 'Deterministic prompt scoring and policy checks for CI across any model. Zero LLM calls.'
 author: 'Rishi Banerjee'
 branding:
   icon: 'check-circle'
   color: 'purple'
 inputs:
   subcommand:
-    description: 'CLI subcommand: check (default), score, preflight'
+    description: 'PCP command: check (default), score, preflight, or optimize'
     required: false
     default: 'check'
   files:
     description: 'Glob pattern for prompt files to lint (.txt and .md files only). Examples: "prompts/*.txt", "**/*.md"'
     required: true
   threshold:
-    description: 'Minimum quality score (0-100). Optional — overrides strictness if set.'
+    description: 'Minimum quality score (0-100). Optional; overrides strictness if set.'
     required: false
   strictness:
     description: 'Preset: standard (60), strict (75), relaxed (40). Ignored if threshold is set.'
