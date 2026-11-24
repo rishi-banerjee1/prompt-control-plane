@@ -47,10 +47,8 @@ const registryIsCurrent = registryVersion === version;
 if (registryIsCurrent) {
   assert.equal(registryPayload.server.packages[0].identifier, server.packages[0].identifier, 'registry package URL must match server.json');
   assert.equal(registryPayload.server.packages[0].fileSha256, server.packages[0].fileSha256, 'registry checksum must match server.json');
-  const releaseResponse = await fetch(`https://api.github.com/repos/rishi-banerjee1/prompt-control-plane/releases/tags/v${version}`);
-  assert.ok(releaseResponse.ok, `GitHub release v${version} returned ${releaseResponse.status}`);
-  const release = await releaseResponse.json();
-  assert.ok(release.assets.some((asset) => asset.name === `pcp-engine-${version}.tgz`), 'GitHub release must include the installable npm tarball');
+  const releaseAsset = await fetch(`https://github.com/rishi-banerjee1/prompt-control-plane/releases/download/v${version}/pcp-engine-${version}.tgz`, { method: 'HEAD' });
+  assert.ok(releaseAsset.ok, `GitHub release tarball returned ${releaseAsset.status}`);
 } else {
   const [registryMajor, registryMinor, registryPatch] = registryVersion.split('.').map(Number);
   const [currentMajor, currentMinor, currentPatch] = version.split('.').map(Number);
@@ -69,7 +67,10 @@ const embedded = marketplaceHtml.match(/data-target="react-app\.embeddedData">(.
 assert.ok(embedded, 'Marketplace metadata payload is missing');
 const marketplace = JSON.parse(embedded).payload;
 assert.equal(marketplace.action.description.trim(), actionDescription, 'Marketplace description must match action.yml');
+assert.equal(marketplace.releaseData.latestRelease?.tagName, `v${version}`, 'Marketplace latest release must match package.json');
 assert.ok(marketplace.readmeHtml.includes('subcommand: optimize'), 'Marketplace README must position optimize as the primary Action command');
+assert.ok(marketplace.readmeHtml.includes('href="https://registry.modelcontextprotocol.io/v0.1/servers/io.github.rishi-banerjee1%2Fpcp-engine/versions/latest"'), 'Marketplace README must link to the active official MCP Registry listing');
+assert.ok(marketplace.readmeHtml.includes('not searchable in GitHub'), 'Marketplace README must disclose that GitHub MCP Registry curation is pending');
 if (registryIsCurrent) {
   assert.ok(marketplace.readmeHtml.includes(`@v${version}`), 'Marketplace README must show the current Action version');
   assert.ok(marketplace.readmeHtml.includes(`/releases/download/v${version}/pcp-engine-${version}.tgz`), 'Marketplace README must show the current source tarball');
