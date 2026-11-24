@@ -1,5 +1,5 @@
 name: 'Prompt Control Plane'
-description: 'Deterministic prompt scoring and policy checks for CI across any model. Zero LLM calls.'
+description: 'Deterministic prompt scoring and policy checks for CI across any model. Zero LLM calls'
 author: 'Rishi Banerjee'
 branding:
   icon: 'check-circle'
