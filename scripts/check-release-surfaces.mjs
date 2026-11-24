@@ -24,6 +24,11 @@ assert.match(readme, new RegExp(`#v${version}\\b`), 'README install must use the
 assert.match(readme, new RegExp(`@v${version}\\b`), 'README Action example must use the current release');
 assert.match(changelog, new RegExp(`^## \\[${version}\\]`, 'm'), 'changelog must lead with the current version');
 
+const installExample = readme.match(/## Install\\s+([\\s\\S]*?)```sh\\n([\\s\\S]*?)```/)?.[2];
+assert.ok(installExample?.includes('pcp optimize '), 'README install example must lead with the full optimize pipeline');
+const actionExample = readme.match(/## Use the GitHub Action\\s+```yaml\\n([\\s\\S]*?)```/)?.[1];
+assert.ok(actionExample?.includes('subcommand: optimize'), 'README Action example must lead with optimize');
+
 const actionDescription = actionYaml.match(/^description:\s*'([^']*)'/m)?.[1]?.trim();
 assert.ok(actionDescription, 'action.yml must have a single quoted description');
 
@@ -44,6 +49,7 @@ assert.ok(embedded, 'Marketplace metadata payload is missing');
 const marketplace = JSON.parse(embedded).payload;
 assert.equal(marketplace.action.description.trim(), actionDescription, 'Marketplace description must match action.yml');
 assert.ok(marketplace.readmeHtml.includes(`@v${version}`), 'Marketplace README must show the current Action version');
+assert.ok(marketplace.readmeHtml.includes('subcommand: optimize'), 'Marketplace README must position optimize as the primary Action command');
 assert.ok(marketplace.readmeHtml.includes(`#v${version}`), 'Marketplace README must show the current source install');
 assert.ok(!marketplace.readmeHtml.includes('maintained privately'), 'Marketplace README must not disclose private maintenance');
 
